@@ -3,7 +3,7 @@
 #include "../include/sinstar-i.h"
 #include "../include/unknown.h"
 #include "../include/protocol.h"
-#include <unknown\obj-ref-impl.hpp>
+#include <helper\obj-ref-impl.hpp>
 
 class CClientConnection : public SOUI::TObjRefImpl<SOUI::IIpcConnection>
 {
