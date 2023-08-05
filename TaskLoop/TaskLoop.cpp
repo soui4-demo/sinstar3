@@ -1,9 +1,10 @@
 ﻿#include "TaskLoop.h"
-#include <unknown/obj-ref-impl.hpp>
+#include <helper/obj-ref-impl.hpp>
 #include <algorithm>
 #include <cassert>
 #include <deque>
 #include <limits>
+#pragma comment(lib,"Winmm.lib")
 
 namespace SOUI
 {
@@ -16,13 +17,17 @@ namespace SOUI
 		m_items(),
 		m_hasRunningItem(false),
 		m_runningItem(NULL,0),
-		m_nextTaskID(0)
+		m_nextTaskID(0),
+		m_nHeartBeatInterval(INFINITE)
 	{
 	}
 
 	STaskLoop::~STaskLoop()
 	{
 		stop();
+		if(m_nHeartBeatInterval!=INFINITE){
+			timeEndPeriod(1);
+		}
 	}
 
 	void STaskLoop::start(const char * pszName,Priority priority)
@@ -38,28 +43,27 @@ namespace SOUI
 	void STaskLoop::stop()
 	{
 		int taskNum = getTaskCount();
-
 		m_thread.stop();
 		m_itemsSem.notify();
 		m_thread.waitForStop();
 	}
 
-	bool STaskLoop::isRunning()
+	BOOL STaskLoop::isRunning()
 	{
 		return !m_thread.isStopped();
 	}
 
-	long STaskLoop::postTask(const IRunnable *runnable, bool waitUntilDone, int priority)
+	long STaskLoop::postTask(const IRunnable *runnable, BOOL waitUntilDone, int priority)
 	{
 		if (m_thread.isStopped())
 		{
 			return -1;
 		}
-		IRunnable *pCloneRunnable = runnable->clone();
+		SAutoRefPtr<IRunnable> pCloneRunnable;
+		pCloneRunnable.Attach(runnable->clone());
 		if (Thread::getCurrentThreadID() == m_thread.getThreadID() && waitUntilDone)
 		{
 			pCloneRunnable->run();
-			delete pCloneRunnable;
 			return -1;
 		}
 
@@ -105,15 +109,18 @@ namespace SOUI
 
 	void STaskLoop::runLoopProc()
 	{
+		unsigned int interval=INFINITE;
+		{
+			SAutoLock autoLock(m_csHeartBeatTask);
+			interval = m_nHeartBeatInterval;
+		}
 		while (true)
 		{
 			if (m_thread.isStopping())
 			{
 				break;
 			}
-
-			m_itemsSem.wait(INFINITE);
-
+			m_itemsSem.wait(interval);
 			{
 				SAutoLock autoLock(m_taskListLock);
 				SAutoLock autoRunningLock(m_runningLock);
@@ -150,6 +157,30 @@ namespace SOUI
 					m_runningItem = TaskItem(NULL,0);
 				}
 			}
+			{
+				SAutoLock autoLock(m_csHeartBeatTask);
+				if(m_heartBeatTask){
+					unsigned int tsNow = timeGetTime();
+					unsigned int elapse = 0;
+					if(m_tsTick == -1)
+					{
+						elapse = m_nHeartBeatInterval;
+					}else{
+						if(tsNow>=m_tsTick){
+							elapse = tsNow-m_tsTick;
+						}else{//time round
+							elapse = (INFINITE-m_tsTick) + tsNow;
+						}
+					}
+					if(elapse >= m_nHeartBeatInterval){
+						interval = m_nHeartBeatInterval;//reset interval
+						m_tsTick = tsNow;
+						m_heartBeatTask->run();
+					}else{
+						interval = m_nHeartBeatInterval - elapse;
+					}
+				}
+			}
 		}// end of while
 
 		SAutoLock autoLock(m_taskListLock);
@@ -170,7 +201,7 @@ namespace SOUI
 		m_items.clear();
 	}
 
-	bool STaskLoop::getName(char * pszBuf, int nBufLen)
+	BOOL STaskLoop::getName(char * pszBuf, int nBufLen)
 	{
 		SAutoLock autoLock(m_taskListLock);
 		if (m_strName.length() >= (size_t)nBufLen)
@@ -214,9 +245,17 @@ namespace SOUI
 				m_runningItem = TaskItem(NULL,0);
 			}
 		}
+		{
+			SAutoLock autoLock(m_csHeartBeatTask);
+			if(m_heartBeatTask && m_heartBeatTask->getObject() == object){
+				m_heartBeatTask=NULL;
+				m_nHeartBeatInterval = INFINITE;
+				timeEndPeriod(1);
+			}
+		}
 	}
 
-	bool STaskLoop::cancelTask(long taskId)
+	BOOL STaskLoop::cancelTask(long taskId)
 	{
 		SAutoLock autoLock(m_taskListLock);
 		std::list<TaskItem>::iterator itemIt = m_items.begin();
@@ -243,7 +282,7 @@ namespace SOUI
 		return (int)m_items.size();
 	}
 
-	bool STaskLoop::getRunningTaskInfo(char *buf, int bufLen)
+	BOOL STaskLoop::getRunningTaskInfo(char *buf, int bufLen)
 	{
 		SAutoLock autoLock(m_runningInfoLock);
 		if(!m_hasRunningItem)
@@ -252,11 +291,32 @@ namespace SOUI
 		return true;
 	}
 
+	void STaskLoop::setHeartBeatTask(THIS_ IRunnable *pTask, int intervel)
+	{
+		SAutoLock autoLock(m_csHeartBeatTask);
+		if(pTask){
+			m_nHeartBeatInterval = intervel;
+			m_heartBeatTask.Attach(pTask->clone());
+			timeBeginPeriod(1);
+			m_tsTick = -1;
+			m_itemsSem.notify();//stop previous wait.
+		}else{
+			m_heartBeatTask = NULL;
+			m_nHeartBeatInterval=INFINITE;
+			timeEndPeriod(1);
+		}
+	}
 
-	SOUI_COM_C BOOL TASKLOOP::SCreateInstance(IObjRef **ppTaskLoop)
+
+	SOUI_COM_C BOOL SOUI_COM_API TASKLOOP::SCreateInstance(IObjRef **ppTaskLoop)
 	{
 		*ppTaskLoop = new STaskLoop();
 		return TRUE;
 	}
 
+}
+
+EXTERN_C BOOL TaskLoop_SCreateInstance(IObjRef **ppTaskLoop)
+{
+	return SOUI::TASKLOOP::SCreateInstance(ppTaskLoop);
 }

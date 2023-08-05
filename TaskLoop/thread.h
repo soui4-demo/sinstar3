@@ -3,10 +3,11 @@
 #include <string>
 #include <helper/SCriticalSection.h>
 #include <helper/SNoCopyable.hpp>
-#include <helper/SFunctor.hpp>
+#include <interface/STaskLoop-i.h>
 #include <helper/SSemaphore.h>
-namespace SOUI
-{
+#include <helper/obj-ref-impl.hpp>
+
+SNSBEGIN
 
 class ThreadPrivate;
 struct IRunnable;
@@ -112,7 +113,7 @@ private:
     SCriticalSection _lock;
     bool _start;
     bool _stopping;
-    IRunnable *_runnable;
+    SAutoRefPtr<IRunnable> _runnable;
     std::string _name;
     long _threadID;
     SSemaphore _startSem;
@@ -120,4 +121,4 @@ private:
     ThreadPriority _priorityLevel;
 };
 
-}
+SNSEND
