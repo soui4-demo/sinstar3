@@ -1,6 +1,6 @@
 #pragma once
 #include <interface/SIpcObj-i.h>
-#include <unknown/obj-ref-impl.hpp>
+#include <helper/obj-ref-impl.hpp>
 #include <map>
 #include "ShareMemBuffer.h"
 
@@ -17,8 +17,8 @@
 #endif
 
 
-namespace SOUI
-{
+SNSBEGIN
+
 	class SIpcHandle : public TObjRefImpl<IIpcHandle>
 	{
 	public:
@@ -105,5 +105,8 @@ namespace SOUI
 	{
 		SIPC_COM_C BOOL SIPC_API SCreateInstance(IObjRef **ppIpcFactory);
 	}
-}
+
+
+SNSEND
+	EXTERN_C BOOL Ipc_SCreateInstance(IObjRef **ppIpcFactory);
 
