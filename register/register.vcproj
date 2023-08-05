@@ -75,7 +75,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="utilitiesd.lib soui3d.lib"
+				AdditionalDependencies="utilities4d.lib soui4d.lib"
 				OutputFile="$(OutDir)\$(ProjectName).exe"
 				LinkIncremental="2"
 				SuppressStartupBanner="true"
@@ -176,13 +176,13 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="utilities.lib soui3.lib"
+				AdditionalDependencies="utilities4.lib soui4.lib"
 				OutputFile="$(OutDir)\$(ProjectName).exe"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
 				AdditionalLibraryDirectories="&quot;$(SolutionDir)lib&quot;;&quot;$(SOUI4PATH)\bin&quot;"
 				UACExecutionLevel="2"
-				DelayLoadDLLs="soui3.dll;utilities.dll"
+				DelayLoadDLLs="soui4.dll;utilities4.dll"
 				GenerateDebugInformation="false"
 				ProgramDatabaseFile=".\Release/register.pdb"
 				SubSystem="2"

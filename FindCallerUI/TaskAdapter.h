@@ -16,16 +16,16 @@ namespace SOUI
 		BOOL DelTask(int iTask);
 		void RemoveAll();
 	protected:
-		virtual int getCount();
+		virtual int WINAPI getCount() override;
 
-		virtual void getView(int position, SWindow * pItem, pugi::xml_node xmlTemplate);
+		virtual void WINAPI getView(int position, IWindow * pItem, IXmlNode * xmlTemplate) override;
 
 		//删除一行，提供外部调用。
 		void DeleteItem(int iPosition);
 
-		SStringW GetColumnName(int iCol) const;
+		SStringW WINAPI GetColumnName(int iCol) const override;
 
-		bool OnSort(int iCol, SHDSORTFLAG * stFlags, int nCols);
+		BOOL WINAPI OnSort(int iCol, UINT * stFlags, int nCols) override;
 
 		static int __cdecl SortCmp(void *context, const void * p1, const void * p2);
 	protected:
