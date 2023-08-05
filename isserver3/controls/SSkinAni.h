@@ -5,12 +5,12 @@ namespace SOUI
 {
     class SSkinAni : public SSkinObjBase
     {
-        SOUI_CLASS_NAME(SSkinAni,L"skinani")
+        DEF_SOBJECT(SSkinObjBase,L"skinani")
 
 		class SAniFrame
 		{
 		public:
-			SAutoRefPtr<IBitmap> pBmp;
+			SAutoRefPtr<IBitmapS> pBmp;
 			int                  nDelay;
 		};
     public:

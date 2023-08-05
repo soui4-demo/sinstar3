@@ -14,7 +14,7 @@ namespace SOUI
     */
     class SApngPlayer : public SWindow , public ITimelineHandler
     {
-        SOUI_CLASS_NAME(SApngPlayer, L"apngPlayer")
+        DEF_SOBJECT(SWindow, L"apngPlayer")
     public:
         SApngPlayer();
         ~SApngPlayer();
@@ -22,9 +22,9 @@ namespace SOUI
 		BOOL PlayFile(LPCTSTR pszFileName);
 
     protected://SWindow的虚函数
-        virtual CSize GetDesiredSize( int nWid,int nHei );
+        virtual void WINAPI GetDesiredSize(SIZE *ret, int nWid,int nHei );
     protected://ITimerLineHander
-        virtual void OnNextFrame();
+        virtual void WINAPI OnNextFrame();
 
     public://属性处理
         SOUI_ATTRS_BEGIN()		

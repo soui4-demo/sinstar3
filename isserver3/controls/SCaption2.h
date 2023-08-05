@@ -2,19 +2,13 @@
 
 namespace SOUI
 {
-	class EventDragMove : public TplEventArgs<EventDragMove>
-	{
-		SOUI_CLASS_NAME(EventDragMove,L"on_drag_move")
-	public:
-		EventDragMove(SObject *pSender):TplEventArgs<EventDragMove>(pSender){}
-		enum{EventID=EVENT_DRAGMOVE};
-
+	DEF_EVT_EXT(EventDragMove,EVENT_DRAGMOVE,{
 		CPoint ptMove;
-	};
+	})
 
 	class SCaption2 : public SWindow
 	{
-		SOUI_CLASS_NAME(SCaption2,L"caption2")
+		DEF_SOBJECT(SWindow,L"caption2")
 	public:
 		SCaption2(void);
 		~SCaption2(void);

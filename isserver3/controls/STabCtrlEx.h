@@ -23,12 +23,13 @@ namespace SOUI
     */
     class STabPageEx : public SWindow
     {
-		SOUI_CLASS_NAME(STabPageEx, L"pageex")		
+		DEF_SOBJECT(SWindow, L"pageex")		
     public:
- 		virtual CSize GetDesiredSize(int wid,int hei)
+ 		virtual void WINAPI GetDesiredSize(SIZE *ret,int wid,int hei) override
  		{			
- 			CSize size = __super::GetDesiredSize(wid,hei);
- 			return CSize(size.cx, max(m_iHeight, size.cy));
+ 			CSize size;
+			__baseCls::GetDesiredSize(&size,wid,hei);
+ 			*ret = CSize(size.cx, max(m_iHeight, size.cy));
  		}
         /**
         * STabPageEx::STabPageEx
@@ -117,7 +118,7 @@ namespace SOUI
     */
     class STabCtrlEx : public SWindow
     {  
-        SOUI_CLASS_NAME(STabCtrlEx, L"tabctrlex")
+        DEF_SOBJECT(SWindow, L"tabctrlex")
     protected:
         int m_nHoverTabItem; /**< hover状态item */
         int m_nCurrentPage;  /**< 当前页码      */
@@ -392,9 +393,9 @@ namespace SOUI
         *
         * Describe  
         */
-        virtual void UpdateChildrenPosition();
+        virtual void WINAPI UpdateChildrenPosition() override;
 
-        virtual void OnInitFinished(pugi::xml_node xmlNode);
+        virtual void WINAPI OnInitFinished(IXmlNode * xmlNode) override;
         
         virtual void OnColorize(COLORREF cr);
     protected:

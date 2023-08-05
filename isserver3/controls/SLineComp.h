@@ -3,7 +3,7 @@
 namespace SOUI {
 	class SLineComp : public SWindow
 	{
-		SOUI_CLASS_NAME(SLineComp,L"lineComp")
+		DEF_SOBJECT(SWindow,L"lineComp")
 	public:
 		SLineComp();
 		~SLineComp();
@@ -20,7 +20,7 @@ namespace SOUI {
 		SOUI_ATTRS_END()
 
 	protected:
-		virtual CSize GetDesiredSize(int nParentWid, int nParentHei);
+		virtual void WINAPI GetDesiredSize(SIZE *ret,int nParentWid, int nParentHei);
 
 		SStringT GetMappedComp();
 	private:

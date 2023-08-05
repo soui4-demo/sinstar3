@@ -33,11 +33,6 @@
 
 #include "../SLog4Z/log4z.h"
 
-#define GETLOGMGR() (SOUI::SLogMgr::getSingletonPtr()?SOUI::SLogMgr::getSingletonPtr()->GetLogMgr():NULL)
-#include "../include/slog_wrapper.h"
-
-#define LOG_FILTER "sinstar3_tsf"
-#include <helper/slogdef.h>
 
 #define	 DLL_SOUI
 #include <souistd.h>
@@ -50,15 +45,14 @@
 #include <helper/SMenu.h>
 #include <helper/SDpiHelper.hpp>
 #include <resprovider-zip/zipresprovider-param.h>
-
+#include <helper/slog.h>
+#define kLogTag "isserver3"
 #include "resource.h"
 #define R_IN_CPP	//定义这个开关来
 #include "res\resource.h"
 using namespace SOUI;
 
 #include "../include/reg.h"
-//#include "../iscomm/isProtocol.h"
-//#include "../iscomm/iscomm.h"
 
 #include "global_def.h"
 

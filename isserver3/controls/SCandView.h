@@ -4,14 +4,14 @@ namespace SOUI
 {
 	class SCandView : public SWindow
 	{
-		SOUI_CLASS_NAME(SCandView,L"candidate")
+		DEF_SOBJECT(SWindow,L"candidate")
 	public:
 		SCandView(void);
 		~SCandView(void);
 
 		void SetCandData(TCHAR cWild,const SStringT& strInput,const BYTE* pbyCandData);
 	protected:
-		virtual CSize GetDesiredSize(int nParentWid, int nParentHei);
+		virtual void WINAPI GetDesiredSize(SIZE *ret,int nParentWid, int nParentHei);
 		virtual BOOL OnUpdateToolTip(CPoint pt, SwndToolTipInfo &tipInfo);
 		void OnPaint(IRenderTarget *pRT);
 		void OnLButtonUp(UINT nFlags,CPoint pt);

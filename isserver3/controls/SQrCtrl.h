@@ -4,17 +4,17 @@
 
 class SQrCtrl :public SImageWnd
 {
-	SOUI_CLASS_NAME(SQrCtrl, L"qrctrl")
+	DEF_SOBJECT(SImageWnd, L"qrctrl")
 public:
 	SQrCtrl();
 	~SQrCtrl();
 
-	virtual void SetWindowText(LPCTSTR lpszText);
-	virtual BOOL OnRelayout(const CRect &rcWnd);
+	STDMETHOD_(void,SetWindowText)(THIS_ LPCTSTR lpszText) OVERRIDE;
 protected:
 	void CreateQrImg(SStringT strContent);
+	virtual BOOL OnRelayout(const CRect & rcWnd) override;
 
-	void MakeCacheApha(ISkinObj *pSkin, IBitmap *_pBitCache, IBitmap *_pBitMask);
+	void MakeCacheApha(ISkinObj *pSkin, IBitmapS *_pBitCache, IBitmapS *_pBitMask);
 
 	SOUI_ATTRS_BEGIN()
 		ATTR_RECT(L"qrrect", m_QrRect, FALSE)

@@ -4,7 +4,7 @@ namespace SOUI
 {
 	class SSentView : public SStatic
 	{
-		SOUI_CLASS_NAME(SSentView,L"sentView")
+		DEF_SOBJECT(SStatic,L"sentView")
 	public:
 		SSentView();
 		~SSentView();

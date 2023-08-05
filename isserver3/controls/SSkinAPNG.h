@@ -11,7 +11,7 @@ purpose:	动画PNG（APNG）扩展支持，依赖于当前使用的图片解码器。
 *********************************************************************/
 #pragma once
 #include <interface/SSkinobj-i.h>
-#include <unknown/obj-ref-impl.hpp>
+#include <helper/obj-ref-impl.hpp>
 
 #include "SSkinAni.h"
 
@@ -26,7 +26,7 @@ namespace SOUI
     */
     class SSkinAPNG : public SSkinAni
     {
-        SOUI_CLASS_NAME(SSkinAPNG, L"apng")
+        DEF_SOBJECT(SSkinAni, L"apng")
     public:
 		SSkinAPNG();
 		~SSkinAPNG();
@@ -54,24 +54,10 @@ namespace SOUI
             ATTR_CUSTOM(L"src",OnAttrSrc)   //XML文件中指定的图片资源名,(type:name)
         SOUI_ATTRS_END()
 
+	public:
+		STDMETHOD_(SIZE,GetSkinSize)(THIS) SCONST OVERRIDE;
+		STDMETHOD_(int,GetStates)(THIS) SCONST OVERRIDE;
 	protected:
-		
-        /**
-        * GetStates
-        * @brief    获得GIF帧数
-        * @return   int -- 帧数
-        * Describe  
-        */    
-        virtual int GetStates() const override;
-
-        /**
-        * GetSkinSize
-        * @brief    获得图片大小
-        * @return   SIZE -- 图片大小
-        * Describe  
-        */    
-        virtual SIZE GetSkinSize() const override;
-
         /**
         * GetFrameDelay
         * @brief    获得指定帧的显示时间
@@ -95,7 +81,7 @@ namespace SOUI
 
 		virtual void _Scale(ISkinObj *pObj, int nScale) override;
 
-		IBitmap * GetFrameImage(int iFrame=-1);
+		IBitmapS * GetFrameImage(int iFrame=-1);
 
     protected:
         HRESULT OnAttrSrc(const SStringW &strValue,BOOL bLoading);
