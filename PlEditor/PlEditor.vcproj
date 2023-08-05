@@ -39,7 +39,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="&quot;$(SOUI3PATH)\config&quot;;&quot;$(SOUI3PATH)\components&quot;;&quot;$(SOUI3PATH)\SOUI\include&quot;;&quot;$(SOUI3PATH)\utilities\include&quot;"
+				AdditionalIncludeDirectories="&quot;$(SOUI4PATH)\config&quot;;&quot;$(SOUI4PATH)\components&quot;;&quot;$(SOUI4PATH)\SOUI\include&quot;;&quot;$(SOUI4PATH)\utilities\include&quot;"
 				PreprocessorDefinitions="WIN32;_WINDOWS;STRICT;_DEBUG"
 				RuntimeLibrary="1"
 				TreatWChar_tAsBuiltInType="true"
@@ -62,10 +62,10 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="utilitiesd.lib soui3d.lib taskloopd.lib"
+				AdditionalDependencies="utilities4d.lib soui4d.lib taskloopd.lib"
 				LinkIncremental="2"
 				SuppressStartupBanner="true"
-				AdditionalLibraryDirectories="..\lib;&quot;$(SOUI3PATH)\bin&quot;"
+				AdditionalLibraryDirectories="..\lib;&quot;$(SOUI4PATH)\bin&quot;"
 				GenerateDebugInformation="true"
 				SubSystem="2"
 			/>
@@ -117,7 +117,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				WholeProgramOptimization="false"
-				AdditionalIncludeDirectories="&quot;$(SOUI3PATH)\config&quot;;&quot;$(SOUI3PATH)\components&quot;;&quot;$(SOUI3PATH)\SOUI\include&quot;;&quot;$(SOUI3PATH)\utilities\include&quot;"
+				AdditionalIncludeDirectories="&quot;$(SOUI4PATH)\config&quot;;&quot;$(SOUI4PATH)\components&quot;;&quot;$(SOUI4PATH)\SOUI\include&quot;;&quot;$(SOUI4PATH)\utilities\include&quot;"
 				PreprocessorDefinitions="WIN32;_WINDOWS;NDEBUG"
 				RuntimeLibrary="0"
 				TreatWChar_tAsBuiltInType="true"
@@ -138,11 +138,11 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="utilities.lib soui3.lib taskloop.lib"
+				AdditionalDependencies="utilities4.lib soui4.lib taskloop.lib"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
-				AdditionalLibraryDirectories="..\lib;&quot;$(SOUI3PATH)\bin&quot;"
-				DelayLoadDLLs="soui3.dll;utilities.dll"
+				AdditionalLibraryDirectories="..\lib;&quot;$(SOUI4PATH)\bin&quot;"
+				DelayLoadDLLs="soui4.dll;utilities4.dll"
 				GenerateDebugInformation="true"
 				SubSystem="2"
 			/>

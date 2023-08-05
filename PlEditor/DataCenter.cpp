@@ -17,8 +17,8 @@ CDataCenter::CDataCenter(void):m_bReady(true)
 	SNotifyCenter::getSingletonPtr()->addEvent(EVENTID(EventProgRun));
 	SNotifyCenter::getSingletonPtr()->addEvent(EVENTID(EventProgEnd));
 
-	TASKLOOP::SCreateInstance((SOUI::IObjRef**)&m_taskLoop);
-	m_taskLoop->start("pleditor_taskloop");
+	TASKLOOP::SCreateInstance((IObjRef**)&m_taskLoop);
+	m_taskLoop->start("pleditor_taskloop",Normal);
 }
 
 CDataCenter::~CDataCenter(void)
