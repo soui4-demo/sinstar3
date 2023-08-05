@@ -163,57 +163,11 @@
 #pragma once
 
 #include <interface/slog-i.h>
-#include <windows.h>
-#include <core/SSingleton.h>
-#include <unknown/obj-ref-impl.hpp>
 
-//////////////////////////////////////////////////////////////////////////
-//! -----------------default logger config, can change on this.-----------
-//////////////////////////////////////////////////////////////////////////
-//! the max logger count.
-const int LOG4Z_LOGGER_MAX = 10;
-
-//! all logger synchronous display to the windows debug output
-const bool LOG4Z_ALL_DEBUGOUTPUT_DISPLAY = true;
-
-//! default logger output file.
-const char* const LOG4Z_DEFAULT_PATH = "./log/";
-//! default log filter level
-const int LOG4Z_DEFAULT_LEVEL = SOUI::ILog4zManager::LOG_LEVEL_DEBUG;
-//! default logger display
-const bool LOG4Z_DEFAULT_DISPLAY = true;
-//! default logger output to file
-const bool LOG4Z_DEFAULT_OUTFILE = true;
-//! default logger output file limit size, unit M byte.
-const int LOG4Z_DEFAULT_LIMITSIZE = 100;
-//! default logger show suffix (file name and line number) 
-const bool LOG4Z_DEFAULT_SHOWSUFFIX = true;
-
-///////////////////////////////////////////////////////////////////////////
-//! -----------------------------------------------------------------------
-//////////////////////////////////////////////////////////////////////////
-
-
-namespace SOUI
-{
-    namespace LOG4Z
+SNSBEGIN
+namespace LOG4Z
     {
         SOUI_COM_C BOOL SOUI_COM_API SCreateInstance(IObjRef **ppLogMgr);
     }
-
-	class SLogMgr : public SSingleton<SLogMgr>
-	{
-	public:
-		SLogMgr(LPCTSTR pszPath);
-		~SLogMgr();
-		ILog4zManager * GetLogMgr() {
-			return m_logMgr;
-		}
-	private:
-		CAutoRefPtr<ILog4zManager> m_logMgr;
-	};
-}
-
-
-
-
+SNSEND
+EXTERN_C BOOL SOUI_COM_API Log4z_SCreateInstance(IObjRef **ppLogMgr);
