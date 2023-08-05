@@ -39,7 +39,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="&quot;$(SOUI3PATH)\config&quot;;&quot;$(SOUI3PATH)\components&quot;;&quot;$(SOUI3PATH)\SOUI\include&quot;;&quot;$(SOUI3PATH)\utilities\include&quot;"
+				AdditionalIncludeDirectories="&quot;$(SOUI4PATH)\config&quot;;&quot;$(SOUI4PATH)\components&quot;;&quot;$(SOUI4PATH)\SOUI\include&quot;;&quot;$(SOUI4PATH)\utilities\include&quot;"
 				PreprocessorDefinitions="WIN32;_WINDOWS;STRICT;_DEBUG"
 				RuntimeLibrary="1"
 				TreatWChar_tAsBuiltInType="true"
@@ -62,10 +62,10 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="utilitiesd.lib soui3d.lib"
+				AdditionalDependencies="utilities4d.lib soui4d.lib"
 				LinkIncremental="2"
 				SuppressStartupBanner="true"
-				AdditionalLibraryDirectories="&quot;$(SOUI3PATH)\bin&quot;"
+				AdditionalLibraryDirectories="&quot;$(SOUI4PATH)\bin&quot;"
 				GenerateDebugInformation="true"
 				SubSystem="2"
 			/>
@@ -116,7 +116,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				WholeProgramOptimization="true"
-				AdditionalIncludeDirectories="&quot;$(SOUI3PATH)\config&quot;;&quot;$(SOUI3PATH)\components&quot;;&quot;$(SOUI3PATH)\SOUI\include&quot;;&quot;$(SOUI3PATH)\utilities\include&quot;"
+				AdditionalIncludeDirectories="&quot;$(SOUI4PATH)\config&quot;;&quot;$(SOUI4PATH)\components&quot;;&quot;$(SOUI4PATH)\SOUI\include&quot;;&quot;$(SOUI4PATH)\utilities\include&quot;"
 				PreprocessorDefinitions="WIN32;_WINDOWS;NDEBUG"
 				RuntimeLibrary="0"
 				TreatWChar_tAsBuiltInType="true"
@@ -136,10 +136,10 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="utilities.lib soui3.lib"
+				AdditionalDependencies="utilities4.lib soui4.lib"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
-				AdditionalLibraryDirectories="&quot;$(SOUI3PATH)\bin&quot;"
+				AdditionalLibraryDirectories="&quot;$(SOUI4PATH)\bin&quot;"
 				GenerateDebugInformation="true"
 				SubSystem="2"
 			/>
@@ -285,7 +285,7 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Building SoUI Resource"
-						CommandLine="&quot;$(SOUI3PATH)\tools\uiresbuilder.exe&quot; -i &quot;$(InputPath)&quot; -p uires -r .\res\soui_res.rc2 -h .\res\resource.h idtable&#x0D;&#x0A;"
+						CommandLine="&quot;$(SOUI4PATH)\tools\uiresbuilder.exe&quot; -i &quot;$(InputPath)&quot; -p uires -r .\res\soui_res.rc2 -h .\res\resource.h idtable&#x0D;&#x0A;"
 						Outputs=".\res\soui_res.rc2;"
 					/>
 				</FileConfiguration>
@@ -295,7 +295,7 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Building SoUI Resource"
-						CommandLine="&quot;$(SOUI3PATH)\tools\uiresbuilder.exe&quot; -i &quot;$(InputPath)&quot; -p uires -r .\res\soui_res.rc2 -h .\res\resource.h idtable&#x0D;&#x0A;"
+						CommandLine="&quot;$(SOUI4PATH)\tools\uiresbuilder.exe&quot; -i &quot;$(InputPath)&quot; -p uires -r .\res\soui_res.rc2 -h .\res\resource.h idtable&#x0D;&#x0A;"
 						Outputs=".\res\soui_res.rc2;"
 					/>
 				</FileConfiguration>
