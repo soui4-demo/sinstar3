@@ -4,7 +4,7 @@
 
 STDAPI CSinstar3Tsf::OnSetFocus(BOOL fForeground)
 {
-	SLOG_INFO("ITfKeyEventSink::OnSetFocus, fForeground:"<<fForeground);
+	SLOGI()<<"ITfKeyEventSink::OnSetFocus, fForeground:"<<fForeground;
     return S_OK;
 }
 

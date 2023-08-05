@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "editsession.h"
-#include <helper/SDpiHelper.hpp>
 
 //////////////////////////////////////////////////////////////////////////
 CEditSessionBase::CEditSessionBase(CSinstar3Tsf *pTextService, ITfContext *pContext)
@@ -39,7 +38,7 @@ CEsStartComposition::CEsStartComposition(CSinstar3Tsf *pTextService, ITfContext 
 
 STDMETHODIMP CEsStartComposition::DoEditSession(TfEditCookie ec)
 {
-	SLOG_INFO("TfEditCookie:"<<ec);
+	SLOGI()<<"TfEditCookie:"<<ec;
 	SOUI::SComPtr<ITfInsertAtSelection> pInsertAtSelection;
 	SOUI::SComPtr<ITfRange> pRangeInsert;
 	SOUI::SComPtr<ITfContextComposition> pContextComposition;
@@ -103,11 +102,11 @@ CEsEndComposition::CEsEndComposition(CSinstar3Tsf *pTextService, ITfContext *pCo
 
 STDMETHODIMP CEsEndComposition::DoEditSession(TfEditCookie ec)
 {
-	SLOG_INFO("TfEditCookie:"<<ec);
+	SLOGI()<<"TfEditCookie:"<<ec;
 	SOUI::SComPtr<ITfComposition>  pComposition = _pTextService->GetITfComposition();
 	if(!pComposition)
 	{
-		SLOG_WARN("CEditSessionEndComposition::DoEditSession not in compositing");
+		SLOGW()<<"CEditSessionEndComposition::DoEditSession not in compositing";
 		return E_FAIL;
 	}
 
@@ -151,7 +150,7 @@ CEsGetTextExtent::CEsGetTextExtent(CSinstar3Tsf *pTextService, ITfContext *pCont
 
 STDMETHODIMP CEsGetTextExtent::DoEditSession(TfEditCookie ec)
 {
-	SLOG_INFO("TfEditCookie:"<<ec);
+	SLOGI()<<"TfEditCookie:"<<ec;
 
 	SOUI::SComPtr<ITfRange> pRange;
 	ISinstar * pSinstar3 = GetSinstar3();
@@ -197,7 +196,7 @@ CEsChangeComposition::~CEsChangeComposition()
 
 STDMETHODIMP CEsChangeComposition::DoEditSession(TfEditCookie ec)
 {
-	SLOG_INFO("TfEditCookie:"<<ec);
+	SLOGI()<<"TfEditCookie:"<<ec;
 
 	SOUI::SComPtr<ITfRange> pRangeComposition;
 	SOUI::SComPtr<ITfRange> pRangeSel;
@@ -298,7 +297,7 @@ CEsUpdateResultAndComp::~CEsUpdateResultAndComp()
 
 STDMETHODIMP CEsUpdateResultAndComp::DoEditSession(TfEditCookie ec)
 {
-	SLOG_INFO("TfEditCookie:"<<ec);
+	SLOGI()<<"TfEditCookie:"<<ec;
 
 	SOUI::SComPtr<ITfRange> pRangeComposition;
 	SOUI::SComPtr<ITfProperty> pDisplayAttributeProperty;
@@ -308,7 +307,7 @@ STDMETHODIMP CEsUpdateResultAndComp::DoEditSession(TfEditCookie ec)
 
 	if (!_pTextService->_IsCompositing())
 	{
-		SLOG_WARN("force start composition in CEsUpdateResultAndComp!!!");
+		SLOGW()<<"force start composition in CEsUpdateResultAndComp!!!";
 		_pTextService->_StartComposition(_pContext);
 	}
 	if(!_pTextService->_IsCompositing())
@@ -319,7 +318,7 @@ STDMETHODIMP CEsUpdateResultAndComp::DoEditSession(TfEditCookie ec)
 	pComposition->GetRange(&pRangeComposition);
 	if(!pRangeComposition)
 	{
-		SLOG_WARN("CEsUpdateResultAndComp::DoEditSession getRange return null");
+		SLOGW()<<"CEsUpdateResultAndComp::DoEditSession getRange return null";
 		return E_FAIL;
 	}
 	// get our the display attribute property

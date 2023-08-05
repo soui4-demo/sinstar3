@@ -24,11 +24,10 @@
 #include "../include/sinstar3_guids.h"
 #include "../SLog4Z/log4z.h"
 
-#define GETLOGMGR() (SOUI::SLogMgr::getSingletonPtr()?SOUI::SLogMgr::getSingletonPtr()->GetLogMgr():NULL)
-#include "../include/slog_wrapper.h"
+#define GETLOGMGR() NULL
+#include "../slog/slog.h"
 
-#define LOG_FILTER "sinstar3_tsf"
-#include <helper/slogdef.h>
+#define kLogTag "sinstar3_tsf"
 
 #include "TsfModule.h"
 #include "Globals.h"

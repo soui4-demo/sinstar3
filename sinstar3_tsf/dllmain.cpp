@@ -44,13 +44,13 @@ BOOL WINAPI DllMain(HINSTANCE hInstance, DWORD dwReason, LPVOID pvReserved)
 
 	case DLL_THREAD_ATTACH:
 		{
-			SLOG_INFO(L"DLL_THREAD_ATTACH");
+			SLOGI()<<"DLL_THREAD_ATTACH";
 		}
 		break;
 
 	case DLL_THREAD_DETACH:
 		{
-			SLOG_INFO(L"DLL_THREAD_DETACH");
+			SLOGI()<<"DLL_THREAD_DETACH";
 		}
 		break;
 	}
