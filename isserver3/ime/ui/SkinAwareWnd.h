@@ -35,7 +35,7 @@ namespace SOUI
 
 		virtual bool IsDpiAware() const override;
 
-		virtual void OnUserXmlNode(pugi::xml_node xmlUser) override;
+		virtual void OnUserXmlNode(SXmlNode xmlUser) override;
 	protected:
 		bool OnEvent(EventArgs *e);
 		SEventSet * m_pEvtSet;

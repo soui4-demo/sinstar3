@@ -68,7 +68,7 @@ namespace SOUI{
 		return m_bAutoScale;
 	}
 
-	void CSkinAwareWnd::OnUserXmlNode(pugi::xml_node xmlUser)
+	void CSkinAwareWnd::OnUserXmlNode(SXmlNode xmlUser)
 	{
 		if(_wcsicmp(xmlUser.name(),L"user")==0)
 		{

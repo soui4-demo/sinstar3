@@ -50,7 +50,7 @@ namespace SOUI
 		void OnMenuClick();
 	protected:
 		virtual void OnReposition(CPoint pt);
-		virtual bool onRootResize(EventArgs *e);
+		virtual BOOL onRootResize(EventArgs *e);
 
 		void UpdateAnchorMode();
 

@@ -4,7 +4,7 @@
 #include "../include/unknown.h"
 #include "../include/protocol.h"
 
-#include <unknown/obj-ref-impl.hpp>
+#include <helper/obj-ref-impl.hpp>
 #include <core/SNativeWnd.h>
 
 class CSvrConnection;

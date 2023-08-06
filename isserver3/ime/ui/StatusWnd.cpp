@@ -117,7 +117,7 @@ namespace SOUI
 			m_anchorMode |= AMV_BOTTOM;
 	}
 
-	bool CStatusWnd::onRootResize(EventArgs *e)
+	BOOL CStatusWnd::onRootResize(EventArgs *e)
 	{
 		EventSwndSize *e2 = sobj_cast<EventSwndSize>(e);
 		if(m_bResizing) return true;
@@ -269,7 +269,7 @@ namespace SOUI
 		if(pStatus) 
 		{
 			pStatus->SetVisible(TRUE, TRUE);
-			UpdateLayout();
+			GetRoot()->RequestRelayout();
 		}
 		m_pInputListener->OnCommand(CMD_SYNCUI, BTN_STATUSMODE);
 	}
