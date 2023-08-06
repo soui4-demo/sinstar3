@@ -107,25 +107,25 @@ namespace SOUI
 		RequestRelayout();
 	}
 
-	CSize SEnglishCand::GetDesiredSize(int nParentWid, int nParentHei)
+	void SEnglishCand::GetDesiredSize(SIZE *szRet,int nParentWid, int nParentHei)
 	{
-		CSize szRet,sz;
+		CSize sz;
 		IRenderTarget *pRT=NULL;
 		GETRENDERFACTORY->CreateRenderTarget(&pRT,0,0);
 
 		BeforePaintEx(pRT);
 		pRT->MeasureText(m_strIndex,m_strIndex.GetLength(),&sz);
-		szRet.cx = sz.cx;
-		szRet.cy = sz.cy;
+		szRet->cx = sz.cx;
+		szRet->cy = sz.cy;
 
 		pRT->MeasureText(m_strCand,m_strCand.GetLength(),&sz);
-		szRet.cx += sz.cx;
-		szRet.cy = smax(szRet.cy,sz.cy);
+		szRet->cx += sz.cx;
+		szRet->cy = smax(szRet->cy,sz.cy);
 
 		if(!m_strPhonetic.IsEmpty() && m_bShowPhonetic)
 		{
 			pRT->MeasureText(KPhoneticLeft, ARRAYSIZE(KPhoneticLeft)-1, &sz);
-			szRet.cx += sz.cx;
+			szRet->cx += sz.cx;
 			IRenderObj *pOldFont;
 			if (m_ftPhonetic)
 			{
@@ -136,14 +136,13 @@ namespace SOUI
 			{
 				pRT->SelectObject(pOldFont);
 			}
-			szRet.cx += sz.cx;
-			szRet.cy = smax(szRet.cy, sz.cy);
+			szRet->cx += sz.cx;
+			szRet->cy = smax(szRet->cy, sz.cy);
 
 			pRT->MeasureText(KPhoneticRight, ARRAYSIZE(KPhoneticRight) - 1, &sz);
-			szRet.cx += sz.cx;
+			szRet->cx += sz.cx;
 		}
 		pRT->Release();
-		return szRet;
 	}
 
 	void SEnglishCand::OnLButtonUp(UINT nFlags,CPoint pt)
@@ -159,9 +158,9 @@ namespace SOUI
 		}
 	}
 
-	BOOL SEnglishCand::OnUpdateToolTip(CPoint pt, SwndToolTipInfo &tipInfo)
+	BOOL SEnglishCand::UpdateToolTip(CPoint pt, SwndToolTipInfo &tipInfo)
 	{
-		SWindow::OnUpdateToolTip(pt,tipInfo);
+		SWindow::UpdateToolTip(pt,tipInfo);
 
 		EventQueryTip queryTip(this);
 		queryTip.strText = m_strCand;

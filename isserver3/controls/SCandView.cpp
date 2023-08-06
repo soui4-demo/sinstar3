@@ -98,7 +98,7 @@ namespace SOUI
 			SStringT strComp=SStringT().Format(_T("[%s]"),m_strComp);
 			pRT->TextOut(pt.x,pt.y,(LPCTSTR)strComp,strComp.GetLength());
 		}
-		else if(m_cWild!=0 && m_strInput.Find(m_cWild)!=-1)
+		else if(m_cWild!=0 && m_strInput.FindChar(m_cWild)!=-1)
 		{
 			for(int i=0;i<m_strComp.GetLength();i++)
 			{
@@ -131,7 +131,7 @@ namespace SOUI
 		m_bGbk = pbyCandData[1]!=0;
 		const BYTE * p = pbyCandData+2;
 		m_strCand = SStringW((const wchar_t*)(p+1),p[0]);
-		m_strCand.Replace(_T('\n'),_T('¡ý'));
+		m_strCand.ReplaceChar(_T('\n'),_T('¡ý'));
 		if(cWild!=0 && m_byRate != RATE_USERCMD)
 		{
 			p+=p[0]*2+1;
@@ -143,16 +143,16 @@ namespace SOUI
 		RequestRelayout();
 	}
 
-	CSize SCandView::GetDesiredSize(int nParentWid, int nParentHei)
+	void SCandView::GetDesiredSize(SIZE *szRet,int nParentWid, int nParentHei)
 	{
-		CSize szRet,sz;
+		CSize sz;
 		IRenderTarget *pRT=NULL;
 		GETRENDERFACTORY->CreateRenderTarget(&pRT,0,0);
 
 		BeforePaintEx(pRT);
 		pRT->MeasureText(m_strIndex,m_strIndex.GetLength(),&sz);
-		szRet.cx = sz.cx;
-		szRet.cy = sz.cy;
+		szRet->cx = sz.cx;
+		szRet->cy = sz.cy;
 
 		pRT->MeasureText(m_strCand,m_strCand.GetLength(),&sz);
 		if(m_maxCandWidth.isValid())
@@ -161,18 +161,18 @@ namespace SOUI
 		}
 		if (m_crShadow != CR_INVALID)
 		{
-			szRet.cx += m_ptShadowOffset.x;
-			szRet.cy += m_ptShadowOffset.y;
+			szRet->cx += m_ptShadowOffset.x;
+			szRet->cy += m_ptShadowOffset.y;
 		}
-		szRet.cx += sz.cx;
-		szRet.cy = smax(szRet.cy,sz.cy);
+		szRet->cx += sz.cx;
+		szRet->cy = smax(szRet->cy,sz.cy);
 
 		SStringT strComp;
 		if(m_byRate==RATE_MIXSP)
 		{
 			strComp=SStringT().Format(_T("[%s]"),m_strComp);
 		}
-		else if(m_cWild!=0 && m_strInput.Find(m_cWild)!=-1)
+		else if(m_cWild!=0 && m_strInput.FindChar(m_cWild)!=-1)
 		{
 			strComp = m_strComp;
 		}else if(m_strComp.GetLength()>m_strInput.GetLength())
@@ -182,11 +182,10 @@ namespace SOUI
 		if(!strComp.IsEmpty()) 
 		{
 			pRT->MeasureText(strComp,strComp.GetLength(),&sz);
-			szRet.cx += sz.cx;
-			szRet.cy = smax(szRet.cy,sz.cy);
+			szRet->cx += sz.cx;
+			szRet->cy = smax(szRet->cy,sz.cy);
 		}
 		pRT->Release();
-		return szRet;
 	}
 
 	void SCandView::OnLButtonUp(UINT nFlags,CPoint pt)
@@ -202,9 +201,9 @@ namespace SOUI
 		}
 	}
 
-	BOOL SCandView::OnUpdateToolTip(CPoint pt, SwndToolTipInfo &tipInfo)
+	BOOL SCandView::UpdateToolTip(CPoint pt, SwndToolTipInfo &tipInfo)
 	{
-		SWindow::OnUpdateToolTip(pt,tipInfo);
+		SWindow::UpdateToolTip(pt,tipInfo);
 
 		EventQueryTip queryTip(this);
 		queryTip.strText = m_strCand;

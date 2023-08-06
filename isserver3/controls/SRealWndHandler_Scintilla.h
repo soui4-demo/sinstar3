@@ -17,7 +17,7 @@ namespace SOUI
          * @return   HWND -- 创建出来的真窗口句柄
          * Describe  
          */    
-        virtual HWND OnRealWndCreate(SRealWnd *pRealWnd);
+        virtual HWND WINAPI OnRealWndCreate(IWindow *pRealWnd);
 
         /**
         * SRealWnd::OnRealWndDestroy
@@ -26,7 +26,7 @@ namespace SOUI
         *
         * Describe  销毁窗口
         */
-        virtual void OnRealWndDestroy(SRealWnd *pRealWnd);
+        virtual void WINAPI OnRealWndDestroy(IWindow *pRealWnd);
 
         /**
         * SRealWnd::OnRealWndInit
@@ -35,7 +35,7 @@ namespace SOUI
         *
         * Describe  初始化窗口
         */
-        virtual BOOL OnRealWndInit(SRealWnd *pRealWnd);
+        virtual BOOL WINAPI OnRealWndInit(IWindow *pRealWnd);
 
         /**
         * SRealWnd::OnRealWndSize
@@ -44,9 +44,9 @@ namespace SOUI
         * @return   BOOL -- TRUE:用户管理窗口的移动；FALSE：交由SOUI自己管理。
         * Describe  调整窗口大小, 从pRealWnd中获得窗口位置。
         */
-        virtual BOOL OnRealWndSize(SRealWnd *pRealWnd);
+        virtual BOOL WINAPI OnRealWndSize(IWindow *pRealWnd);
 
-		virtual BOOL OnRealWndPosition(SRealWnd *pRealWnd, const CRect &rcWnd);
+		virtual BOOL WINAPI OnRealWndPosition(IWindow *pRealWnd, const RECT *rcWnd);
 
 	};
 

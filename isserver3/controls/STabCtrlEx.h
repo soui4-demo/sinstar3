@@ -213,7 +213,7 @@ namespace SOUI
         * Describe  获取当前选中 
         */
         BOOL SetItemTitle(int nIndex, LPCTSTR lpszTitle);
-		bool OnScrollviewOrginChanger(EventArgs * ev);
+		BOOL OnScrollviewOrginChanger(EventArgs * ev);
         /**
         * STabCtrl::CreateChildren
         * @brief    创建tab页面
@@ -222,7 +222,7 @@ namespace SOUI
         *
         * Describe  创建tab页面
         */
-        virtual BOOL CreateChildren(pugi::xml_node xmlNode);
+        virtual BOOL CreateChildren(SXmlNode xmlNode) override;
 
         /**
         * STabCtrl::InsertItem
@@ -245,7 +245,7 @@ namespace SOUI
         *
         * Describe  插入tab页面
         */
-        virtual int InsertItem(pugi::xml_node xmlNode,int iInsert=-1,BOOL bLoading=FALSE);
+        virtual int InsertItem(SXmlNode xmlNode,int iInsert=-1,BOOL bLoading=FALSE);
 
         /**
         * STabCtrl::GetItemCount
@@ -370,7 +370,7 @@ namespace SOUI
         */
         virtual void DrawItem(IRenderTarget *pRT,const CRect &rcItem,int iItem,DWORD dwState);
 
-        virtual STabPageEx * CreatePageFromXml(pugi::xml_node xmlPage);
+        virtual STabPageEx * CreatePageFromXml(SXmlNode xmlPage);
         
         /**
         * STabCtrl::OnGetDlgCode
@@ -384,7 +384,7 @@ namespace SOUI
             return SC_WANTARROWS;
         }
 
-        virtual BOOL OnUpdateToolTip(CPoint pt, SwndToolTipInfo & tipInfo);
+        virtual BOOL UpdateToolTip(CPoint pt, SwndToolTipInfo & tipInfo);
         
         /**
         * UpdateChildrenPosition

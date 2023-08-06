@@ -80,9 +80,7 @@ void SSkinPNGX::_Scale(ISkinObj *pObj, int nScale)
 {
 	SSkinAni::_Scale(pObj,nScale);
 	SSkinPNGX *pClone = sobj_cast<SSkinPNGX>(pObj);
-	int wid = MulDiv(m_pngx->Width(),nScale,100);
-	int hei = MulDiv(m_pngx->Height(),nScale,100);
-	m_pngx->Scale(&pClone->m_pngx,wid,hei,kHigh_FilterLevel);
+	m_pngx->Scale(&pClone->m_pngx,nScale,kHigh_FilterLevel);
 	pClone->m_nDelays = m_nDelays;
 	pClone->m_bVert = m_bVert;
 }

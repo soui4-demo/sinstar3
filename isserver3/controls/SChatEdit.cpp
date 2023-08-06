@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "SChatEdit.h"
-#include "reole/RichEditOle.h"
 
 #ifndef LY_PER_INCH
 #define LY_PER_INCH 1440
@@ -17,7 +16,6 @@ const SStringW KLabelItalic = L"italic";
 const SStringW KLabelBold = L"bold";
 const SStringW KLabelStrike = L"strike";
 const SStringW KLabelSize = L"size";
-const SStringW KLabelSmiley = L"smiley";
 
 SChatEdit::SChatEdit(void)
 {
@@ -100,46 +98,6 @@ BOOL SChatEdit::ReplaceSelectionByFormatText(const SStringW &strMsg, BOOL bCanUn
 int SChatEdit::_InsertFormatText(int iCaret, CHARFORMATW cf, SXmlNode xmlText, BOOL bCanUndo)
 {
     SStringW strText = xmlText.value();
-    if (xmlText.name() == KLabelSmiley)
-    { // insert smiley
-        SComPtr<ISmileyCtrl> pSmiley;
-        HRESULT hr = ::CoCreateInstance(CLSID_SSmileyCtrl, NULL, CLSCTX_INPROC,
-                                        __uuidof(ISmileyCtrl), (LPVOID *)&pSmiley);
-        if (FAILED(hr))
-            return 0;
-
-        SComPtr<IRichEditOle> ole;
-        if (SSendMessage(EM_GETOLEINTERFACE, 0, (LPARAM)(void **)&ole) && ole)
-        {
-            SComPtr<IRichEditOleCallback> pCallback;
-            hr = ole->QueryInterface(IID_IRichEditOleCallback, (void **)&pCallback);
-            if (FAILED(hr))
-                return 0;
-            SComPtr<ISmileyHost> host;
-            hr = pCallback->QueryInterface(__uuidof(ISmileyHost), (void **)&host);
-            if (FAILED(hr))
-                return 0;
-            SComPtr<ISmileySource> pSource;
-            hr = host->CreateSource(&pSource);
-            if (FAILED(hr))
-                return 0;
-            {
-                UINT uID = xmlText.attribute(L"id").as_uint(-1);
-                SStringW strPath = xmlText.attribute(L"path").value();
-                if (uID != -1)
-                    hr = pSource->LoadFromID(uID);
-                else
-                    hr = pSource->LoadFromFile(strPath);
-                if (SUCCEEDED(hr))
-                {
-                    pSmiley->SetSource(pSource);
-                    SSendMessage(EM_SETSEL, iCaret, iCaret);
-                    pSmiley->Insert2Richedit(ole);
-                }
-            }
-        }
-        return SUCCEEDED(hr) ? 1 : 0;
-    }
 
     CHARFORMATW cfNew = cf;
     cfNew.dwMask = 0;
@@ -260,9 +218,6 @@ SStringW SChatEdit::GetFormatText()
     SSendMessage(EM_GETTEXTRANGE, 0, (LPARAM)&txtRng);
     strTxt.ReleaseBuffer();
 
-    SComPtr<IRichEditOle> ole;
-    SSendMessage(EM_GETOLEINTERFACE, 0, (LPARAM)(void **)&ole);
-
     SStringW strMsg;
     int iPlainTxtBegin = 0;
     for (int i = 0; i < strTxt.GetLength(); i++)
@@ -271,41 +226,6 @@ SStringW SChatEdit::GetFormatText()
         { //找到一个OLE对象
             strMsg += strTxt.Mid(iPlainTxtBegin, i - iPlainTxtBegin);
             iPlainTxtBegin = i + 1;
-
-            REOBJECT reobj = { sizeof(reobj), 0 };
-            reobj.cp = i;
-            HRESULT hr = ole->GetObject(REO_IOB_USE_CP, &reobj, REO_GETOBJ_POLEOBJ);
-            if (SUCCEEDED(hr) && reobj.poleobj)
-            {
-                if (reobj.clsid == CLSID_SSmileyCtrl)
-                {
-                    SComPtr<ISmileyCtrl> smiley;
-                    hr = reobj.poleobj->QueryInterface(__uuidof(ISmileyCtrl), (void **)&smiley);
-                    if (SUCCEEDED(hr))
-                    {
-                        SComPtr<ISmileySource> source;
-                        hr = smiley->GetSource(&source);
-                        SASSERT(SUCCEEDED(hr));
-                        UINT uID = -1;
-                        SStringW strSmiley = L"<smiley";
-                        if (SUCCEEDED(source->GetID(&uID)))
-                        {
-                            strSmiley += SStringW().Format(L" id=\"%d\"", uID);
-                        }
-
-                        BSTR strFile;
-                        if (SUCCEEDED(source->GetFile(&strFile)))
-                        {
-                            strSmiley += SStringW().Format(L" path=\"%s\"", strFile);
-                            ::SysFreeString(strFile);
-                        }
-                        strSmiley += L"/>";
-
-                        strMsg += strSmiley;
-                    }
-                }
-                reobj.poleobj->Release();
-            }
         }
     }
     if (iPlainTxtBegin < strTxt.GetLength())

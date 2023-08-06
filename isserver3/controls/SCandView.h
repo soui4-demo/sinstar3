@@ -11,8 +11,8 @@ namespace SOUI
 
 		void SetCandData(TCHAR cWild,const SStringT& strInput,const BYTE* pbyCandData);
 	protected:
-		virtual void WINAPI GetDesiredSize(SIZE *ret,int nParentWid, int nParentHei);
-		virtual BOOL OnUpdateToolTip(CPoint pt, SwndToolTipInfo &tipInfo);
+		virtual void WINAPI GetDesiredSize(SIZE *ret,int nParentWid, int nParentHei) override;
+		virtual BOOL UpdateToolTip(CPoint pt, SwndToolTipInfo &tipInfo) override;
 		void OnPaint(IRenderTarget *pRT);
 		void OnLButtonUp(UINT nFlags,CPoint pt);
 

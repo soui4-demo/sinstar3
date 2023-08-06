@@ -12,19 +12,21 @@ namespace SOUI
 	{
 	}
 
-	HWND SRealWndHandler_Scintilla::OnRealWndCreate( SRealWnd *pRealWnd )
+	HWND SRealWndHandler_Scintilla::OnRealWndCreate( IWindow *pReal )
 	{
-		if(pRealWnd->GetRealWndParam().m_strClassName.CompareNoCase(CScintillaWnd::GetScintillaWndClass())==0)
+		SAutoRefPtr<IRealWnd> pRealWnd;
+		pReal->QueryInterface(__uuidof(IRealWnd),(IObjRef**)&pRealWnd);
+		if(pRealWnd->GetRealClassName()->CompareNoCase(CScintillaWnd::GetScintillaWndClass())==0)
 		{
-			CScintillaWnd *pWnd=new CScintillaWnd;
-			BOOL bOK=pWnd->Create(pRealWnd->GetRealWndParam().m_strWindowName,WS_CHILD,CRect(0,0,0,0),pRealWnd->GetContainer()->GetHostHwnd(),pRealWnd->GetID(),SApplication::getSingleton().GetInstance());
+			CScintillaWnd *pWnd=new CScintillaWnd();
+			BOOL bOK=pWnd->Create(pRealWnd->GetRealWindowName()->c_str(),WS_CHILD,CRect(0,0,0,0),pReal->GetContainer()->GetHostHwnd(),pReal->GetID(),SApplication::getSingleton().GetModule());
 			if(!bOK)
 			{
 				SASSERT(FALSE);
 				delete pWnd;
 				return 0;
 			}
-			pRealWnd->SetUserData((ULONG_PTR)pWnd);
+			pRealWnd->SetData(pWnd);
 			return pWnd->m_hWnd;
 		}else
 		{
@@ -32,11 +34,13 @@ namespace SOUI
 		}
 	}
 
-	void SRealWndHandler_Scintilla::OnRealWndDestroy( SRealWnd *pRealWnd )
+	void SRealWndHandler_Scintilla::OnRealWndDestroy( IWindow *pWnd )
 	{
-		if(pRealWnd->GetRealWndParam().m_strClassName.CompareNoCase(CScintillaWnd::GetScintillaWndClass())==0)
+		SAutoRefPtr<IRealWnd> pRealWnd;
+		pWnd->QueryInterface(__uuidof(IRealWnd),(IObjRef**)&pRealWnd);
+		if(pRealWnd->GetRealClassName()->CompareNoCase(CScintillaWnd::GetScintillaWndClass())==0)
 		{
-			CScintillaWnd *pWnd=(CScintillaWnd *)pRealWnd->GetUserData();
+			CScintillaWnd *pWnd=(CScintillaWnd *)pRealWnd->GetData();
 			if(pWnd)
 			{
 				pWnd->DestroyWindow();
@@ -46,23 +50,26 @@ namespace SOUI
 	}
 
 	//不处理，返回FALSE
-	BOOL SRealWndHandler_Scintilla::OnRealWndSize( SRealWnd *pRealWnd )
+	BOOL SRealWndHandler_Scintilla::OnRealWndSize( IWindow *pRealWnd )
 	{
 		return FALSE;
 	}
 
 	//不处理，返回FALSE
-	BOOL SRealWndHandler_Scintilla::OnRealWndInit( SRealWnd *pRealWnd )
+	BOOL SRealWndHandler_Scintilla::OnRealWndInit( IWindow *pRealWnd )
 	{
 		return FALSE;
 	}
 
-	BOOL SRealWndHandler_Scintilla::OnRealWndPosition(SRealWnd *pRealWnd, const CRect &rcWnd)
+	BOOL SRealWndHandler_Scintilla::OnRealWndPosition(IWindow *pWnd, const RECT *rcWnd)
 	{
+		SAutoRefPtr<IRealWnd> pRealWnd;
+		pWnd->QueryInterface(__uuidof(IRealWnd),(IObjRef**)&pRealWnd);
 		HWND hRealWnd = pRealWnd->GetRealHwnd(TRUE);
 		if(IsWindow(hRealWnd))
 		{
-			::SetWindowPos(hRealWnd, 0, rcWnd.left,rcWnd.top, rcWnd.Width(), rcWnd.Height(), SWP_NOZORDER);
+			CRect rc(rcWnd);
+			::SetWindowPos(hRealWnd, 0, rc.left,rc.top, rc.Width(), rc.Height(), SWP_NOZORDER);
 			::UpdateWindow(hRealWnd);
 		}
 		return TRUE;

@@ -13,7 +13,7 @@ namespace SOUI
 		void SetCandData(const BYTE* pbyCandData);
 	protected:
 		virtual void WINAPI GetDesiredSize(SIZE *ret,int nParentWid, int nParentHei);
-		virtual BOOL OnUpdateToolTip(CPoint pt, SwndToolTipInfo &tipInfo);
+		virtual BOOL UpdateToolTip(CPoint pt, SwndToolTipInfo &tipInfo);
 
 		void OnPaint(IRenderTarget *pRT);
 		LRESULT OnFlmInfo(UINT uMsg, WPARAM, LPARAM lp);
