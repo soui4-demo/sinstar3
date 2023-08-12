@@ -22,7 +22,7 @@ namespace SOUI
     BOOL STipCtrlEx::CreateWnd(HWND hHost)
     {
 		m_hHost = hHost;
-		this->Create(NULL, WS_CLIPCHILDREN | WS_TABSTOP | WS_OVERLAPPED | WS_POPUP, WS_EX_NOACTIVATE|WS_EX_TOPMOST, 0, 0, 0, 0);
+		this->CreateNative(NULL, WS_CLIPCHILDREN | WS_TABSTOP | WS_OVERLAPPED | WS_POPUP, WS_EX_NOACTIVATE|WS_EX_TOPMOST, 0, 0, 0, 0,0,0,NULL);
         return TRUE;
     }
 
@@ -64,18 +64,18 @@ namespace SOUI
         }
     }
 
-    void STipCtrlEx::UpdateTip(const TIPID &id, CRect rc,LPCTSTR pszTip, int nScale)
+    void STipCtrlEx::UpdateTip(const TIPID *id, RECT rc,LPCTSTR pszTip, int nScale)
     {
-        if(m_id.dwHi == id.dwHi && m_id.dwLow== id.dwLow) return;
+        if(m_id.dwHi == id->dwHi && m_id.dwLow== id->dwLow) return;
 
-        m_id = id;
+        m_id = *id;
         m_rcTarget=rc;
         m_strTip=pszTip;
 		m_bUpdated = TRUE;
 		if(m_nScale != nScale)
 		{
 			m_nScale = nScale;
-			SDispatchMessage(UM_SETSCALE, nScale, 0);
+			GetRoot()->SDispatchMessage(UM_SETSCALE, nScale, 0);
 		}
 
         if(IsWindowVisible())
@@ -99,28 +99,28 @@ namespace SOUI
         else if(!IsWindowVisible() && m_bUpdated && !m_strTip.IsEmpty())
         {
 			m_bUpdated = FALSE;
-			pugi::xml_document xmlDoc;
-			DestroyAllChildren();
+			GetRoot()->DestroyAllChildren();
 			GetRoot()->SetWindowText(L"");
 
+			SXmlDoc xmlDoc;
 			if(xmlDoc.load_string(m_strTip))
 			{
-				pugi::xml_node root = xmlDoc.first_child();
+				SXmlNode root = xmlDoc.root().first_child();
 				if(_wcsicmp(root.name(),L"soui")==0)
 				{
-					InitFromXml(xmlDoc.first_child());
+					InitFromXml(&xmlDoc.root().first_child());
 				}else
 				{
-					pugi::xml_document xmlDoc2;
+					SXmlDoc xmlDoc2;
 					SApplication::getSingletonPtr()->LoadXmlDocment(xmlDoc2,m_strXmlLayout);
-					InitFromXml(xmlDoc2.first_child());
-					CreateChildren(xmlDoc);
-					UpdateLayout();
+					InitFromXml(&xmlDoc2.root().first_child());
+					GetRoot()->CreateChildren(&xmlDoc.root().first_child());
+					GetRoot()->UpdateLayout();
 				}
 			}else
 			{
 				SApplication::getSingletonPtr()->LoadXmlDocment(xmlDoc,m_strXmlLayout);
-				InitFromXml(xmlDoc.first_child());
+				InitFromXml(&xmlDoc.root().first_child());
 				GetRoot()->SetWindowText(m_strTip);
 			}
 			CPoint pt = AdjustTipPos(m_ptTip);
