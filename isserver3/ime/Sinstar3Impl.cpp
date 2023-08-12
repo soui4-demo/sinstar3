@@ -31,6 +31,16 @@ enum {
 	TIMER_DELAYFOCUS,
 };
 
+CSinstar3Sender::CSinstar3Sender(CSinstar3Impl *owner)
+:m_owner(owner)
+{
+	addEvent(EVENTID(EventSvrNotify));
+	addEvent(EVENTID(EventSetSkin));
+	CreateNative(KSinstar3WndName, WS_DISABLED | WS_POPUP, WS_EX_TOOLWINDOW, 0, 0, 0, 0, HWND_MESSAGE,0, NULL);
+}
+
+
+
 CSinstar3Impl::CSinstar3Impl(ITextService* pTxtSvr, HWND hSvr)
 	:m_pTxtSvr(pTxtSvr)
 	, m_pInputWnd(NULL)
@@ -47,15 +57,13 @@ CSinstar3Impl::CSinstar3Impl(ITextService* pTxtSvr, HWND hSvr)
 	, m_bShowUI(true)
 	, m_bPageChanged(false)
 {
-	addEvent(EVENTID(EventSvrNotify));
-	addEvent(EVENTID(EventSetSkin));
-
+	m_evtSender = new CSinstar3Sender(this);
 	HWND hOwner = (HWND)pTxtSvr->GetActiveWnd();
-	m_pInputWnd = new CInputWnd(this, m_inputState.GetInputContext(), this);
+	m_pInputWnd = new CInputWnd(m_evtSender, m_inputState.GetInputContext(), this);
 	m_pInputWnd->SetOwner(hOwner);
 	m_pInputWnd->Create();
 
-	m_pStatusWnd = new CStatusWnd(this, this);
+	m_pStatusWnd = new CStatusWnd(m_evtSender, this);
 	m_pStatusWnd->SetOwner(hOwner);
 	m_pStatusWnd->Create();
 	m_inputState.SetInputListener(this);
@@ -63,19 +71,21 @@ CSinstar3Impl::CSinstar3Impl(ITextService* pTxtSvr, HWND hSvr)
 	m_pInputWnd->SetAnchorPosition(g_SettingsG->ptInput);
 	m_pInputWnd->SetStatusWnd(m_pStatusWnd);
 
-	SLOG_INFO("status:" << m_pStatusWnd->m_hWnd << ", input:" << m_pInputWnd->m_hWnd);
-	Create(KSinstar3WndName, WS_DISABLED | WS_POPUP, WS_EX_TOOLWINDOW, 0, 0, 0, 0, HWND_MESSAGE, NULL);
-	CIsSvrProxy::GetSvrCore()->ReqLogin(m_hWnd);
+	SLOGI()<<"status:" << m_pStatusWnd->m_hWnd << ", input:" << m_pInputWnd->m_hWnd;
+	CIsSvrProxy::GetSvrCore()->ReqLogin(m_evtSender->m_hWnd);
 }
 
 CSinstar3Impl::~CSinstar3Impl(void)
 {
-	CIsSvrProxy::GetSvrCore()->ReqLogout(m_hWnd);
-	DestroyWindow();
+
+	CIsSvrProxy::GetSvrCore()->ReqLogout(m_evtSender->m_hWnd);
 	m_pInputWnd->DestroyWindow();
 	m_pStatusWnd->DestroyWindow();
 	delete m_pStatusWnd;
 	delete m_pInputWnd;
+
+	m_evtSender->DestroyWindow();
+	delete m_evtSender;
 
 	if (m_pTipWnd)
 	{
@@ -301,12 +311,12 @@ void CSinstar3Impl::OnSetFocusSegmentPosition(POINT pt, int nHei)
 
 void CSinstar3Impl::OnCompositionStarted()
 {
-	SLOG_INFO("bTyping:" << m_bTyping);
+	SLOGI()<<"bTyping:" << m_bTyping;
 }
 
 void CSinstar3Impl::OnCompositionStarted(bool bShowUI)
 {
-	SLOG_INFO("bTyping:" << m_bTyping);
+	SLOGI()<<"bTyping:" << m_bTyping;
 	m_bShowUI = bShowUI;
 }
 
@@ -316,9 +326,9 @@ void CSinstar3Impl::OnCompositionChanged()
 
 void CSinstar3Impl::OnCompositionTerminated(bool bClearCtx)
 {
-	SLOG_INFO("bTyping:" << m_bTyping);
+	SLOGI()<<"bTyping:" << m_bTyping;
 	m_bTyping = FALSE;
-	SLOG_INFO("bTyping:FALSE, bClearCtx:" << bClearCtx);
+	SLOGI()<<"bTyping:FALSE, bClearCtx:" << bClearCtx;
 	if (bClearCtx)
 	{
 		m_inputState.ClearContext(CPC_ALL);
@@ -332,14 +342,14 @@ void CSinstar3Impl::OnCompositionTerminated(bool bClearCtx)
 
 void CSinstar3Impl::OnSetFocus(BOOL bFocus, DWORD dwActiveWnd)
 {
-	SLOG_INFO("focus=" << bFocus<<" hasFocus="<<m_hasFocus);
+	SLOGI()<<"focus=" << bFocus<<" hasFocus="<<m_hasFocus;
 	if(m_hasFocus!=bFocus)
 	{
 		m_hasFocus = bFocus;
 		m_inputState.OnSetFocus(bFocus);
 		m_hOwner = (HWND)dwActiveWnd;
-		KillTimer(TIMER_DELAYFOCUS);
-		SetTimer(TIMER_DELAYFOCUS, 50, NULL);
+		m_evtSender->KillTimer(TIMER_DELAYFOCUS);
+		m_evtSender->SetTimer(TIMER_DELAYFOCUS, 50, NULL);
 	}
 }
 
@@ -363,7 +373,7 @@ void CSinstar3Impl::OnOpenStatusChanged(BOOL bOpen)
 	m_bOpen = bOpen;
 	if (bOpen && !m_hasFocus)
 	{
-		SLOG_WARN("try to open statusbar but in focus state");
+		SLOGW()<<"try to open statusbar but in focus state";
 	}
 	if (!bOpen)
 	{
@@ -466,10 +476,10 @@ LRESULT CSinstar3Impl::OnSvrNotify(UINT uMsg, WPARAM wp, LPARAM lp)
 
 		CDataCenter::getSingleton().Unlock();
 
-		EventSvrNotify evt(this);
+		EventSvrNotify evt(m_evtSender);
 		evt.wp = wp;
 		evt.lp = lp;
-		FireEvent(evt);
+		m_evtSender->FireEvent(&evt);
 		return 1;
 	}
 	else if (wp == NT_FLMINFO)
@@ -483,7 +493,7 @@ LRESULT CSinstar3Impl::OnSvrNotify(UINT uMsg, WPARAM wp, LPARAM lp)
 		FLMINFO* pInfo = (FLMINFO*)pMsg->byData;
 		if (pInfo->szAddFont[0])
 		{//需要特殊字体
-			SLOG_INFO("NT_FLMINFO,font:" << pInfo->szAddFont);
+			SLOGI()<<"NT_FLMINFO,font:" << pInfo->szAddFont;
 
 			SStringW strFontFile = CDataCenter::getSingleton().GetData().getFontFile(pInfo->szAddFont);
 			if (!strFontFile.IsEmpty())
@@ -503,7 +513,7 @@ LRESULT CSinstar3Impl::OnSvrNotify(UINT uMsg, WPARAM wp, LPARAM lp)
 
 LRESULT CSinstar3Impl::OnAsyncCopyData(UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
-	SLOG_INFO("begin,this:" << this);
+	SLOGI()<<"begin,this:" << this;
 
 	PCOPYDATASTRUCT pCds = (PCOPYDATASTRUCT)lParam;
 	HWND hSender = (HWND)wParam;
@@ -518,13 +528,14 @@ LRESULT CSinstar3Impl::OnAsyncCopyData(UINT uMsg, WPARAM wParam, LPARAM lParam)
 
 	if (pCds->lpData) free(pCds->lpData);
 	free(pCds);
-	SLOG_INFO("end");
+	SLOGI()<<"end";
 	return 1;
 }
 
+
 BOOL CSinstar3Impl::OnCopyData(HWND wnd, PCOPYDATASTRUCT pCopyDataStruct)
 {
-	SLOG_INFO("nLen:" << pCopyDataStruct->cbData);
+	SLOGI()<<"nLen:" << pCopyDataStruct->cbData;
 	PCOPYDATASTRUCT pCds = (PCOPYDATASTRUCT)malloc(sizeof(COPYDATASTRUCT));
 	pCds->dwData = pCopyDataStruct->dwData;
 	pCds->cbData = pCopyDataStruct->cbData;
@@ -537,7 +548,7 @@ BOOL CSinstar3Impl::OnCopyData(HWND wnd, PCOPYDATASTRUCT pCopyDataStruct)
 	{
 		pCds->lpData = NULL;
 	}
-	PostMessage(UM_ASYNC_COPYDATA, (WPARAM)wnd, (LPARAM)pCds);
+	m_evtSender->PostMessage(UM_ASYNC_COPYDATA, (WPARAM)wnd, (LPARAM)pCds);
 	return TRUE;
 }
 
@@ -546,7 +557,7 @@ BOOL CSinstar3Impl::IsCompositing() const
 {
 #ifdef _DEBUG
 	BOOL bSvrTyping = m_pTxtSvr->IsCompositing();
-	SLOG_INFO("bTyping:" << m_bTyping << " isCompositing():" << bSvrTyping);
+	SLOGI()<<"bTyping:" << m_bTyping << " isCompositing(:" << bSvrTyping;
 	SASSERT_FMT(m_bTyping == bSvrTyping, _T("m_bTyping != m_pTxtSvr->IsCompositing()"));
 #endif
 	return m_bTyping;
@@ -554,7 +565,7 @@ BOOL CSinstar3Impl::IsCompositing() const
 
 HWND CSinstar3Impl::GetHwnd() const
 {
-	return m_hWnd;
+	return m_evtSender->m_hWnd;
 }
 
 void CSinstar3Impl::OnInputStart()
@@ -562,7 +573,7 @@ void CSinstar3Impl::OnInputStart()
 	if (!m_curImeContext) return;
 	m_pTxtSvr->StartComposition(m_curImeContext);
 	m_bTyping = TRUE;
-	SLOG_INFO("bTyping:" << m_bTyping);
+	SLOGI()<<"bTyping:" << m_bTyping;
 }
 
 
@@ -573,17 +584,17 @@ void CSinstar3Impl::OnInputEnd()
 		m_pTxtSvr->EndComposition(m_curImeContext);
 	}
 	m_bTyping = FALSE;
-	SLOG_INFO("bTyping:" << m_bTyping);
+	SLOGI()<<"bTyping:" << m_bTyping;
 }
 
 
 void CSinstar3Impl::OnInputResult(const SStringT& strResult, const SStringT& strComp/*=SStringT() */)
 {
 	if (!m_curImeContext) return;
-	SLOG_INFO("bTyping:" << m_bTyping);
+	SLOGI()<<"bTyping:" << m_bTyping;
 	if (!IsCompositing())
 	{
-		SLOG_WARN("input result but not in compositing status: " << strResult);
+		SLOGW()<<"input result but not in compositing status: " << strResult;
 		return;
 	}
 	SStringW strResultW = S_CT2W(strResult);
@@ -717,7 +728,7 @@ BOOL CSinstar3Impl::IsInputEnable() const
 
 void CSinstar3Impl::OnCommand(WORD cmd, LPARAM lp)
 {
-	SendMessage(WM_COMMAND, MAKELONG(0, cmd), lp);
+	m_evtSender->SendMessage(WM_COMMAND, MAKELONG(0, cmd), lp);
 }
 
 InputContext* CSinstar3Impl::GetInputContext()
@@ -753,15 +764,15 @@ BOOL CSinstar3Impl::ChangeSkin(const SStringT& strSkin)
 
 void CSinstar3Impl::OnSkinChanged()
 {
-	EventSetSkin evt(this);
-	FireEvent(evt);
+	EventSetSkin evt(m_evtSender);
+	m_evtSender->FireEvent(&evt);
 }
 
 
 void CSinstar3Impl::OpenConfig()
 {
 	SASSERT(m_hSvr);
-	SLOG_INFO("OpenConfig,m_hSvr:" << m_hSvr);
+	SLOGI()<<"OpenConfig,m_hSvr:" << m_hSvr;
 	::SendMessage(m_hSvr, WM_COMMAND, R.id.menu_settings, 0);
 }
 
@@ -772,7 +783,7 @@ void CSinstar3Impl::ShowTip(LPCTSTR pszTitle, LPCTSTR pszContent, LPCTSTR pszKey
 		return;
 	if (m_pTipWnd == NULL)
 	{
-		m_pTipWnd = new STipWnd(this);
+		m_pTipWnd = new STipWnd(m_evtSender);
 		m_pTipWnd->Create();
 		m_pTipWnd->SetDestroyListener(this, IME_TIP);
 	}
@@ -800,15 +811,15 @@ void CSinstar3Impl::Broadcast(UINT uCmd, LPVOID pData, DWORD nLen)
 	cds.cbData = nLen;
 	cds.lpData = pData;
 
-	SendMessage(WM_COPYDATA, (WPARAM)m_hWnd, (LPARAM)&cds);
+	m_evtSender->SendMessage(WM_COPYDATA, (WPARAM)m_evtSender->m_hWnd, (LPARAM)&cds);
 
-	SLOG_INFO("broadcast, nLen:" << nLen);
+	SLOGI()<<"broadcast, nLen:" << nLen;
 	HWND hFind = FindWindowEx(HWND_MESSAGE, NULL, NULL, KSinstar3WndName);
 	while (hFind)
 	{
-		if (hFind != m_hWnd)
+		if (hFind != m_evtSender->m_hWnd)
 		{
-			::SendMessage(hFind, WM_COPYDATA, (WPARAM)m_hWnd, (LPARAM)&cds);
+			::SendMessage(hFind, WM_COPYDATA, (WPARAM)m_evtSender->m_hWnd, (LPARAM)&cds);
 		}
 		hFind = FindWindowEx(HWND_MESSAGE, hFind, NULL, KSinstar3WndName);
 	}
@@ -828,9 +839,9 @@ void CSinstar3Impl::UpdateInputWnd()
 			if (!m_bOpen)
 			{
 				m_bOpen = m_pTxtSvr->GetOpenStatus();
-				SLOG_ERROR("UpdateInputWnd, GetOpenStatus:" << m_bOpen);
+				SLOGE()<<"UpdateInputWnd, GetOpenStatus:" << m_bOpen;
 			}
-			SLOG_ERROR("update input but window is invisible!!!, focus:" << m_hasFocus << " inputEnable:" << m_bInputEnable << " fOpen:" << m_bOpen << " hideStatus:" << g_SettingsUI->bHideStatus);
+			SLOGE()<<"update input but window is invisible!!!, focus:" << m_hasFocus << " inputEnable:" << m_bInputEnable << " fOpen:" << m_bOpen << " hideStatus:" << g_SettingsUI->bHideStatus;
 		}
 		m_pInputWnd->Show(IsInputVisible(), FALSE);
 		m_pStatusWnd->Show(IsStatusVisible());
@@ -863,8 +874,10 @@ BOOL CSinstar3Impl::IsStatusVisible() const
 
 void CSinstar3Impl::DelayCaretLeft()
 {
-	SetTimer(TIMER_CARETLEFT, 10, NULL);
+	m_evtSender->SetTimer(TIMER_CARETLEFT, 10, NULL);
 }
+
+
 
 void CSinstar3Impl::OnTimer(UINT_PTR id)
 {
@@ -876,7 +889,7 @@ void CSinstar3Impl::OnTimer(UINT_PTR id)
 		}
 		keybd_event(VK_LEFT, MapVirtualKey(VK_LEFT, 0), 0, 0);
 		keybd_event(VK_LEFT, MapVirtualKey(VK_LEFT, 0), KEYEVENTF_KEYUP, 0);
-		KillTimer(id);
+		m_evtSender->KillTimer(id);
 	}
 	else if (id == TIMER_DELAYFOCUS)
 	{
@@ -901,7 +914,7 @@ void CSinstar3Impl::OnTimer(UINT_PTR id)
 				m_pTipWnd = NULL;
 			}
 		}
-		KillTimer(id);
+		m_evtSender->KillTimer(id);
 	}
 	else
 	{
