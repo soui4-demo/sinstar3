@@ -19,7 +19,7 @@
 #define RATE_USERDICT	0xF7	//user dict
 
 enum{
-	SENDER_SINSTSR3	= 100,
+	SENDER_SINSTAR3	= 100,
 	SENDER_SKINMANAGER,
 };
 

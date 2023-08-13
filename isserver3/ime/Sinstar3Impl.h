@@ -14,6 +14,7 @@ class CSinstar3Sender;
 class CSinstar3Impl:
 	public CUnknown,
 	public ISinstar,
+	public SEventSet,
 	public IInputListener,
 	public IDestroyListener,
 	public IInputWndListener
@@ -89,6 +90,7 @@ public:
 	void InputSpchar(LPCTSTR pszText);
 	void Broadcast(UINT uCmd, LPVOID pData, DWORD nLen);
 
+	HWND Hwnd() const;
 protected:
 	LRESULT OnSvrNotify(UINT uMsg, WPARAM wParam, LPARAM lParam);
 	LRESULT OnAsyncCopyData(UINT uMsg, WPARAM wParam, LPARAM lParam);
@@ -133,7 +135,7 @@ private:
 	CSinstar3Sender *m_evtSender;
 };
 
-class CSinstar3Sender : public TObjRefImpl<SObject>, public SEventSet, public SNativeWnd{
+class CSinstar3Sender : public TObjRefImpl<SObject>,  public SNativeWnd{
 public:
 	CSinstar3Sender (CSinstar3Impl *owner);
 

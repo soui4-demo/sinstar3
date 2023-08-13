@@ -312,7 +312,7 @@ int CInputState::Tips_Next(BOOL bSpell,TCHAR *pszBuf, int iTip, bool bNext)
 		else
 			_tcscpy_s(pszBuf, 200,  m_tips[TT_BOTH][idx - m_tips[TT_SHAPE].GetCount()]);
 	}
-	SLOG_INFO("iTip:" << iTip << " bNext:" << bNext<<" idx:"<<idx);
+	SLOGI()<<"iTip:" << iTip << " bNext:" << bNext<<" idx:"<<idx;
 	return idx;
 }
 
@@ -355,7 +355,7 @@ BYTE CInputState::GetKeyinMask(BOOL bAssociate,BYTE byMask)
 
 void CInputState::ClearContext(UINT dwMask)
 {
-	SLOG_INFO("dwMask:"<<dwMask);
+	SLOGI()<<"dwMask:"<<dwMask;
 	if(dwMask&CPC_COMP)
 	{
 		m_ctx.szComp[0]=0;
@@ -423,7 +423,7 @@ void CInputState::ClearContext(UINT dwMask)
 
 void CInputState::InputStart()
 {
-	SLOG_INFO("");
+	SLOGI()<<"";
 	m_pListener->OnInputStart();
 
 	DWORD tmCur = GetTickCount();
@@ -439,7 +439,7 @@ void CInputState::InputStart()
 
 BOOL CInputState::InputResult(const SStringW &strResult,BYTE byAstMask)
 {
-	SLOG_INFO("result:"<<strResult<<" astMask:"<<byAstMask);
+	SLOGI()<<"result:"<<strResult<<" astMask:"<<byAstMask;
 
 	SASSERT(m_pListener);
 	SStringW strTemp = strResult;
@@ -475,27 +475,27 @@ BOOL CInputState::InputResult(const SStringW &strResult,BYTE byAstMask)
 
 void CInputState::InputEnd()
 {
-	SLOG_INFO("");
+	SLOGI()<<"";
 	m_pListener->OnInputEnd();
 }
 
 void CInputState::InputUpdate()
 {
-	SLOG_INFO("");
+	SLOGI()<<"";
 	m_pListener->UpdateInputWnd();
 }
 
 
 void CInputState::InputOpen()
 {
-	SLOG_INFO("");
+	SLOGI()<<"";
 	m_pListener->OpenInputWnd();
 
 }
 
 void CInputState::InputHide(BOOL bDelay)
 {
-	SLOG_INFO("delay:"<<bDelay);
+	SLOGI()<<"delay:"<<bDelay;
 	if(m_pListener->IsCompositing()) 
 		m_pListener->OnInputEnd();
 	m_pListener->CloseInputWnd(bDelay);
@@ -2215,7 +2215,7 @@ void CInputState::TurnToTempSpell()
 		InputOpen();
 		InputUpdate();
 		StatusbarUpdate();
-		SLOG_INFO("");
+		SLOGI()<<"";
 		if (!m_pListener->IsCompositing())
 		{//query cursor position
 			InputStart();
@@ -2572,14 +2572,14 @@ BOOL CInputState::TestKeyDown(UINT uKey,LPARAM lKeyData,const BYTE * lpbKeyState
 
 void CInputState::OnImeSelect(BOOL bSelect)
 {
-	SLOG_INFO("fOpen:" << bSelect);
+	SLOGI()<<"fOpen:" << bSelect;
 	m_fOpen = bSelect;
 }
 
 
 BOOL CInputState::OnSvrNotify(UINT wp, PMSGDATA pMsg)
 {
-	SLOG_INFO("code="<<wp<<",m_fOpen:"<<m_fOpen);
+	SLOGI()<<"code="<<wp<<",m_fOpen:"<<m_fOpen;
 	if(wp == NT_KEYIN)
 	{//输入时返回的联想数据
 		if(m_fOpen)
@@ -2604,7 +2604,7 @@ BOOL CInputState::OnSvrNotify(UINT wp, PMSGDATA pMsg)
 							pbyData+=pbyData[2]*2+3;
 						}
 						ctx->sCandCount=sCount;
-						SLOG_INFO("词组联想:"<<ctx->sCandCount);
+						SLOGI()<<"词组联想:"<<ctx->sCandCount;
 					}
 					if(pbyData-pMsg->byData<pMsg->sSize && pbyData[0]==MKI_ASTENGLISH)
 					{//英文联想
@@ -2621,7 +2621,7 @@ BOOL CInputState::OnSvrNotify(UINT wp, PMSGDATA pMsg)
 							pbyData+=pbyData[0]*2+1;
 							pbyData+=pbyData[0]*2+1;						
 						}
-						SLOG_INFO("英文联想:"<<ctx->sCandCount);
+						SLOGI()<<"英文联想:"<<ctx->sCandCount;
 					}
 					if(pbyData-pMsg->byData<pMsg->sSize && pbyData[0]==MKI_PHRASEREMIND)
 					{//已有词组提示
@@ -2631,7 +2631,7 @@ BOOL CInputState::OnSvrNotify(UINT wp, PMSGDATA pMsg)
 						wcsncpy(ctx->szTip+5,(WCHAR*)(pbyData+2),pbyData[1]);
 						ctx->szTip[5+pbyData[1]]=0;
 						pbyData+=2+pbyData[1]*2;
-						SLOG_INFO("已有词组提示:"<<ctx->szTip);
+						SLOGI()<<"已有词组提示:"<<ctx->szTip;
 					}
 					if(pbyData-pMsg->byData<pMsg->sSize && pbyData[0]==MKI_ASTSENT)
 					{//句子联想
@@ -2643,12 +2643,12 @@ BOOL CInputState::OnSvrNotify(UINT wp, PMSGDATA pMsg)
 						wcsncpy(ctx->szSentText,(WCHAR*)pbyData,sLen);
 						ctx->sSentCaret=0;
 						ctx->sSentLen=sLen;
-						SLOG_INFO("句子联想:"<<SStringW(ctx->szSentText,sLen));
+						SLOGI()<<"句子联想:"<<SStringW(ctx->szSentText,sLen);
 					}
 				}
 				if(ctx->bShowTip || ctx->sCandCount || ctx->sSentLen)
 				{//有联想词组或有联想句子
-					SLOG_INFO("Update Input Window");
+					SLOGI()<<"Update Input Window";
 					if (ctx->sCandCount == 0 && g_SettingsG->bShowOpTip && !ctx->bShowTip)
 					{//没有候选时,在侯选位置显示操作提示
 						ctx->bShowTip=TRUE;
@@ -2660,7 +2660,7 @@ BOOL CInputState::OnSvrNotify(UINT wp, PMSGDATA pMsg)
 					InputUpdate();
 				}else
 				{//关闭窗口
-					SLOG_INFO("Close Input Window");
+					SLOGI()<<"Close Input Window";
 					InputHide();
 				}
 
@@ -2670,7 +2670,7 @@ BOOL CInputState::OnSvrNotify(UINT wp, PMSGDATA pMsg)
 			}
 		}else
 		{
-			SLOG_INFO("Close Input Window");
+			SLOGI()<<"Close Input Window";
 			InputHide();
 		}
 	}

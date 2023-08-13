@@ -25,7 +25,7 @@ CCmdHandler::~CCmdHandler()
 void CCmdHandler::OnHotkeyMakePhrase(LPARAM lp)
 {
 	WCHAR szBuf[MAX_INPUT];
-	int nRet =CUtils::GetClipboardText(m_pSinstar3->m_hWnd, szBuf, MAX_INPUT);
+	int nRet =CUtils::GetClipboardText(m_pSinstar3->Hwnd(), szBuf, MAX_INPUT);
 	if (nRet > 0)
 	{
 		SStringT msg;
@@ -60,7 +60,7 @@ void CCmdHandler::OnHotKeyHideStatusBar(LPARAM lp)
 void CCmdHandler::OnHotKeyQueryInfo(LPARAM lp)
 {
 	WCHAR szBuf[MAX_INPUT] = { 0 };
-	int  nGet = CUtils::GetClipboardText(m_pSinstar3->m_hWnd, szBuf, MAX_INPUT);
+	int  nGet = CUtils::GetClipboardText(m_pSinstar3->Hwnd(), szBuf, MAX_INPUT);
 	if(nGet==0)
 	{
 		InputContext *pCtx = m_pSinstar3->m_inputState.GetInputContext();

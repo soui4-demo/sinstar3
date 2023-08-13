@@ -34,8 +34,6 @@ enum {
 CSinstar3Sender::CSinstar3Sender(CSinstar3Impl *owner)
 :m_owner(owner)
 {
-	addEvent(EVENTID(EventSvrNotify));
-	addEvent(EVENTID(EventSetSkin));
 	CreateNative(KSinstar3WndName, WS_DISABLED | WS_POPUP, WS_EX_TOOLWINDOW, 0, 0, 0, 0, HWND_MESSAGE,0, NULL);
 }
 
@@ -57,13 +55,16 @@ CSinstar3Impl::CSinstar3Impl(ITextService* pTxtSvr, HWND hSvr)
 	, m_bShowUI(true)
 	, m_bPageChanged(false)
 {
+	addEvent(EVENTID(EventSvrNotify));
+	addEvent(EVENTID(EventSetSkin));
+
 	m_evtSender = new CSinstar3Sender(this);
 	HWND hOwner = (HWND)pTxtSvr->GetActiveWnd();
-	m_pInputWnd = new CInputWnd(m_evtSender, m_inputState.GetInputContext(), this);
+	m_pInputWnd = new CInputWnd(this, m_inputState.GetInputContext(), this);
 	m_pInputWnd->SetOwner(hOwner);
 	m_pInputWnd->Create();
 
-	m_pStatusWnd = new CStatusWnd(m_evtSender, this);
+	m_pStatusWnd = new CStatusWnd(this, this);
 	m_pStatusWnd->SetOwner(hOwner);
 	m_pStatusWnd->Create();
 	m_inputState.SetInputListener(this);
@@ -479,7 +480,7 @@ LRESULT CSinstar3Impl::OnSvrNotify(UINT uMsg, WPARAM wp, LPARAM lp)
 		EventSvrNotify evt(m_evtSender);
 		evt.wp = wp;
 		evt.lp = lp;
-		m_evtSender->FireEvent(&evt);
+		FireEvent(&evt);
 		return 1;
 	}
 	else if (wp == NT_FLMINFO)
@@ -765,7 +766,7 @@ BOOL CSinstar3Impl::ChangeSkin(const SStringT& strSkin)
 void CSinstar3Impl::OnSkinChanged()
 {
 	EventSetSkin evt(m_evtSender);
-	m_evtSender->FireEvent(&evt);
+	FireEvent(&evt);
 }
 
 
@@ -783,7 +784,7 @@ void CSinstar3Impl::ShowTip(LPCTSTR pszTitle, LPCTSTR pszContent, LPCTSTR pszKey
 		return;
 	if (m_pTipWnd == NULL)
 	{
-		m_pTipWnd = new STipWnd(m_evtSender);
+		m_pTipWnd = new STipWnd(this);
 		m_pTipWnd->Create();
 		m_pTipWnd->SetDestroyListener(this, IME_TIP);
 	}
@@ -927,4 +928,9 @@ void CSinstar3Impl::OnCapital(BOOL bCap)
 {
 	DWORD dwData = CStatusWnd::BTN_CAPITAL;
 	Broadcast(CMD_SYNCUI, &dwData, sizeof(dwData));
+}
+
+HWND CSinstar3Impl::Hwnd() const
+{
+	return m_evtSender->m_hWnd;
 }

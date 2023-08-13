@@ -10,7 +10,7 @@ CSvrConnection::CSvrConnection(IIpcHandle *pIpcHandle,HWND hSvr,IConntionFocusLi
 ,m_yScale(1.0f)
 ,m_pFocusListener(pFocusListener)
 {
-	Create(L"svr_conn_wnd",0,0,0,0,0,0,HWND_MESSAGE,NULL);
+	CreateNative(L"svr_conn_wnd",0,0,0,0,0,0,HWND_MESSAGE,NULL);
 }
 
 CSvrConnection::~CSvrConnection(void)
@@ -110,7 +110,7 @@ void CSvrConnection::HandleCreate(Param_Create & param)
 	TCHAR szVer[100];
 	m_strHostPath = param.strHostPath;
 	Helper_VersionString(param.dwVer, szVer);
-	SLOG_INFO("create connection, host:" << m_strHostPath.c_str() << " ver:" << szVer);
+	SLOGI()<<"create connection, host:" << m_strHostPath.c_str() << " ver:" << szVer;
 	m_pSinstar.Attach(new CSinstar3Impl(this, m_hSvr));
 }
 
@@ -128,7 +128,7 @@ void CSvrConnection::HandleScaleInfo(Param_ScaleInfo &param)
 			m_yScale = rcWnd.Height()*1.0f/param.szWnd.cy;
 	}else
 	{
-		SLOG_ERROR("ref hwnd is invalid");
+		SLOGE()<<"ref hwnd is invalid";
 	}
 }
 
@@ -200,7 +200,7 @@ void CSvrConnection::HandleTranslateKey(Param_TranslateKey &param)
 
 void CSvrConnection::HandleOnSetFocus(Param_OnSetFocus &param)
 {
-	SLOG_INFO("OnSetFocus, host:"<<m_strHostPath.c_str()<<" bFocus:"<<param.bFocus);
+	SLOGI()<<"OnSetFocus, host:"<<m_strHostPath.c_str()<<" bFocus:"<<param.bFocus;
 	if(!m_pSinstar) return;
 	m_pSinstar->OnSetFocus(param.bFocus,param.dwActiveWnd);
 	if(m_pFocusListener)
