@@ -19,9 +19,9 @@ namespace SOUI{
 		m_pEvtSet->unsubscribeEvent(EventSetSkin::EventID, Subscriber(&CSkinAwareWnd::OnEvent, this));
 	}
 
-	bool CSkinAwareWnd::OnEvent(EventArgs * e)
+	BOOL CSkinAwareWnd::OnEvent(EventArgs * e)
 	{
-		return !!_HandleEvent(e);
+		return _HandleEvent(e);
 	}
 
 	void CSkinAwareWnd::OnSetSkin(EventArgs *e)
@@ -32,12 +32,12 @@ namespace SOUI{
 		cs.cx = 0;
 		cs.cy = 0;
 		OnRecreateUI(&cs);
-		e->bubbleUp = true;
+		e->SetBubbleUp(TRUE);
 	}
 
 	HWND CSkinAwareWnd::Create(HWND hParent)
 	{
-		return SHostWnd::Create(hParent,WS_POPUP, WS_EX_TOOLWINDOW, 0, 0, 0, 0);
+		return SHostWnd::CreateEx(hParent,WS_POPUP, WS_EX_TOOLWINDOW, 0, 0, 0, 0);
 	}
 
 	void CSkinAwareWnd::SetDestroyListener(IDestroyListener * pListener, IMEWNDTYPE type)

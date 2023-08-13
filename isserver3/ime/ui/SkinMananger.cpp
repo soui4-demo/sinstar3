@@ -76,7 +76,7 @@ bool CSkinMananger::ExtractSkinInfo(SStringT strSkinPath,SStringW &strDesc)
 	IResProvider *pResProvider = NULL;
 	g_ComMgr2->CreateResProvider_ZIP((IObjRef**)&pResProvider);
 	ZIPRES_PARAM param;
-	param.ZipFile(NULL, strSkinPath);
+	ZipFile(&param,NULL, strSkinPath);
 	pResProvider->Init((WPARAM)&param,0);
 	int nSize = (int)pResProvider->GetRawBufferSize(_T("uidef"),_T("xml_init"));
 	SAutoBuf buffer(nSize);

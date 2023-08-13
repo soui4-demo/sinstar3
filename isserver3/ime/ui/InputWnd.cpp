@@ -78,7 +78,7 @@ namespace SOUI
 
 	void CInputWnd::MoveTo(CPoint pt,int nCaretHeight)
 	{
-		SLOG_INFO("pt:" << pt.x <<","<<pt.y<<" caretHeight:"<<nCaretHeight<<" followCaret:"<< g_SettingsUI->bMouseFollow);
+		SLOGI()<<"pt:" << pt.x <<","<<pt.y<<" caretHeight:"<<nCaretHeight<<" followCaret:"<< g_SettingsUI->bMouseFollow;
 
 		if(nCaretHeight>0)
 		{
@@ -105,7 +105,7 @@ namespace SOUI
 
 	void CInputWnd::Show(BOOL bShow, BOOL bClearLocateInfo)
 	{
-		SLOG_INFO("bShow:"<<bShow<<" located:"<<m_bLocated);
+		SLOGI()<<"bShow:"<<bShow<<" located:"<<m_bLocated;
 		if(m_bLocated || !g_SettingsUI->bMouseFollow)
 		{
 			if (!g_SettingsUI->bMouseFollow && bShow)
@@ -150,17 +150,17 @@ namespace SOUI
 		EventSwndUpdateTooltip *e2 = sobj_cast<EventSwndUpdateTooltip>(e);
 		SASSERT(e2);
 		SStringT strAccel;
-		switch (e->sender->GetID())
+		switch (e->Sender()->GetID())
 		{
 		case R.id.btn_prevpage:
 			e2->bUpdated = TRUE;
 			strAccel = SAccelerator::FormatAccelKey(g_SettingsG->byTurnPageUpVK);
-			e2->strToolTip = SStringT().Format(_T("ÖØÂëÇ°·­Ò³,·­Ò³¼ü:%s"), strAccel);
+			e2->strToolTip->Copy(&SStringT().Format(_T("ÖØÂëÇ°·­Ò³,·­Ò³¼ü:%s"), strAccel.c_str()));
 			break;
 		case R.id.btn_nextpage:
 			e2->bUpdated = TRUE;
 			strAccel = SAccelerator::FormatAccelKey(g_SettingsG->byTurnPageDownVK);
-			e2->strToolTip = SStringT().Format(_T("ÖØÂëºó·­Ò³,·­Ò³¼ü:%s"),strAccel);
+			e2->strToolTip->Copy(&SStringT().Format(_T("ÖØÂëºó·­Ò³,·­Ò³¼ü:%s"),strAccel.c_str()));
 			break;
 		}
 	}
@@ -169,7 +169,7 @@ namespace SOUI
 	{
 		EventSwitchTip *e2 = sobj_cast<EventSwitchTip>(e);
 		SASSERT(e2);
-		STipView *pTipView = sobj_cast<STipView>(e->sender);
+		STipView *pTipView = sobj_cast<STipView>(e->Sender());
 		SASSERT(pTipView);
 		m_pInputWndListener->OnSwitchTip(m_pInputContext, e2->bNext);
 		pTipView->SetWindowText(m_pInputContext->szTip);
@@ -550,7 +550,7 @@ namespace SOUI
 
 	void CInputWnd::OnFlmInfo(PFLMINFO pFlmInfo)
 	{
-		SDispatchMessage(UM_FLMINFO, 0, (LPARAM)pFlmInfo);
+		GetRoot()->SDispatchMessage(UM_FLMINFO, 0, (LPARAM)pFlmInfo);
 	}
 
 	void CInputWnd::OnSetSkin(EventArgs * e)
@@ -628,7 +628,7 @@ namespace SOUI
 			return;
 		}
 
-		SWindow::SetCapture();
+		SetCapture();
 		m_ptClick = point;
 		m_bDraging = TRUE;
 	}
@@ -641,7 +641,7 @@ namespace SOUI
 			return;
 		}
 		m_bDraging = FALSE;
-		SWindow::ReleaseCapture();
+		ReleaseCapture();
 
 		CRect rcWnd;
 		GetNative()->GetWindowRect(&rcWnd);
@@ -672,8 +672,9 @@ namespace SOUI
 
 	void CInputWnd::OnWndClick(EventArgs *e)
 	{
-		e->bubbleUp=true;
-		SStringW strSound = e->sender->GetAttribute(L"cmd_sound");
+		e->SetBubbleUp(TRUE);
+		SStringW strSound;
+		e->Sender()->GetAttribute(L"cmd_sound",&strSound);
 		if(!strSound.IsEmpty())
 		{
 			CWorker::getSingletonPtr()->PlaySoundFromResource(strSound);
@@ -731,7 +732,8 @@ namespace SOUI
 
 	void CInputWnd::ReloadLayout()
 	{
-		EventSetSkin evt(this);
+		//todo:hjx
+		EventSetSkin evt(NULL);
 		OnSetSkin(&evt);
 	}
 

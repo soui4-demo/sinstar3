@@ -37,7 +37,7 @@ namespace SOUI
 
 		virtual void OnUserXmlNode(SXmlNode xmlUser) override;
 	protected:
-		bool OnEvent(EventArgs *e);
+		BOOL OnEvent(EventArgs *e);
 		SEventSet * m_pEvtSet;
 	protected:
 		virtual void OnSetSkin(EventArgs * e);

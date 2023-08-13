@@ -21,7 +21,7 @@ namespace SOUI {
 		FindChildByID(R.id.btn_search)->SetVisible(!strKey.IsEmpty());
 		FindChildByID(R.id.txt_tip_title)->SetWindowTextW(strTitle);
 		FindChildByID(R.id.txt_tip_content)->SetWindowTextW(strTip);
-		UpdateLayout();
+		GetRoot()->UpdateLayout();
 
 		CRect rcWnd = GetWindowRect();
 		CRect rcWorkArea;

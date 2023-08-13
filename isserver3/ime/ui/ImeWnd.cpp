@@ -28,7 +28,7 @@ BOOL CImeWnd::OnSetCursor(HWND wnd, UINT nHitTest, UINT message)
 {
 	if(::GetCapture()!=m_hWnd)
 	{
-		SLOG_INFO("SetCapture");
+		SLOGI()<<"SetCapture";
 		::SetCapture(m_hWnd);
 	}
 	return TRUE;
@@ -42,14 +42,14 @@ void CImeWnd::OnMouseMove(UINT nFlags, CPoint point)
 	HWND hHitWnd = ::WindowFromPoint(point);
 	if(hHitWnd != m_hWnd && m_canReleaseCapture)
 	{
-		SLOG_INFO("ReleaseCapture");
+		SLOGI()<<"ReleaseCapture";
 		::ReleaseCapture();
 	}
 }
 
 HWND CImeWnd::Create(HWND hParent)
 {
-	return SHostWnd::Create(hParent,WS_POPUP|WS_DISABLED,WS_EX_TOOLWINDOW|WS_EX_TOPMOST|WS_EX_NOACTIVATE,0,0,0,0);
+	return SHostWnd::CreateEx(hParent,WS_POPUP|WS_DISABLED,WS_EX_TOOLWINDOW|WS_EX_TOPMOST|WS_EX_NOACTIVATE,0,0,0,0);
 }
 
 void CImeWnd::Show(BOOL bShow)
@@ -60,7 +60,7 @@ void CImeWnd::Show(BOOL bShow)
 
 LRESULT CImeWnd::OnAyncUI(UINT uMsg, WPARAM wp, LPARAM lp)
 {
-	SLOG_INFO("OnAyncUI,bShow:"<<wp);
+	SLOGI()<<"OnAyncUI,bShow:"<<wp;
 	BOOL bShow = wp;
 	if (bShow)
 	{
@@ -88,7 +88,7 @@ BOOL CImeWnd::OnReleaseSwndCapture()
 {
 	if(!SwndContainerImpl::OnReleaseSwndCapture()) return FALSE;
 	m_canReleaseCapture = TRUE;
-	SLOG_INFO("m_canReleaseCapture:TRUE");
+	SLOGI()<<"m_canReleaseCapture:TRUE";
 	CPoint pt;
 	GetCursorPos(&pt);
 	ScreenToClient(&pt);
@@ -120,13 +120,14 @@ SWND CImeWnd::OnSetSwndCapture(SWND swnd)
 {
 	SWND ret =  SwndContainerImpl::OnSetSwndCapture(swnd);
 	m_canReleaseCapture = FALSE;
-	SLOG_INFO("m_canReleaseCapture:FALSE");
+	SLOGI()<<"m_canReleaseCapture:FALSE";
 	return ret;
 }
 
 void CImeWnd::OnWindowHover(EventArgs *e)
 {
-	SStringW strSound = e->sender->GetAttribute(L"hover_sound");
+	SStringW strSound;
+	e->Sender()->GetAttribute(L"hover_sound",&strSound);
 	if(!strSound.IsEmpty())
 	{
 		CWorker::getSingletonPtr()->PlaySoundFromResource(strSound);

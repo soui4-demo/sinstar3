@@ -282,7 +282,7 @@ namespace SOUI
 		if(pStatus) 
 		{
 			pStatus->SetVisible(TRUE,TRUE);
-			UpdateLayout();
+			GetRoot()->UpdateLayout();
 		}
 		m_pInputListener->OnCommand(CMD_SYNCUI, BTN_STATUSMODE);
 	}
@@ -478,7 +478,7 @@ namespace SOUI
 
 	void CStatusWnd::OnSwitchCharMode(EventArgs *e)
 	{
-		SToggle * toggle = sobj_cast<SToggle>(e->sender);
+		SToggle * toggle = sobj_cast<SToggle>(e->Sender());
 		if(toggle)
 		{
 			g_SettingsUI->bCharMode = toggle->GetToggle();
@@ -489,7 +489,7 @@ namespace SOUI
 
 	void CStatusWnd::OnSwitchRecord(EventArgs *e)
 	{
-		SToggle * toggle = sobj_cast<SToggle>(e->sender);
+		SToggle * toggle = sobj_cast<SToggle>(e->Sender());
 		if(toggle)
 		{
 			g_SettingsUI->bRecord = !toggle->GetToggle();
@@ -500,7 +500,7 @@ namespace SOUI
 
 	void CStatusWnd::OnSwitchSound(EventArgs *e)
 	{
-		SToggle * toggle = sobj_cast<SToggle>(e->sender);
+		SToggle * toggle = sobj_cast<SToggle>(e->Sender());
 		if(toggle)
 		{
 			g_SettingsUI->bSound = !toggle->GetToggle();
@@ -512,7 +512,7 @@ namespace SOUI
 
 	void CStatusWnd::OnSwitchEnglish(EventArgs * e)
 	{
-		SToggle * toggle = sobj_cast<SToggle>(e->sender);
+		SToggle * toggle = sobj_cast<SToggle>(e->Sender());
 		if (toggle)
 		{
 			g_SettingsUI->bEnglish = !toggle->GetToggle();
@@ -523,7 +523,7 @@ namespace SOUI
 
 	void CStatusWnd::OnSwitchFilterGbk(EventArgs * e)
 	{
-		SToggle * toggle = sobj_cast<SToggle>(e->sender);
+		SToggle * toggle = sobj_cast<SToggle>(e->Sender());
 		if (toggle)
 		{
 			g_SettingsUI->bFilterGbk = !toggle->GetToggle();
@@ -538,81 +538,84 @@ namespace SOUI
 		EventSwndUpdateTooltip *e2 = sobj_cast<EventSwndUpdateTooltip>(e);
 		SASSERT(e2);
 		SStringT strAccel;
+		SStringT strToolTip;
+		strToolTip.Copy(e2->strToolTip);
 		switch (e2->idFrom)
 		{
 		case R.id.img_logo:
 			{
 				SStringT strComp = CDataCenter::getSingletonPtr()->GetData().m_compInfo.strCompName;
 				e2->bUpdated = TRUE;
-				e2->strToolTip = SStringT().Format(_T("切换[拼音<=>%s]"), strComp.c_str());
+				strToolTip = SStringT().Format(_T("切换[拼音<=>%s]"), strComp.c_str());
 			}
 			break;
 		case R.id.btn_charmode:
 			e2->bUpdated = TRUE;
 			strAccel = SAccelerator::FormatAccelKey(g_SettingsG->dwHotkeys[HKI_CharMode]);
-			e2->strToolTip = SStringT().Format(_T("标点模式:%s"), g_SettingsUI->bCharMode? _T("中文"):_T("英文"));
+			strToolTip = SStringT().Format(_T("标点模式:%s"), g_SettingsUI->bCharMode? _T("中文"):_T("英文"));
 			break;
 		case R.id.btn_make_phrase:
 			e2->bUpdated = TRUE;
 			strAccel = SAccelerator::FormatAccelKey(g_SettingsG->dwHotkeys[HKI_MakePhrase]);
-			e2->strToolTip = _T("剪贴板造词");
+			strToolTip = _T("剪贴板造词");
 			break;
 		case R.id.btn_record:
 			e2->bUpdated = TRUE;
 			strAccel = SAccelerator::FormatAccelKey(g_SettingsG->dwHotkeys[HKI_Record]);
-			e2->strToolTip = SStringT().Format(_T("记录输入历史:%s"), g_SettingsUI->bRecord ? _T("启用") : _T("禁用"));
+			strToolTip = SStringT().Format(_T("记录输入历史:%s"), g_SettingsUI->bRecord ? _T("启用") : _T("禁用"));
 			break;
 		case R.id.btn_sound:
 			e2->bUpdated = TRUE;
 			strAccel = SAccelerator::FormatAccelKey(g_SettingsG->dwHotkeys[HKI_TTS]);
-			e2->strToolTip = SStringT().Format(_T("语音校对:%s"), g_SettingsUI->bSound ? _T("启用") : _T("禁用"));
+			strToolTip = SStringT().Format(_T("语音校对:%s"), g_SettingsUI->bSound ? _T("启用") : _T("禁用"));
 			break;
 		case R.id.btn_english:
 			e2->bUpdated = TRUE;
 			strAccel = SAccelerator::FormatAccelKey(g_SettingsG->dwHotkeys[HKI_EnSwitch]);
-			e2->strToolTip = SStringT().Format(_T("单词补全:%s"), g_SettingsUI->bEnglish ? _T("启用") : _T("禁用"));
+			strToolTip = SStringT().Format(_T("单词补全:%s"), g_SettingsUI->bEnglish ? _T("启用") : _T("禁用"));
 			break;
 		case R.id.btn_query:
 			e2->bUpdated = TRUE;
 			strAccel = SAccelerator::FormatAccelKey(g_SettingsG->dwHotkeys[HKI_Query]);
-			e2->strToolTip = _T("编码反查");
+			strToolTip = _T("编码反查");
 			break;
 		case R.id.btn_filter_gbk:
 			e2->bUpdated = TRUE;
 			strAccel = SAccelerator::FormatAccelKey(g_SettingsG->dwHotkeys[HKI_FilterGbk]);
-			e2->strToolTip = SStringT().Format(_T("隐藏GBK重码:%s"), g_SettingsUI->bFilterGbk ? _T("启用") : _T("禁用"));
+			strToolTip = SStringT().Format(_T("隐藏GBK重码:%s"), g_SettingsUI->bFilterGbk ? _T("启用") : _T("禁用"));
 			break;
 		case R.id.btn_menu:
 			{
 				e2->bUpdated = TRUE;
-				e2->strToolTip = _T("输入法菜单");
+				strToolTip = _T("输入法菜单");
 			}
 			break;
 		case R.id.btn_help:
 			{
 				e2->bUpdated = TRUE;
-				e2->strToolTip = _T("打开帮助");
+				strToolTip = _T("打开帮助");
 			}
 			break;
 		case R.id.btn_status_extend:
-			if (e2->strToolTip.IsEmpty())
+			if (strToolTip.IsEmpty())
 			{
 				e2->bUpdated = TRUE;
-				e2->strToolTip = _T("展开状态栏");
+				strToolTip = _T("展开状态栏");
 			}
 			break;
 		case R.id.btn_status_shrink:
 			{
 				e2->bUpdated = TRUE;
-				e2->strToolTip = _T("收缩状态栏");
+				strToolTip = _T("收缩状态栏");
 			}
 			break;
 		}
 		if (e2->bUpdated && !strAccel.IsEmpty())
 		{
-			e2->strToolTip += _T(",");
-			e2->strToolTip += strAccel;
+			strToolTip += _T(",");
+			strToolTip += strAccel;
 		}
+		e2->strToolTip->Copy(&strToolTip);
 	}
 	void CStatusWnd::OnBtnMakePhrase()
 	{
@@ -633,7 +636,7 @@ namespace SOUI
 		SMenu menu;
 		BOOL bLoad = menu.LoadMenu(UIRES.smenu.context_status);
 		m_skinManager.ClearMap();
-		SLOG_INFO("before trackpopupmenu");
+		SLOGI()<<"before trackpopupmenu";
 
 		DWORD dwThreadID = GetWindowThreadProcessId(m_hOwner,NULL);
 		DWORD dwCurID = GetCurrentThreadId();
@@ -641,7 +644,7 @@ namespace SOUI
 		int nScale = SDpiHelper::getScale(m_hWnd);
 		int nRet = menu.TrackPopupMenu(TPM_LEFTALIGN | TPM_BOTTOMALIGN | TPM_RETURNCMD, pt.x, pt.y, m_hWnd,NULL,nScale);
 		AttachThreadInput(dwCurID,dwThreadID,FALSE);
-		SLOG_INFO("after trackpopupmenu" << " nRet:" << nRet);
+		SLOGI()<<"after trackpopupmenu" << " nRet:" << nRet;
 		if (nRet == R.id.config)
 		{//system config
 			m_pInputListener->OnCommand(CMD_OPENCONFIG, 0);
@@ -715,7 +718,7 @@ namespace SOUI
 		else if (nRet == R.id.menu_donate)
 		{
 			CDonateDlg *dlgDonate = new CDonateDlg;
-			dlgDonate->Create(m_hWnd,WS_POPUP,WS_EX_TOPMOST,0,0,0,0);
+			dlgDonate->CreateEx(m_hWnd,WS_POPUP,WS_EX_TOPMOST,0,0,0,0);
 			dlgDonate->SendMessage(WM_INITDIALOG);
 			dlgDonate->CenterWindow(GetDesktopWindow());
 			dlgDonate->SetWindowPos(HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_SHOWWINDOW);
@@ -854,8 +857,9 @@ namespace SOUI
 
 	void CStatusWnd::OnWndClick(EventArgs *e)
 	{
-		e->bubbleUp=true;
-		SStringW strSound = e->sender->GetAttribute(L"cmd_sound");
+		e->SetBubbleUp(true);
+		SStringW strSound ;
+		e->Sender()->GetAttribute(L"cmd_sound",&strSound);
 		if(!strSound.IsEmpty())
 		{
 			CWorker::getSingletonPtr()->PlaySoundFromResource(strSound);
