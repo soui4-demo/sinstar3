@@ -175,7 +175,7 @@ LRESULT CIsSvrProxy::OnBuildIndexProg(UINT uMsg, WPARAM wp, LPARAM lp)
 	if (uType == PT_MAX)
 	{
 		m_pBuildIndexProg = new CBuildIndexProgWnd();
-		m_pBuildIndexProg->Create(GetActiveWindow(), WS_POPUP, 0, 0, 0, 0, 0);
+		m_pBuildIndexProg->CreateEx(GetActiveWindow(), WS_POPUP, 0, 0, 0, 0, 0);
 		m_pBuildIndexProg->CenterWindow();
 		m_pBuildIndexProg->SetPage(iPage,nProg);
 		m_pBuildIndexProg->ShowWindow(SW_SHOW);
@@ -275,11 +275,11 @@ void CIsSvrProxy::OnShowKeyMap(IDataBlock * pCompData, LPCWSTR pszName, LPCWSTR 
 	{
 		CAutoRefPtr<IImgX> imgX;
 		imgDecoder->CreateImgX(&imgX);
-		CAutoRefPtr<IBitmap> pImg;
+		CAutoRefPtr<IBitmapS> pImg;
 		if (pCompData && imgX->LoadFromMemory(pCompData->GetData(), pCompData->GetLength()) >= 1)
 		{
 			GETRENDERFACTORY->CreateBitmap(&pImg);
-			pImg->Init(imgX->GetFrame(0));
+			pImg->Init2(imgX->GetFrame(0));
 		}
 		if (m_pKeyMapDlg)
 		{
@@ -287,7 +287,7 @@ void CIsSvrProxy::OnShowKeyMap(IDataBlock * pCompData, LPCWSTR pszName, LPCWSTR 
 		}
 		m_pKeyMapDlg = new CKeyMapDlg(pImg, pszName, pszUrl);
 		m_pKeyMapDlg->SetListener(this);
-		m_pKeyMapDlg->Create(NULL, WS_POPUP | WS_VISIBLE, WS_EX_TOOLWINDOW | WS_EX_TOPMOST, 0, 0, 0, 0);
+		m_pKeyMapDlg->CreateEx(NULL, WS_POPUP | WS_VISIBLE, WS_EX_TOOLWINDOW | WS_EX_TOPMOST, 0, 0, 0, 0);
 		m_pKeyMapDlg->SendMessage(WM_INITDIALOG);
 		m_pKeyMapDlg->CenterWindow(GetDesktopWindow());
 		imgDecoder = NULL;
@@ -435,7 +435,7 @@ void CIsSvrProxy::OnMenuSettings(UINT uNotifyCode, int nID, HWND wndCtl)
 	if(!pConfig)
 	{
 		pConfig = new CConfigDlg(this);
-		pConfig->Create(m_hWnd,WS_POPUP,WS_EX_TOPMOST,0,0,0,0);
+		pConfig->CreateEx(m_hWnd,WS_POPUP,WS_EX_TOPMOST,0,0,0,0);
 		pConfig->SendMessage(WM_INITDIALOG);
 	}
 	pConfig->SetWindowPos(HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_SHOWWINDOW);
@@ -603,7 +603,7 @@ LRESULT CIsSvrProxy::OnDelayCopyData(UINT uMsg,WPARAM wp,LPARAM lp)
 	{
 		if(m_pPendingCmd)
 		{
-			SLOG_WARN("discard shell cmd:"<<lpCopyData->dwData);
+			SLOGW()<<"discard shell cmd:"<<lpCopyData->dwData;
 			free(lpCopyData);
 			return 3;
 		}else	
@@ -679,7 +679,7 @@ LRESULT CIsSvrProxy::OnCopyData(HWND hWnd,PCOPYDATASTRUCT lpCopyData)
 
 void CIsSvrProxy::OnSetFocus(CSvrConnection * pConn)
 {
-	SLOG_INFO("pConn:" << pConn<<" curConn:"<< m_pFocusConn);
+	SLOGI()<<"pConn:" << pConn<<" curConn:"<< m_pFocusConn;
 	if(m_pFocusConn)
 	{
 		if(m_pFocusConn!=pConn)
@@ -695,7 +695,7 @@ void CIsSvrProxy::OnSetFocus(CSvrConnection * pConn)
 
 void CIsSvrProxy::OnKillFocus(CSvrConnection * pConn)
 {
-	SLOG_INFO("pConn:" << pConn<<" curFocusConn:"<<m_pFocusConn);
+	SLOGI()<<"pConn:" << pConn<<" curFocusConn:"<<m_pFocusConn;
 	if(pConn == m_pFocusConn)
 		m_pFocusConn=NULL;
 }
@@ -725,7 +725,7 @@ LRESULT CIsSvrProxy::OnChangeSkin(UINT uMsg, WPARAM wp, LPARAM lp)
 
 BOOL CIsSvrProxy::ChangeSkin(const SStringT & strSkin)
 {
-	SLOG_INFO("change skin, new skin:" << strSkin.c_str() << " old skin:" << g_SettingsG->strSkin.c_str() << " this:" << this);
+	SLOGI()<<"change skin, new skin:" << strSkin.c_str() << " old skin:" << g_SettingsG->strSkin.c_str() << " this:" << this;
 	if(g_SettingsG->strSkin != strSkin || g_SettingsG->bEnableDebugSkin)
 	{
 		SStringT skinPath = strSkin;
@@ -782,7 +782,7 @@ void CIsSvrProxy::OnCheckReconn()
 			break;
 		if(!m_ipcSvr->FindConnection((ULONG_PTR)hFind))
 		{
-			SLOG_INFO("onDataLoaded, notify client to reconnect:"<<hFind);
+			SLOGI()<<"onDataLoaded, notify client to reconnect:"<<hFind;
 			::PostMessage(hFind,UM_RECONN,0,0);
 		}
 		hAfter = hFind;
@@ -800,7 +800,7 @@ void CIsSvrProxy::BackupData()
 {
 	if(m_strDataPath.CompareNoCase(g_SettingsG->szBackupDir)==0)
 	{
-		SLOG_WARN("backup dir is same as instal dir");
+		SLOGW()<<"backup dir is same as instal dir";
 		return;
 	}
 
@@ -822,7 +822,7 @@ static const LPCTSTR KBackupDirs[]={
 };
 int CIsSvrProxy::BackupDir(const SStringT &strFrom,const SStringT & strTo)
 {
-	SLOG_INFO("backup dir from "<<strFrom<<" to"<<strTo);
+	SLOGI()<<"backup dir from "<<strFrom<<" to"<<strTo;
 
 	for(int i=0;i<ARRAYSIZE(KBackupDirs);i++)
 	{
@@ -837,7 +837,7 @@ int CIsSvrProxy::BackupDir(const SStringT &strFrom,const SStringT & strTo)
 			fileOp.fFlags = FOF_NOCONFIRMATION | FOF_SILENT | FOF_FILESONLY;
 			fileOp.pFrom = szDest;
 			int nRet = SHFileOperation(&fileOp);
-			SLOG_INFO("delete "<<szDest<<" return "<<nRet);
+			SLOGI()<<"delete "<<szDest<<" return "<<nRet;
 			if(nRet != 0)
 				return nRet;
 		}
@@ -846,7 +846,7 @@ int CIsSvrProxy::BackupDir(const SStringT &strFrom,const SStringT & strTo)
 		fileOp.pFrom = szSour;
 		fileOp.pTo = szDest;
 		int nRet = SHFileOperation(&fileOp);
-		SLOG_INFO("backup "<<KBackupDirs[i]<<" return "<<nRet);
+		SLOGI()<<"backup "<<KBackupDirs[i]<<" return "<<nRet;
 		if(nRet != 0)
 			return nRet;
 	}
