@@ -1,4 +1,4 @@
-#include <stdafx.h>
+#include "..\..\sinstar3_tsf\stdafx.h"
 #include "slog.h"
 
 #include <interface/slog-i.h>
