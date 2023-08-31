@@ -464,7 +464,7 @@ LRESULT CWorker::OnDataReport(UINT uMsg, WPARAM wp, LPARAM lp)
 	Helper_PEVersion(szModuleName, &dwVer, NULL, NULL);
 	SStringT strVer = SStringT().Format(_T("%u.%u.%u.%u"), byVer[3], byVer[2], byVer[1], byVer[0]);
 
-	SStringT strInfo = SStringT().Format(_T("&user_mac=%s&soft_version=%s&user_osversion=%s"), szUerID, strVer,strOsVer);
+	SStringT strInfo = SStringT().Format(_T("&user_mac=%s&soft_version=%s&user_osversion=%s"), szUerID, strVer.c_str(),strOsVer.c_str());
 	SStringT url = g_SettingsG->urlStatistics+strInfo;
 
 	CWinHttp  winHttp;

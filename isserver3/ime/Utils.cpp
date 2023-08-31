@@ -43,7 +43,7 @@ void CUtils::SoundPlay(LPCTSTR pszSound)
 {
 	if (g_SettingsG->nSoundAlert == 1)
 	{
-		SStringT strPath = SStringT().Format(_T("%s\\sound\\%s.wav"), CDataCenter::getSingletonPtr()->GetDataPath(), pszSound);
+		SStringT strPath = SStringT().Format(_T("%s\\sound\\%s.wav"), CDataCenter::getSingletonPtr()->GetDataPath().c_str(), pszSound);
 		PlaySound(strPath, NULL, SND_ASYNC | SND_FILENAME);
 	}
 	else if (g_SettingsG->nSoundAlert == 2)

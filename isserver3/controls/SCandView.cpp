@@ -95,7 +95,7 @@ namespace SOUI
 		if(m_byRate==RATE_MIXSP)
 		{
 			pRT->SetTextColor(m_crComp);
-			SStringT strComp=SStringT().Format(_T("[%s]"),m_strComp);
+			SStringT strComp=SStringT().Format(_T("[%s]"),m_strComp.c_str());
 			pRT->TextOut(pt.x,pt.y,(LPCTSTR)strComp,strComp.GetLength());
 		}
 		else if(m_cWild!=0 && m_strInput.FindChar(m_cWild)!=-1)
@@ -170,7 +170,7 @@ namespace SOUI
 		SStringT strComp;
 		if(m_byRate==RATE_MIXSP)
 		{
-			strComp=SStringT().Format(_T("[%s]"),m_strComp);
+			strComp=SStringT().Format(_T("[%s]"),m_strComp.c_str());
 		}
 		else if(m_cWild!=0 && m_strInput.FindChar(m_cWild)!=-1)
 		{

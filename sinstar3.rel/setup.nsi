@@ -136,7 +136,7 @@ SectionEnd
 Section "五笔新世纪" COMP_WB2k
    SetOverwrite ifnewer
    SetOutPath "$INSTDIR\server"
-   File /a "server\新世纪.cit"
+   File /a "server\新世纪（王码官版）.cit"
 SectionEnd
 Section "表形码26" COMP_BXM26
    SetOverwrite ifnewer

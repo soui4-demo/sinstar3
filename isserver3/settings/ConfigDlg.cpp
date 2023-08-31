@@ -455,7 +455,7 @@ namespace SOUI
 		const SArray<CSearchCfg::SearchInfo> & urls = CSearchCfg::getSingleton().GetUrls();
 		for(int i=0;i<urls.GetCount();i++)
 		{
-			SStringT value = SStringT().Format(_T("%s|%s"),urls[i].name,urls[i].url);
+			SStringT value = SStringT().Format(_T("%s|%s"),urls[i].name.c_str(),urls[i].url.c_str());
 			cbxSearchEngine->InsertItem(i,value,0,0);
 		}
 		cbxSearchEngine->GetEventSet()->setMutedState(true);
