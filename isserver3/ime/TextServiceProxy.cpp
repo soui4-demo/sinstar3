@@ -10,12 +10,13 @@ CSvrConnection::CSvrConnection(IIpcHandle *pIpcHandle,HWND hSvr,IConntionFocusLi
 ,m_yScale(1.0f)
 ,m_pFocusListener(pFocusListener)
 {
-	CreateNative(L"svr_conn_wnd",0,0,0,0,0,0,HWND_MESSAGE,NULL);
+	BeginThread();
 }
 
 CSvrConnection::~CSvrConnection(void)
 {
-	DestroyWindow();
+	PostThreadMessage(GetThreadId(),WM_QUIT,0,0);
+	EndThread();
 }
 
 BOOL CSvrConnection::InputStringW(LPCWSTR pszBuf, int nLen)
@@ -311,4 +312,23 @@ LRESULT CSvrConnection::OnReq(UINT msg,WPARAM wp,LPARAM lp)
 {
 	BOOL bHandled = FALSE;
 	return GetIpcHandle()->OnMessage((ULONG_PTR)m_hWnd,msg,wp,lp,bHandled);
+}
+
+UINT CSvrConnection::Run(LPARAM lp)
+{
+	return m_msgLoop->Run();//run message loop
+}
+
+void CSvrConnection::OnThreadStart()
+{
+	SApplication::getSingleton().GetMsgLoopFactory()->CreateMsgLoop(&m_msgLoop, NULL);
+	SApplication::getSingleton().AddMsgLoop(m_msgLoop);
+	CreateNative(L"svr_conn_wnd",0,0,0,0,0,0,HWND_MESSAGE,NULL);
+}
+
+void CSvrConnection::OnThreadStop()
+{
+	DestroyWindow();
+	SApplication::getSingleton().RemoveMsgLoop();
+	m_msgLoop=NULL;
 }
