@@ -3,7 +3,7 @@
 #include <process.h>
 #include <assert.h>
 
-CThreadObject::CThreadObject() :m_hThread(0),m_startParam(0)
+CThreadObject::CThreadObject() :m_hThread(0),m_startParam(0),m_uId(0)
 {
 	m_evtStart = CreateEvent(NULL, TRUE, FALSE, NULL);
 	m_evtStop = CreateEvent(NULL, TRUE, FALSE, NULL);
@@ -20,9 +20,11 @@ CThreadObject::~CThreadObject()
 
 UINT CThreadObject::ThreadProc(LPARAM lp)
 {
+	OnThreadStart();
 	SetEvent(m_evtStart);	//标记线程启动
 	ResetEvent(m_evtStop);  //清除线程结束标志
 	UINT uRet = Run(lp);		//执行线程
+	OnThreadStop();
 	ResetEvent(m_evtStart); //清除线程启动标志
 	return uRet;
 }
@@ -38,7 +40,7 @@ BOOL CThreadObject::BeginThread(LPARAM lParam)
 {
 	if (IsRunning()) return FALSE;
 	m_startParam = lParam;
-	m_hThread = (HANDLE)_beginthreadex(NULL, 0, &CThreadObject::StaticTheadProc, this, 0, NULL);
+	m_hThread = (HANDLE)_beginthreadex(NULL, 0, &CThreadObject::StaticTheadProc, this, 0, &m_uId);
 	if (m_hThread == NULL) return FALSE;
 	DWORD dwRet = WaitForSingleObject(m_evtStart, INFINITE);
 	return dwRet == WAIT_OBJECT_0;
