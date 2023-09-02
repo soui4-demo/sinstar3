@@ -2,6 +2,7 @@
 #include "TextServiceProxy.h"
 #include "../helper/helper.h"
 #include "Sinstar3Impl.h"
+#include <helper/SFunctor.hpp>
 
 CSvrConnection::CSvrConnection(IIpcHandle *pIpcHandle,HWND hSvr,IConntionFocusListener * pFocusListener)
 :m_ipcHandle(pIpcHandle)
@@ -293,9 +294,28 @@ bool CSvrConnection::CallFun(IFunParams * params) const
 
 void CSvrConnection::OnSkinChanged()
 {
+	STaskHelper::post(m_msgLoop,this,&CSvrConnection::_OnSkinChanged);
+}
+
+void CSvrConnection::_OnSkinChanged()
+{
 	if(!m_pSinstar) return;
 	CSinstar3Impl *pSinstar3 =(CSinstar3Impl*)(ISinstar*)m_pSinstar;
 	pSinstar3->OnSkinChanged();
+}
+
+
+void CSvrConnection::OnLoseFocus()
+{
+	STaskHelper::post(m_msgLoop,this,&CSvrConnection::_OnLoseFocus);
+}
+
+void CSvrConnection::_OnLoseFocus()
+{
+	Param_OnSetFocus param;
+	param.bFocus = FALSE;
+	param.dwActiveWnd = 0;
+	HandleOnSetFocus(param);
 }
 
 int CSvrConnection::GetBufSize() const 

@@ -35,6 +35,7 @@ public:
 
 	bool CallFun(IFunParams *params) const;
 	void OnSkinChanged();
+	void OnLoseFocus();
 protected:
 	void OnThreadStart() override;
 	void OnThreadStop() override;
@@ -112,6 +113,10 @@ protected:
 		FUN_HANDLER(Param_CandidateListInfo, HandleGetCadidateListInfo)
 		FUN_HANDLER(Param_ClickLanguageBarIcon, HandleOnLanguageBarClick)
 	FUN_END
+
+protected:
+	void _OnSkinChanged();
+	void _OnLoseFocus();
 private:
 	SComPtr<ISinstar>	m_pSinstar;
 	HWND				m_hSvr;

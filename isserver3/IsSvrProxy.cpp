@@ -684,10 +684,7 @@ void CIsSvrProxy::OnSetFocus(CSvrConnection * pConn)
 	{
 		if(m_pFocusConn!=pConn)
 		{
-			Param_OnSetFocus param;
-			param.bFocus = FALSE;
-			param.dwActiveWnd = 0;
-			m_pFocusConn->HandleOnSetFocus(param);
+			m_pFocusConn->OnLoseFocus();
 		}
 	}
 	m_pFocusConn = pConn;
