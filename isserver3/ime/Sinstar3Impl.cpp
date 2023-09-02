@@ -180,7 +180,7 @@ void GetFirst(InputContext* inputContext, std::wstring& _outstr, bool bOnlyOne =
 			const BYTE* p = inputContext->ppbyCandInfo[0] + 2;
 			_outstr = std::wstring((const wchar_t*)(p + 1), p[0]);
 		}
-		else
+		else if(inputContext->sbState == SBST_SENTENCE)
 		{
 			const BYTE* pbyCandData = inputContext->ppbyCandInfo[0];
 			const char* p = (const char*)pbyCandData;
