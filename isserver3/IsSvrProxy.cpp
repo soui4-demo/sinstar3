@@ -150,6 +150,7 @@ int CIsSvrProxy::OnCreate(LPCREATESTRUCT pCS)
 
 void CIsSvrProxy::OnDestroy()
 {
+	m_ipcSvr = NULL;//clear all connection.
 	m_trayIcon.Hide();
 	if (m_pCore)
 	{
