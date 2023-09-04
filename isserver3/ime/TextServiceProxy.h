@@ -40,6 +40,7 @@ protected:
 	void OnThreadStart() override;
 	void OnThreadStop() override;
 	UINT Run(LPARAM lp) override;
+	void Quit() override;
 protected:
 	LRESULT OnReq(UINT msg,WPARAM wp,LPARAM lp);
 	BEGIN_MSG_MAP_EX(CSvrConnection)

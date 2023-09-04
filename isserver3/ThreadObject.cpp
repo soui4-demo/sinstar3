@@ -49,9 +49,14 @@ BOOL CThreadObject::BeginThread(LPARAM lParam)
 BOOL CThreadObject::StopThread()
 {
 	if (!IsRunning()) return FALSE;
+	Quit();
+	return TRUE;
+}
+
+void CThreadObject::Quit()
+{
 	assert(m_hThread);
 	SetEvent(m_evtStop);
-	return TRUE;
 }
 
 void CThreadObject::JonThread(DWORD dwWaitEndMS)
@@ -82,3 +87,4 @@ BOOL CThreadObject::IsStoped() const
 {
 	return WaitForSingleObject(m_evtStop, 0) == WAIT_OBJECT_0;	
 }
+

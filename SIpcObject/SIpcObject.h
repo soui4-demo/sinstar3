@@ -75,6 +75,7 @@ SNSBEGIN
 	public:
 		SIpcServer();
 
+		~SIpcServer();
 
 	public:
 		// Í¨¹ý TObjRefImpl ¼Ì³Ð
@@ -90,8 +91,8 @@ SNSBEGIN
 		WNDPROC			  m_prevWndProc;
 		IIpcSvrCallback * m_pCallback;
 		HWND			  m_hSvr;
-		std::map<HWND, IIpcConnection *> m_mapClients;
-
+		typedef std::map<HWND, IIpcConnection *> ConnMap;
+		ConnMap m_mapClients;
 	};
 
 	class SIpcFactory : public TObjRefImpl<IIpcFactory>

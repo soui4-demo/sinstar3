@@ -339,6 +339,11 @@ UINT CSvrConnection::Run(LPARAM lp)
 	return m_msgLoop->Run();//run message loop
 }
 
+void CSvrConnection::Quit()
+{
+	CThreadObject::Quit();
+}
+
 void CSvrConnection::OnThreadStart()
 {
 	SApplication::getSingleton().GetMsgLoopFactory()->CreateMsgLoop(&m_msgLoop, NULL);
@@ -348,6 +353,7 @@ void CSvrConnection::OnThreadStart()
 
 void CSvrConnection::OnThreadStop()
 {
+	m_pSinstar=NULL;
 	DestroyWindow();
 	SApplication::getSingleton().RemoveMsgLoop();
 	m_msgLoop=NULL;

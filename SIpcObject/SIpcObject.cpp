@@ -268,6 +268,16 @@ namespace SOUI
 		, m_hSvr(NULL)
 	{}
 
+	SIpcServer::~SIpcServer()
+	{
+		ConnMap::iterator it = m_mapClients.begin();
+		while(it!=m_mapClients.end()){
+			it->second->Release();
+			it++;
+		}
+		m_mapClients.clear();
+	}
+
 	LRESULT SIpcServer::OnMessage(ULONG_PTR idLocal, UINT uMsg, WPARAM wp, LPARAM lp,BOOL &bHandled)
 	{
 		bHandled = FALSE;

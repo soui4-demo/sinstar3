@@ -21,7 +21,8 @@ public:
 protected:
 	//Work Function.
 	virtual UINT Run(LPARAM lp) = 0;
-    
+	virtual void Quit();
+
 	virtual void OnThreadStart(){}
 	virtual void OnThreadStop(){}
 
