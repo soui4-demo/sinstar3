@@ -25,29 +25,21 @@ namespace SOUI
     {
 		DEF_SOBJECT(SWindow, L"pageex")		
     public:
- 		virtual void WINAPI GetDesiredSize(SIZE *ret,int wid,int hei) override
- 		{			
- 			CSize size;
-			__baseCls::GetDesiredSize(&size,wid,hei);
- 			*ret = CSize(size.cx, max(m_iHeight, size.cy));
- 		}
         /**
         * STabPageEx::STabPageEx
         * @brief    构造函数
         *
         * Describe  构造函数  
         */
-        STabPageEx():m_iIcon(-1), m_iHeight(0), m_strTitle(this)
+        STabPageEx():m_iIcon(-1), m_strTitle(this)
         {			
 			m_bClipClient = TRUE;
         }
-		void SetHeight(int Height)
+
+		int GetHeight() const
 		{
-			m_iHeight = Height;
-		}
-		int GetHeight()
-		{
-			return m_iHeight;
+			CRect rcWnd = GetWindowRect();
+			return rcWnd.Height();
 		}
 		
 		/**/
@@ -107,7 +99,6 @@ namespace SOUI
     protected:
 		STrText	m_strTitle; /**< 标题 */
         int			m_iIcon;
-		int			m_iHeight;
     };
 
     /** 

@@ -115,7 +115,6 @@ namespace SOUI
 					SApplication::getSingletonPtr()->LoadXmlDocment(xmlDoc2,m_strXmlLayout);
 					InitFromXml(&xmlDoc2.root().first_child());
 					GetRoot()->CreateChildren(&xmlDoc.root().first_child());
-					GetRoot()->UpdateLayout();
 				}
 			}else
 			{
@@ -123,6 +122,7 @@ namespace SOUI
 				InitFromXml(&xmlDoc.root().first_child());
 				GetRoot()->SetWindowText(m_strTip);
 			}
+			GetRoot()->UpdateLayout();
 			CPoint pt = AdjustTipPos(m_ptTip);
 			SetWindowPos(HWND_TOPMOST,pt.x,pt.y,0,0,SWP_NOSIZE|SWP_SHOWWINDOW|SWP_NOACTIVATE);
         }
