@@ -114,7 +114,7 @@ namespace SOUI
 					SXmlDoc xmlDoc2;
 					SApplication::getSingletonPtr()->LoadXmlDocment(xmlDoc2,m_strXmlLayout);
 					InitFromXml(&xmlDoc2.root().first_child());
-					GetRoot()->CreateChildren(&xmlDoc.root().first_child());
+					GetRoot()->CreateChildren(&xmlDoc.root());
 				}
 			}else
 			{
