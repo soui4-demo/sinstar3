@@ -142,7 +142,10 @@ void CSvrConnection::HandleDestroy(Param_Destroy & param)
 
 void CSvrConnection::HandleOnImeSelect(Param_OnImeSelect & param)
 {
-	if(!m_pSinstar) return;
+	if(!m_pSinstar){
+		SLOGE()<<"HandleOnImeSelect failed! m_pSinstar not created! bSelect="<<param.bSelect;
+		return;
+	}
 	m_pSinstar->OnIMESelect(param.bSelect);
 
 }
@@ -346,6 +349,7 @@ void CSvrConnection::Quit()
 
 void CSvrConnection::OnThreadStart()
 {
+	SLOGI()<<"new connection thread id="<<GetThreadId();
 	SApplication::getSingleton().GetMsgLoopFactory()->CreateMsgLoop(&m_msgLoop, NULL);
 	SApplication::getSingleton().AddMsgLoop(m_msgLoop);
 	CreateNative(L"svr_conn_wnd",0,0,0,0,0,0,HWND_MESSAGE,NULL);
