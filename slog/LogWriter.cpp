@@ -12,10 +12,13 @@ SNSBEGIN
 		return &theObj;
 	}
 
-	LogWriter::LogWriter()
+	LogWriter::LogWriter():m_bEnable(false)
 	{
 		Log::setLogCallback(&LogWriter::Sinstar3_LogCallback);
 		start("log_writer",Low);
+		m_szLogPath[0]=0;
+		m_szLogFile[0]=0;
+		m_szLogName[0]=0;
 	}
 
 	LogWriter::~LogWriter()
@@ -30,7 +33,15 @@ SNSBEGIN
 		buildLogFile(m_szLogFile, FALSE);
 	}
 
+	void LogWriter::setLoggerPath(const TCHAR * path)
+	{
+		_tcscpy_s(m_szLogPath, MAX_PATH, path);
+		buildLogFile(m_szLogFile, FALSE);
+	}
+
 	void LogWriter::Sinstar3_LogCallback(const char *tag, const char *pLogStr, int level, const char *file, int line, const char *fun, void *retAddr){
+		if(!LogWriter::instance()->m_bEnable)
+			return;
 		DWORD tid=GetCurrentThreadId();
 		DWORD pid = GetCurrentProcessId();
 		std::stringstream ss;
@@ -61,9 +72,7 @@ SNSBEGIN
 
 	void LogWriter::buildLogFile(LPTSTR pszBuf,BOOL bBackup)
 	{
-		TCHAR szFolder[MAX_PATH];
-		SHGetSpecialFolderPath(NULL, szFolder, CSIDL_APPDATA, TRUE);
-		_stprintf(pszBuf, _T("%s\\duowan\\yy\\log\\%s%s.log"), szFolder, m_szLogName, bBackup ? _T(".bk") : _T(""));
+		_stprintf(pszBuf, _T("%s\\%s%s.log"), m_szLogPath, m_szLogName, bBackup ? _T(".bk") : _T(""));
 	}
 
 	void LogWriter::OnWriteLog(const std::string& log, int level) {

@@ -4,7 +4,7 @@
 #include "sinstar3_tsf.h"
 #include "../sinstar3_proxy/SimpleWnd.h"
 #include "../helper/helper.h"
-#include "../SLog4Z/LogWriter.h"
+#include "../SLog/LogWriter.h"
 
 CTsfModule::CTsfModule(HINSTANCE hInst, LPCTSTR pszSvrPath,LPCTSTR pszInstallPath):CModuleRef(hInst),m_classFactory(NULL)
 {
@@ -17,8 +17,15 @@ CTsfModule::CTsfModule(HINSTANCE hInst, LPCTSTR pszSvrPath,LPCTSTR pszInstallPat
 	{
 		m_hMutex = OpenMutex(SYNCHRONIZE, FALSE, SINSTAR3_MUTEX);
 	}
-
-	SOUI::LogWriter::instance()->setLoggerName(_T("sinstar3_tsf"));
+	TCHAR szPath[MAX_PATH];
+	_stprintf(szPath,_T("%s\\server\\config.ini"),pszInstallPath);
+	int enableLog = GetPrivateProfileInt(_T("log"),_T("enable"),0,szPath);
+	if(enableLog){
+		_stprintf(szPath,_T("%s\\log"),pszInstallPath);
+		SOUI::LogWriter::instance()->setLoggerName(_T("sinstar3_tsf"));
+		SOUI::LogWriter::instance()->setLoggerPath(szPath);
+		SOUI::LogWriter::instance()->enableLog(true);
+	}
 	Helper_FreeSa(psa);
 }
 

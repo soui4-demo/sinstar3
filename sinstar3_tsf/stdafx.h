@@ -22,9 +22,7 @@
 #include "../include/version.h"
 #include "../include/TextService-i.h"
 #include "../include/sinstar3_guids.h"
-#include "../SLog4Z/log4z.h"
 
-#define GETLOGMGR() NULL
 #include "../slog/slog.h"
 
 #define kLogTag "sinstar3_tsf"
