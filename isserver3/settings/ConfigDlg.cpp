@@ -1152,7 +1152,7 @@ SWindow *pCtrl = FindChildByID(id);\
 		LOGFONT lf={0};
 		if(!g_SettingsG->strFontDesc.IsEmpty())
 		{
-			FontInfo fi = SFontPool::FontInfoFromString(g_SettingsG->strFontDesc,SFontPool::getSingleton().GetDefFontInfo());
+			FontInfo fi = SFontPool::FontInfoFromString(g_SettingsG->strFontDesc,GETUIDEF->GetDefFontInfo());
 			_tcscpy(lf.lfFaceName,S_CW2T(fi.strFaceName));
 			lf.lfWeight = fi.style.attr.byWeight*4;
 			if(lf.lfWeight == 0)
@@ -1164,7 +1164,7 @@ SWindow *pCtrl = FindChildByID(id);\
 			lf.lfStrikeOut = fi.style.attr.fStrike;
 		}else
 		{
-			IFontPtr font = SFontPool::getSingletonPtr()->GetFont(L"",100);
+			IFontPtr font = GETUIDEF->GetFont(L"",100);
 			memcpy(&lf,font->LogFont(),sizeof(lf));
 		}
 		CFontDialog fontDlg(&lf, CF_SCREENFONTS|CF_NOVERTFONTS);
@@ -1185,7 +1185,7 @@ SWindow *pCtrl = FindChildByID(id);\
 				fi.style.attr.byWeight = 0;
 			}
 			g_SettingsG->strFontDesc = SFontPool::FontInfoToString(fi);
-			SFontPool::getSingletonPtr()->SetDefFontInfo(g_SettingsG->strFontDesc);
+			GETUIDEF->SetDefFontInfo(g_SettingsG->strFontDesc);
 			FindAndSetText(R.id.edit_font,g_SettingsG->strFontDesc);
 		}
 	}
@@ -1194,7 +1194,7 @@ SWindow *pCtrl = FindChildByID(id);\
 	{
 		SStringW fi = SUiDef::getSingletonPtr()->GetUiDef()->GetDefFontInfo();
 		FindAndSetText(R.id.edit_font,_T("<Æ¤·ôÄ¬ÈÏ>"));
-		SFontPool::getSingletonPtr()->SetDefFontInfo(fi);
+		GETUIDEF->SetDefFontInfo(fi);
 		g_SettingsG->strFontDesc.Empty();
 	}
 

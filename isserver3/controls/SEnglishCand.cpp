@@ -86,7 +86,7 @@ namespace SOUI
 			SStringW strFontInfo=L"face:";
 			strFontInfo += pflmInfo->szAddFont;
 
-			m_ftPhonetic = SFontPool::getSingleton().GetFont(strFontInfo,GetScale());
+			m_ftPhonetic = GETUIDEF->GetFont(strFontInfo,GetScale());
 		}else
 		{
 			m_ftPhonetic=NULL;
