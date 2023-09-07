@@ -3,7 +3,7 @@
 class CThreadObject
 {
 public:
-	CThreadObject();
+	CThreadObject(const char *pszName="");
 	~CThreadObject();
 
 	BOOL BeginThread(LPARAM lParam =0);
@@ -35,5 +35,7 @@ protected:
 
 	LPARAM m_startParam;
 	uint32_t m_uId;
+
+	char m_szName[100];
 };
 

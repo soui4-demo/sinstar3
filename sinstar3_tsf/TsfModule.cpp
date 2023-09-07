@@ -4,7 +4,7 @@
 #include "sinstar3_tsf.h"
 #include "../sinstar3_proxy/SimpleWnd.h"
 #include "../helper/helper.h"
-
+#include "../SLog4Z/LogWriter.h"
 
 CTsfModule::CTsfModule(HINSTANCE hInst, LPCTSTR pszSvrPath,LPCTSTR pszInstallPath):CModuleRef(hInst),m_classFactory(NULL)
 {
@@ -18,6 +18,7 @@ CTsfModule::CTsfModule(HINSTANCE hInst, LPCTSTR pszSvrPath,LPCTSTR pszInstallPat
 		m_hMutex = OpenMutex(SYNCHRONIZE, FALSE, SINSTAR3_MUTEX);
 	}
 
+	SOUI::LogWriter::instance()->setLoggerName(_T("sinstar3_tsf"));
 	Helper_FreeSa(psa);
 }
 

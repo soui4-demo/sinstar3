@@ -11,12 +11,7 @@
 #else
 #define RetAddr() __builtin_return_address(0)
 #endif
-
 #include <interface/slog-i.h>
-
-#ifndef GETLOGMGR
-#define GETLOGMGR() SOUI::SApplication::getSingletonPtr()?SOUI::SApplication::getSingleton().GetLogManager():NULL
-#endif
 
 SNSBEGIN
 

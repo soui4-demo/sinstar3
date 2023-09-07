@@ -1,4 +1,4 @@
-#include "..\..\sinstar3_tsf\stdafx.h"
+#include "stdafx.h"
 #include "slog.h"
 
 #include <interface/slog-i.h>
@@ -11,13 +11,7 @@ SNSBEGIN
 
 void Log::DefCallback(const char *tag, const char *pLogStr, int level, const char *file, int line, const char *fun, void *retAddr)
 {
-    ILogMgr *pLogMgr = GETLOGMGR();
-    BOOL bLog = false;
-    if (pLogMgr && pLogMgr->prePushLog(level))
-    {
-        bLog = pLogMgr->pushLog(level, tag, pLogStr, file, line, fun, retAddr);
-    }
-    if (!bLog || Log::s_enableEcho)
+    if (Log::s_enableEcho)
     {
         const int kMaxLog = Log::MAX_LOGLEN + 100;
         char *logbuf2 = (char *)malloc(kMaxLog + 1);

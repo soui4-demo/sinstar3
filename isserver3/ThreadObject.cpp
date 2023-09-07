@@ -3,8 +3,40 @@
 #include <process.h>
 #include <assert.h>
 
-CThreadObject::CThreadObject() :m_hThread(0),m_startParam(0),m_uId(0)
+// we have undocumented Win32 APIs to set thread name.
+const DWORD MS_VC_EXCEPTION = 0x406D1388;
+#pragma pack(push,8)
+typedef struct tagTHREADNAME_INFO
 {
+	DWORD dwType; // Must be 0x1000.
+	LPCSTR szName; // Pointer to name (in user addr space).
+	DWORD dwThreadID; // Thread ID (-1=caller thread).
+	DWORD dwFlags; // Reserved for future use, must be zero.
+} THREADNAME_INFO;
+#pragma pack(pop)
+static void SetThreadName(const char *threadName)
+{
+	THREADNAME_INFO info;
+	info.dwType = 0x1000;
+	info.szName = threadName;
+	info.dwThreadID = ::GetCurrentThreadId();
+	info.dwFlags = 0;
+#pragma warning(push)
+#pragma warning(disable: 6320 6322)
+	__try
+	{
+		RaiseException(MS_VC_EXCEPTION, 0, sizeof(info) / sizeof(ULONG_PTR), (ULONG_PTR *)&info);
+	}
+	__except (EXCEPTION_EXECUTE_HANDLER)
+	{
+	}
+
+#pragma warning(pop)
+}
+
+CThreadObject::CThreadObject(const char *pszName) :m_hThread(0),m_startParam(0),m_uId(0)
+{
+	strcpy_s(m_szName,100,pszName);
 	m_evtStart = CreateEvent(NULL, TRUE, FALSE, NULL);
 	m_evtStop = CreateEvent(NULL, TRUE, FALSE, NULL);
 }
@@ -20,6 +52,7 @@ CThreadObject::~CThreadObject()
 
 UINT CThreadObject::ThreadProc(LPARAM lp)
 {
+	SetThreadName(m_szName);
 	OnThreadStart();
 	SetEvent(m_evtStart);	//标记线程启动
 	ResetEvent(m_evtStop);  //清除线程结束标志

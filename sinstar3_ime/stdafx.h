@@ -34,9 +34,7 @@
 #include "../include/version.h"
 #include "../include/sinstar-i.h"
 #include "../include/reg.h"
-#include "../SLog4Z/log4z.h"
 
-#define GETLOGMGR() NULL
 #include "../slog/slog.h"
 #define kLogTag "sinstar3_ime"
 

@@ -1,10 +1,9 @@
 #pragma once
 
 #include <string>
-#include <helper/SCriticalSection.h>
-#include <helper/SNoCopyable.hpp>
+#include "SCriticalSection.h"
+#include "SSemaphore.h"
 #include <interface/STaskLoop-i.h>
-#include <helper/SSemaphore.h>
 #include <helper/obj-ref-impl.hpp>
 
 SNSBEGIN
