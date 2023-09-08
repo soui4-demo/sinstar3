@@ -78,7 +78,7 @@ namespace SOUI
 		if (!IsWindow(hSvr))
 			return E_INVALIDARG;
 		DWORD_PTR dwResult = 0;
-		LRESULT lRet = ::SendMessageTimeout(hSvr, UM_CALL_FUN, FUN_ID_CONNECT, (LPARAM)idLocal, SMTO_ABORTIFHUNG,100,&dwResult);
+		LRESULT lRet = ::SendMessageTimeout(hSvr, UM_CALL_FUN, FUN_ID_CONNECT, (LPARAM)idLocal, SMTO_ABORTIFHUNG,1000,&dwResult);
 		if (lRet == 0)
 		{
 			return E_FAIL;
