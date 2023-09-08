@@ -16,7 +16,7 @@ SNSBEGIN
 		static LogWriter* instance();
 		void setLoggerName(const TCHAR* name);
 		void setLoggerPath(const TCHAR * path);
-		void enableLog(bool bEnable){m_bEnable = bEnable;}
+		void enableLog(bool bEnable);
 	public:
 		void OnWriteLog(const std::string& log, int level);
 	private:

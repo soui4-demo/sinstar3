@@ -42,7 +42,8 @@ namespace SOUI
 
 	void STaskLoop::stop()
 	{
-		int taskNum = getTaskCount();
+		if(!isRunning())
+			return;
 		m_thread.stop();
 		m_itemsSem.notify();
 		m_thread.waitForStop();
