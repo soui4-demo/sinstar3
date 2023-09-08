@@ -6,7 +6,7 @@
 #include <limits>
 #pragma comment(lib,"Winmm.lib")
 
-namespace SOUI
+namespace TASKLOOP
 {
 
 	STaskLoop::STaskLoop() :
@@ -309,7 +309,7 @@ namespace SOUI
 	}
 
 
-	SOUI_COM_C BOOL SOUI_COM_API TASKLOOP::SCreateInstance(IObjRef **ppTaskLoop)
+	SOUI_COM_C BOOL SOUI_COM_API SCreateInstance(IObjRef **ppTaskLoop)
 	{
 		*ppTaskLoop = new STaskLoop();
 		return TRUE;
@@ -319,5 +319,5 @@ namespace SOUI
 
 EXTERN_C BOOL TaskLoop_SCreateInstance(IObjRef **ppTaskLoop)
 {
-	return SOUI::TASKLOOP::SCreateInstance(ppTaskLoop);
+	return TASKLOOP::SCreateInstance(ppTaskLoop);
 }

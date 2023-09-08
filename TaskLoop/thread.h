@@ -3,13 +3,16 @@
 #include <string>
 #include "SCriticalSection.h"
 #include "SSemaphore.h"
+#include "SNoCopyable.hpp"
 #include <interface/STaskLoop-i.h>
 #include <helper/obj-ref-impl.hpp>
 
-SNSBEGIN
+namespace SOUI{
+	struct IRunnable;
+}
+namespace TASKLOOP{
 
 class ThreadPrivate;
-struct IRunnable;
 
 /**
  * Thread class for creating a thread.
@@ -92,7 +95,7 @@ public:
      */
     static const long INVALID_THREAD_ID;
 
-	bool start(IRunnable *runnable, const std::string &name, ThreadPriority priority = Normal);
+	bool start(SOUI::IRunnable *runnable, const std::string &name, ThreadPriority priority = Normal);
 
 private:
     /**
@@ -112,7 +115,7 @@ private:
     SCriticalSection _lock;
     bool _start;
     bool _stopping;
-    SAutoRefPtr<IRunnable> _runnable;
+	SOUI::SAutoRefPtr<SOUI::IRunnable> _runnable;
     std::string _name;
     long _threadID;
     SSemaphore _startSem;
@@ -120,4 +123,4 @@ private:
     ThreadPriority _priorityLevel;
 };
 
-SNSEND
+}//end of ns

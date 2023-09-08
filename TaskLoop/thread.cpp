@@ -46,7 +46,7 @@ static void SetThreadName(const char *threadName)
 #endif
 
 
-SNSBEGIN
+namespace TASKLOOP{
 
 class ThreadPrivate
 {
@@ -82,7 +82,7 @@ long Thread::getCurrentThreadID()
 	return (long) id;
 }
 
-bool Thread::start(IRunnable *runnable, const std::string &name, ThreadPriority priority)
+bool Thread::start(SOUI::IRunnable *runnable, const std::string &name, ThreadPriority priority)
 {
 	assert(runnable);
 
@@ -252,4 +252,4 @@ void *Thread::threadProc(void *args)
 	return NULL;
 }
 
-SNSEND
+}//end of ns

@@ -3,7 +3,7 @@
 #include "SSemaphore.h"
 
 
-namespace SOUI
+namespace TASKLOOP
 {
 	class SemaphorePrivate
 	{

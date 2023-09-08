@@ -31,8 +31,6 @@
 #include "../include/TextService-i.h"
 #include "../include/unknown.h"
 
-#include "../SLog4Z/log4z.h"
-
 
 #define	 DLL_SOUI
 #include <souistd.h>

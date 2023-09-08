@@ -2,7 +2,7 @@
 #define __SSEMAPHORE__H__
 #include "SNoCopyable.hpp"
 
-namespace SOUI
+namespace TASKLOOP
 {
 	enum
 	{

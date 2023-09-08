@@ -169,7 +169,7 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
-				CommandLine="copy $(TargetPath) c:\windows\system32 /y"
+				CommandLine=""
 			/>
 		</Configuration>
 		<Configuration

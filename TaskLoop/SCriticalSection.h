@@ -15,7 +15,7 @@
 #define __SCRITICALSECTION__H__
 #include <Windows.h>
 
-namespace SOUI
+namespace TASKLOOP
 {
     class  SCriticalSection
     {

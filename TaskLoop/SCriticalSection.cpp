@@ -1,6 +1,6 @@
 #include "SCriticalSection.h"
 
-namespace SOUI
+namespace TASKLOOP
 {
 	SCriticalSection::SCriticalSection()
 	{

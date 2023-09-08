@@ -3,8 +3,9 @@
 #include <Windows.h>
 #include <tchar.h>
 
+
 SNSBEGIN
-	class LogWriter : public STaskLoop {
+class LogWriter : public TASKLOOP::STaskLoop {
 		enum {
 			kMaxLog = 10 * 1024 * 1024,
 			kMaxName = MAX_PATH,

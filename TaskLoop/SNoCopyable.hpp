@@ -1,5 +1,5 @@
 #pragma once
-namespace SOUI
+namespace TASKLOOP
 {
 	/**
 	* Inheriate this class to make your class cannot be copy and assign.

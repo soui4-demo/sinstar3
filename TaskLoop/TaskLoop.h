@@ -2,14 +2,15 @@
 
 #include <interface/STaskLoop-i.h>
 #include <windows.h>
-#include "thread.h"
 #include <list>
 #include <helper/obj-ref-impl.hpp>
 #include <helper/SFunctor.hpp>
+#include "thread.h"
 
-SNSBEGIN
+using namespace SOUI;
+namespace TASKLOOP{
 
-class STaskLoop : public TObjRefImpl<ITaskLoop>
+class STaskLoop : public SOUI::TObjRefImpl<SOUI::ITaskLoop>
 {
 public:
 	/**
@@ -136,9 +137,7 @@ private:
 	unsigned int	m_tsTick;
 };
 
-namespace TASKLOOP
-{
-	SOUI_COM_C BOOL SOUI_COM_API SCreateInstance(IObjRef **ppTaskLoop);
-}
-SNSEND
+SOUI_COM_C BOOL SOUI_COM_API SCreateInstance(IObjRef **ppTaskLoop);
+
+}//end of ns
 EXTERN_C BOOL SOUI_COM_API TaskLoop_SCreateInstance(IObjRef **ppTaskLoop);

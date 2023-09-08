@@ -438,6 +438,7 @@ BOOL CSinstar3Tsf::_InitSinstar3(HWND hWnd)
 
 	if (!m_pSinstar3->Init(m_hWnd, theModule->GetSvrPath()))
 	{
+		SLOGW()<<"m_pSinstar3->Init failed! hWnd="<<m_hWnd<<" svrPath="<<theModule->GetSvrPath();
 		delete m_pSinstar3;
 		m_pSinstar3 = NULL;
 		return FALSE;
@@ -454,6 +455,7 @@ BOOL CSinstar3Tsf::_InitSinstar3(HWND hWnd)
 
 void CSinstar3Tsf::OnReconnReady()
 {
+	SLOGI()<<"OnReconnReady";
 	if (_pThreadMgr)
 	{
 		_UninitSinstar3();
