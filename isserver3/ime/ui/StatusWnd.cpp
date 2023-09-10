@@ -237,7 +237,6 @@ namespace SOUI
 				strComp.MakeLower();
 				for (int i = 0; i < (int)flmDicts.GetCount(); i++)
 				{
-					//SStringT strText0 = SStringT().Format(_T("%s[%s]"), flmDicts[i].strName.c_str(), flmDicts[i].strTitle.c_str());
 					SStringT strText = SStringT().Format(_T("%s[%s]"),flmDicts[i].strName.c_str(),flmDicts[i].strTitle.c_str());
 					UINT flag = MF_STRING;
 					if (strComp == flmDicts[i].strTitle) flag |= MF_CHECKED;
