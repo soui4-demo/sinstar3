@@ -1,11 +1,10 @@
 #include "StdAfx.h"
 #include "StatusWnd.h"
-#include <helper/SMenuEx.h>
+#include <ShellAPI.h>
 
 #include "../Utils.h"
 #include "../InputState.h"
 #include "../../../include/FileHelper.h"
-#include <ShellAPI.h>
 #include "../../ui/TextEditorDlg.h"
 #include "../../worker.h"
 #include "../../IsSvrProxy.h"
@@ -888,6 +887,53 @@ namespace SOUI
 			}
 
 		}
+
+	}
+
+	static int GetMenuItemIndex(HMENU hMenu, UINT uID)
+	{
+		int nItemCount = GetMenuItemCount(hMenu);
+		if (nItemCount != -1)
+		{
+			for (int nIndex = 0; nIndex < nItemCount; ++nIndex)
+			{
+				UINT uItemID = GetMenuItemID(hMenu, nIndex);
+				if (uItemID == uID)
+				{
+					return nIndex; // 返回菜单项的索引号
+				}
+			}
+		}
+
+		return -1; // 未找到匹配的菜单项
+	}
+
+	void CStatusWnd::OnMenuSelect(UINT nItemID, UINT nFlags, HMENU menu)
+	{
+		if((nItemID>=R.id.skin_def)&&(nItemID<m_skinManager.GetSkinMaxID()) || nFlags&MF_POPUP)
+		{
+			SLOGI()<<"nItemID="<<nItemID<<" nFlags="<<nFlags<<" hMenu="<<menu;
+			if(nFlags&MF_POPUP){
+				SkinPrev_Hide();
+			}else{
+				int idx = GetMenuItemIndex(menu,nItemID);
+				if(idx!=-1){
+					RECT rcItem;
+					GetMenuItemRect(NULL, menu, idx, &rcItem);
+					SkinPrev_Show(nItemID,&rcItem);
+				}
+			}
+		}
+	}
+
+	void CStatusWnd::SkinPrev_Show(int nID,LPCRECT pRc)
+	{
+		SStringT strSkinPath = m_skinManager.SkinPathFromID(nID);
+		SLOGI()<<"skin path="<<strSkinPath.c_str();
+	}
+
+	void CStatusWnd::SkinPrev_Hide()
+	{
 
 	}
 

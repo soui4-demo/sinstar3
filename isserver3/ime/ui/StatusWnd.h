@@ -57,17 +57,21 @@ namespace SOUI
 		int OnRecreateUI(LPCREATESTRUCT lpCreateStruct);
 
 		bool SwitchToggle(int nID, BOOL  bToggle);
+		void SkinPrev_Show(int nID,LPCRECT pRc);
+		void SkinPrev_Hide();
 	protected:
 		int OnCreate(LPCREATESTRUCT lpCreateStruct);
 
 		void OnRButtonUp(UINT nFlags,CPoint pt);
 
 		void OnInitMenuPopup(HMENU menuPopup, UINT nIndex, BOOL bSysMenu);
+		void OnMenuSelect(UINT nItemID, UINT nFlags, HMENU menu);
 
 		LPARAM OnEditUserDefData(UINT uMsg,WPARAM wp,LPARAM lp);
 
 		BEGIN_MSG_MAP_EX(CStatusWnd)
 			MSG_WM_INITMENUPOPUP(OnInitMenuPopup)
+			MSG_WM_MENUSELECT(OnMenuSelect)
 			MSG_WM_CREATE(OnCreate)
 			MSG_WM_RBUTTONUP(OnRButtonUp)
 			MESSAGE_HANDLER_EX(UM_EDITUSERDATA,OnEditUserDefData)

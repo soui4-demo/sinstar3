@@ -65,6 +65,7 @@ int CSkinMananger::InitSkinMenu(HMENU hMenu, const SStringT &strSkinPath, int nS
 		} while (FindNextFile(hFind, &findData));
 		FindClose(hFind);
 	}
+	m_nMaxMenuID = nID;
 	return nID;
 }
 
