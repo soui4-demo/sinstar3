@@ -80,7 +80,7 @@ namespace SOUI
 		TCHAR szFilter[MAX_PATH];
 		TCHAR szFullPath[MAX_PATH];
 		COMPHEAD header = { 0 };
-		_stprintf(szFilter, _T("%s\\*.cit"), GetDataPath());
+		_stprintf(szFilter, _T("%s\\*.cit"), GetDataPath().c_str());
 		WIN32_FIND_DATA fd;
 		HANDLE hFind = FindFirstFile(szFilter, &fd);
 		if (hFind != INVALID_HANDLE_VALUE)
@@ -88,7 +88,7 @@ namespace SOUI
 			do {
 				if (!(fd.dwFileAttributes&FILE_ATTRIBUTE_DIRECTORY))
 				{
-					_stprintf(szFullPath, _T("%s\\%s"), GetDataPath(), fd.cFileName);
+					_stprintf(szFullPath, _T("%s\\%s"), GetDataPath().c_str(), fd.cFileName);
 					if (CIsSvrProxy::GetSvrCore()->ExtractCompInfo(szFullPath, &header, NULL))
 					{
 						CNameTypePair item;
@@ -112,7 +112,7 @@ namespace SOUI
 		TCHAR szFilter[MAX_PATH];
 		TCHAR szFullPath[MAX_PATH];
 		FLMINFO header = { 0 };
-		_stprintf(szFilter, _T("%s\\*.flm"), GetDataPath());
+		_stprintf(szFilter, _T("%s\\*.flm"), GetDataPath().c_str());
 		WIN32_FIND_DATA fd;
 		HANDLE hFind = FindFirstFile(szFilter, &fd);
 		if (hFind != INVALID_HANDLE_VALUE)
@@ -120,7 +120,7 @@ namespace SOUI
 			do {
 				if (!(fd.dwFileAttributes&FILE_ATTRIBUTE_DIRECTORY))
 				{
-					_stprintf(szFullPath, _T("%s\\%s"), GetDataPath(), fd.cFileName);
+					_stprintf(szFullPath, _T("%s\\%s"), GetDataPath().c_str(), fd.cFileName);
 					if (CIsSvrProxy::GetSvrCore()->ExtractFlmInfo(szFullPath, &header))
 					{
 						CNameTypePair item;

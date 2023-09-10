@@ -825,8 +825,8 @@ int CIsSvrProxy::BackupDir(const SStringT &strFrom,const SStringT & strTo)
 	for(int i=0;i<ARRAYSIZE(KBackupDirs);i++)
 	{
 		TCHAR szSour[MAX_PATH]={0},szDest[MAX_PATH]={0};
-		_stprintf(szSour,_T("%s\\%s"),strFrom,KBackupDirs[i]);
-		_stprintf(szDest,_T("%s\\%s"),strTo,KBackupDirs[i]);
+		_stprintf(szSour,_T("%s\\%s"),strFrom.c_str(), KBackupDirs[i]);
+		_stprintf(szDest,_T("%s\\%s"),strTo.c_str(),KBackupDirs[i]);
 		SHFILEOPSTRUCT fileOp = { 0 };
 
 		if(GetFileAttributes(szDest)!=INVALID_FILE_ATTRIBUTES)
@@ -856,7 +856,7 @@ bool CIsSvrProxy::IsBackupDirValid(const SStringT & strDir)
 	for(int i=0;i<ARRAYSIZE(KBackupDirs);i++)
 	{
 		TCHAR szDest[MAX_PATH]={0};
-		_stprintf(szDest,_T("%s\\%s"),strDir,KBackupDirs[i]);
+		_stprintf(szDest,_T("%s\\%s"),strDir.c_str(),KBackupDirs[i]);
 		if(GetFileAttributes(szDest)==INVALID_FILE_ATTRIBUTES)
 			return false;
 	}
