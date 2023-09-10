@@ -12,7 +12,8 @@ public:
 	SStringT SkinPathFromCtxID(int nCtxID) const;
 	int GetSkinMaxID() const{return m_nMaxMenuID;}
 	static bool ExtractSkinOffset(IResProvider *pResProvider,SkinInfo & info);
-	static bool ExtractSkinInfo(SStringT strSkinPath,SStringT & strDesc);
+	static bool ExtractSkinInfo(const SStringT & strSkinPath,SStringT & strDesc);
+	static bool ExtractPreview(const SStringT & strSkinPath,IBitmapS ** ppImg);
 protected:
 	SMap<int,SStringT> m_mapSkin;	//map of ID->skin path
 	SMap<int,SStringT> m_mapCtxId2Path;//map of sub menu to path.

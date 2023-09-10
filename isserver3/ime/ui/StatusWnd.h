@@ -3,6 +3,7 @@
 #include "ImeWnd.h"
 #include "SkinMananger.h"
 #include "SToolsMgr.h"
+#include "SkinPreview.h"
 
 interface IInputListener;
 
@@ -125,6 +126,8 @@ namespace SOUI
 	protected:
 		CSkinMananger       m_skinManager;
 		SToolsMgr			m_toolManager;
+		SkinPreview			m_skinPreview;
+
 		IInputListener     *  m_pInputListener;
 
 		int					m_anchorMode;

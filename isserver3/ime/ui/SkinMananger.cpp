@@ -72,7 +72,7 @@ int CSkinMananger::InitSkinMenu(HMENU hMenu, const SStringT &strSkinPath, int nS
 static const int KMinVer[4]={0,0,0,0};
 static const int KMaxVer[4]={3,0,0,0};
 
-bool CSkinMananger::ExtractSkinInfo(SStringT strSkinPath,SStringW &strDesc)
+bool CSkinMananger::ExtractSkinInfo(const SStringT & strSkinPath,SStringW &strDesc)
 {
 	IResProvider *pResProvider = NULL;
 	g_ComMgr2->CreateResProvider_ZIP((IObjRef**)&pResProvider);
@@ -163,4 +163,40 @@ void CSkinMananger::ClearMap()
 	m_mapSkin.RemoveAll();
 	m_mapCtxId2Path.RemoveAll();
 	m_nMaxCtxID = R.id.menu_skin;
+	m_nMaxMenuID=0;
+}
+
+bool CSkinMananger::ExtractPreview(const SStringT & strSkinPath,IBitmapS ** ppImg)
+{
+	IResProvider *pResProvider = NULL;
+	g_ComMgr2->CreateResProvider_ZIP((IObjRef**)&pResProvider);
+	ZIPRES_PARAM param;
+	ZipFile(&param,SApplication::getSingleton().GetRenderFactory(), strSkinPath);
+	pResProvider->Init((WPARAM)&param,0);
+
+	int nSize = (int)pResProvider->GetRawBufferSize(_T("uidef"),_T("xml_init"));
+	if(nSize == 0)
+		return false;
+	bool bRet = false;
+	SAutoBuf buffer(nSize);
+	pResProvider->GetRawBuffer(_T("uidef"),_T("xml_init"),buffer,nSize);
+	pugi::xml_document xmlDoc;
+	if(xmlDoc.load_buffer_inplace(buffer,nSize))
+	{
+		pugi::xml_node xmlPreview= xmlDoc.child(L"UIDEF").child(L"preview");
+		if(xmlPreview){
+			SStringW strSrc = xmlPreview.attribute(L"src").as_string();
+			SStringWList arrSrc;
+			if(2==SplitString(strSrc,L':',arrSrc)){
+				IBitmapS *pImg = pResProvider->LoadImage(arrSrc[0],arrSrc[1]);
+				if(pImg){
+					*ppImg = pImg;
+					bRet = true;
+				}
+			}
+		}
+	}
+	pResProvider->Release();
+
+	return bRet;
 }

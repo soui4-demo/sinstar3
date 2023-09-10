@@ -312,6 +312,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\ime\ui\SkinPreview.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\controls\SLineComp.cpp"
 				>
 			</File>
@@ -506,11 +510,11 @@
 				>
 			</File>
 			<File
-				RelativePath=".\res\resource.h"
+				RelativePath=".\resource.h"
 				>
 			</File>
 			<File
-				RelativePath=".\resource.h"
+				RelativePath=".\res\resource.h"
 				>
 			</File>
 			<File
@@ -575,6 +579,10 @@
 			</File>
 			<File
 				RelativePath=".\ime\ui\SkinMananger.h"
+				>
+			</File>
+			<File
+				RelativePath=".\ime\ui\SkinPreview.h"
 				>
 			</File>
 			<File

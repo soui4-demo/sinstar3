@@ -641,7 +641,9 @@ namespace SOUI
 		DWORD dwCurID = GetCurrentThreadId();
 		AttachThreadInput(dwCurID,dwThreadID,TRUE);
 		int nScale = SDpiHelper::getScale(m_hWnd);
+		m_skinPreview.CreateEx(m_hWnd,0,WS_EX_TOPMOST|WS_EX_TOOLWINDOW,0,0,0,0);
 		int nRet = menu.TrackPopupMenu(TPM_LEFTALIGN | TPM_BOTTOMALIGN | TPM_RETURNCMD, pt.x, pt.y, m_hWnd,NULL,nScale);
+		m_skinPreview.DestroyWindow();
 		AttachThreadInput(dwCurID,dwThreadID,FALSE);
 		SLOGI()<<"after trackpopupmenu" << " nRet:" << nRet;
 		if (nRet == R.id.config)
@@ -930,11 +932,19 @@ namespace SOUI
 	{
 		SStringT strSkinPath = m_skinManager.SkinPathFromID(nID);
 		SLOGI()<<"skin path="<<strSkinPath.c_str();
+		SAutoRefPtr<IBitmapS> img;
+		if(m_skinManager.ExtractPreview(strSkinPath,&img)){
+			m_skinPreview.SetPreview(img);
+			CRect rcWnd = m_skinPreview.GetClientRect();
+			m_skinPreview.SetWindowPos(HWND_TOPMOST,pRc->left-rcWnd.Width(),pRc->top,0,0,SWP_NOSIZE|SWP_SHOWWINDOW|SWP_NOACTIVATE);
+		}else{
+			SLOGI()<<"no preview image found in "<<strSkinPath.c_str();
+		}
 	}
 
 	void CStatusWnd::SkinPrev_Hide()
 	{
-
+		m_skinPreview.ShowWindow(SW_HIDE);
 	}
 
 
