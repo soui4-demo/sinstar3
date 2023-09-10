@@ -935,10 +935,22 @@ namespace SOUI
 		SAutoRefPtr<IBitmapS> img;
 		if(m_skinManager.ExtractPreview(strSkinPath,&img)){
 			m_skinPreview.SetPreview(img);
+			m_skinPreview.UpdateWindow();
 			CRect rcWnd = m_skinPreview.GetClientRect();
-			m_skinPreview.SetWindowPos(HWND_TOPMOST,pRc->left-rcWnd.Width(),pRc->top,0,0,SWP_NOSIZE|SWP_SHOWWINDOW|SWP_NOACTIVATE);
+			HMONITOR hMonitor = MonitorFromWindow(m_hOwner, MONITOR_DEFAULTTONEAREST);
+			MONITORINFO info = { sizeof(info),0 };
+			GetMonitorInfo(hMonitor, &info);
+			CPoint pt(pRc->left-rcWnd.Width(),pRc->top);
+			if(pt.x<info.rcWork.left)
+				pt.x = pRc->right;
+			if(pt.y+rcWnd.Height()>info.rcWork.bottom)
+				pt.y = info.rcWork.bottom-rcWnd.Height();
+			if(pt.y<info.rcWork.top)
+				pt.y=info.rcWork.top;
+			m_skinPreview.SetWindowPos(HWND_TOPMOST,pt.x,pt.y,0,0,SWP_NOSIZE|SWP_SHOWWINDOW|SWP_NOACTIVATE);
 		}else{
 			SLOGI()<<"no preview image found in "<<strSkinPath.c_str();
+			m_skinPreview.ShowWindow(SW_HIDE);
 		}
 	}
 
