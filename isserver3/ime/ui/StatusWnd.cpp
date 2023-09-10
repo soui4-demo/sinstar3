@@ -207,7 +207,7 @@ namespace SOUI
 				strComp.MakeLower();
 				for (int i = 0; i < (int)comps.GetCount(); i++)
 				{
-					SStringT strText = SStringT().Format(_T("%s[%s]"),comps[i].strName,comps[i].strTitle);
+					SStringT strText = SStringT().Format(_T("%s[%s]"),comps[i].strName.c_str(),comps[i].strTitle.c_str());
 					UINT flag = MF_STRING;
 					if (strComp == comps[i].strTitle) flag |= MF_CHECKED;
 					smenuPopup.AppendMenu( flag, idStart + i+1, strText);
@@ -238,7 +238,8 @@ namespace SOUI
 				strComp.MakeLower();
 				for (int i = 0; i < (int)flmDicts.GetCount(); i++)
 				{
-					SStringT strText = SStringT().Format(_T("%s[%s]"),flmDicts[i].strName,flmDicts[i].strTitle);
+					//SStringT strText0 = SStringT().Format(_T("%s[%s]"), flmDicts[i].strName.c_str(), flmDicts[i].strTitle.c_str());
+					SStringT strText = SStringT().Format(_T("%s[%s]"),flmDicts[i].strName.c_str(),flmDicts[i].strTitle.c_str());
 					UINT flag = MF_STRING;
 					if (strComp == flmDicts[i].strTitle) flag |= MF_CHECKED;
 					smenuPopup.AppendMenu( flag, idStart + i+1, strText);

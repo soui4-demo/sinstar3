@@ -321,7 +321,7 @@ void CInputState::GetShapeComp(const WCHAR *pInput,char cLen)
 	if(CIsSvrProxy::GetSvrCore()->ReqQueryComp(pInput,cLen)==ISACK_SUCCESS)
 	{
 		PMSGDATA pData=CIsSvrProxy::GetSvrCore()->GetAck();		
-		swprintf(m_ctx.szTip,L"词\"%s\"的编码=%s",pInput,SStringW((WCHAR*)pData->byData,pData->sSize/2));
+		swprintf(m_ctx.szTip,L"词\"%s\"的编码=%s",pInput,SStringW((WCHAR*)pData->byData,pData->sSize/2).c_str());
 	}else
 	{
 		swprintf(m_ctx.szTip,L"查询词\"%s\"的编码失败",pInput);
@@ -508,7 +508,7 @@ void CInputState::StatusbarUpdate()
 
 BOOL CInputState::HandleKeyDown(UINT uVKey,UINT uScanCode,const BYTE * lpbKeyState)
 {
-	SLOGFMTI(_T("HandleKeyDown, uKey=%x,uScanCode=%x,bDown:%d"),uVKey,uScanCode);
+	SLOGFMTI(_T("HandleKeyDown, uKey=%x,uScanCode=%x,bDown:%d"),uVKey,uScanCode, lpbKeyState[uVKey] & 0x01);
 	//首先使用VK处理快捷键及重码翻页键
 	int iHotKey = TestHotKey(uVKey, lpbKeyState);
 	if (iHotKey != -1)

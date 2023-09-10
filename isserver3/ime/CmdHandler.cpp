@@ -79,17 +79,17 @@ void CCmdHandler::OnHotKeyQueryInfo(LPARAM lp)
 		TCHAR *p = szRet;
 		if (strBuf[0]>128)
 		{//中文关键词，可以查询编码数据
-			p += _stprintf(p, _T("关键词=%s"), S_CW2T(strBuf));
+			p += _stprintf(p, _T("关键词=%s"), S_CW2T(strBuf).c_str());
 			if (CIsSvrProxy::GetSvrCore()->ReqQueryComp(strBuf, strBuf.GetLength()) == ISACK_SUCCESS)
 			{
 				PMSGDATA pData = CIsSvrProxy::GetSvrCore()->GetAck();
 				SStringW strW((WCHAR*)pData->byData,pData->sSize/2);
 				SStringT str=S_CW2T(strW);
-				p += _stprintf(p, _T("\n%s=%s"),CDataCenter::getSingleton().GetData().m_compInfo.strCompName, str.c_str());
+				p += _stprintf(p, _T("\n%s=%s"),CDataCenter::getSingleton().GetData().m_compInfo.strCompName.c_str(), str.c_str());
 			}
 			else
 			{
-				p += _stprintf(p, _T("\n%s=查询失败"), CDataCenter::getSingleton().GetData().m_compInfo.strCompName);
+				p += _stprintf(p, _T("\n%s=查询失败"), CDataCenter::getSingleton().GetData().m_compInfo.strCompName.c_str());
 			}
 
 			if (CIsSvrProxy::GetSvrCore()->ReqQueryCompSpell(strBuf, strBuf.GetLength()) == ISACK_SUCCESS)
