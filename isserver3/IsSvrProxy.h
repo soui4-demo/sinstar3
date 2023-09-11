@@ -20,6 +20,7 @@ enum{
 	CD_CMD_INSTALL_CIT=100,
 	CD_CMD_INSTALL_PLT,
 	CD_CMD_INSTALL_SKIN,
+	CD_CMD_EXPORT_SENT,
 };
 
 class CIsSvrProxy : public SNativeWnd

@@ -655,6 +655,11 @@ LRESULT CIsSvrProxy::OnDelayCopyData(UINT uMsg,WPARAM wp,LPARAM lp)
 			SMessageBox(GetDesktopWindow(),SStringT().Format(_T("安装皮肤失败！错误码:%d"),GetLastError()),_T("提示"),MB_OK|MB_ICONSTOP);
 		}
 
+	}else if(lpCopyData->dwData == CD_CMD_EXPORT_SENT){
+		SStringT strPath = S_CW2T((wchar_t*)lpCopyData->lpData);
+		bool bOk = m_pCore->ExportDataFile(FU_SENTENCE,strPath.GetBuffer(-1));
+		strPath.ReleaseBuffer();
+		SMessageBox(GetDesktopWindow(),SStringT().Format(_T("导出语句库数据%s"),bOk?_T("成功"):_T("失败")),_T("提示"),MB_OK|MB_ICONSTOP);
 	}
 	free(lpCopyData);
 	return 0;
@@ -664,7 +669,9 @@ LRESULT CIsSvrProxy::OnCopyData(HWND hWnd,PCOPYDATASTRUCT lpCopyData)
 {
 	if(!(lpCopyData->dwData == CD_CMD_INSTALL_CIT
 		|| lpCopyData->dwData == CD_CMD_INSTALL_PLT
-		|| lpCopyData->dwData == CD_CMD_INSTALL_SKIN))
+		|| lpCopyData->dwData == CD_CMD_INSTALL_SKIN
+		|| lpCopyData->dwData == CD_CMD_EXPORT_SENT
+		))
 	{
 		SetMsgHandled(FALSE);
 		return 0;

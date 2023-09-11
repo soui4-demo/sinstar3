@@ -137,6 +137,7 @@ typedef struct tagCOMPHEAD
 #define FU_USERCMD	3	//快捷命令文件更新
 #define FU_USERJM   4  //user define jm map
 #define FU_USERDICT 5  //user dict
+#define FU_SENTENCE 6  //sentence
 
 /////////////////////////////////////////////////////////////////////////////
 //服务器广播的消息
