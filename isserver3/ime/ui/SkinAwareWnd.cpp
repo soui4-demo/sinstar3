@@ -51,6 +51,7 @@ namespace SOUI{
 		m_bAutoScale = false;
 		SHostWnd::OnCreate(lpCreateStruct);
 		ScaleHost(m_hWnd);
+		UpdateWindow();
 		return 0;
 	}
 
