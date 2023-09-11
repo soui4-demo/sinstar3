@@ -43,7 +43,7 @@
     <text text="皮肤开发：木已成舟, King2020"/>
     <window layout="hbox">
       <text text="本产品基于开源UI框架"/>
-      <link href="https://github.com/soui3/soui" text="SOUI 3.0"/>
+      <link href="https://github.com/soui4/soui" text="SOUI 4.0"/>
     </window>
     <window size="-2,-1" layout="vbox" gravity="center">
       <text text="反馈问题QQ群(扫码加群)" colorText="@color/red"/>

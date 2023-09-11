@@ -2,7 +2,7 @@
 Unicode true
 ; HM NIS Edit Wizard helper defines
 !define PRODUCT_NAME "启程输入法"
-!define PRODUCT_VERSION "3.1"
+!define PRODUCT_VERSION "3.2"
 !define PRODUCT_PUBLISHER "启程软件"
 !define PRODUCT_WEB_SITE "http://soime.cn"
 !define PRODUCT_UNINST_KEY "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PRODUCT_NAME}"
