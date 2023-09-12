@@ -48,13 +48,13 @@ int CSkinMananger::InitSkinMenu(HMENU hMenu, const SStringT &strSkinPath, int nS
 	{		
 		do {
 
-			nID++;
 			SStringT strFullPath = strSkinPath + _T("\\") + findData.cFileName;
-			m_mapSkin[nID] = strFullPath;
 			//SLOG_INFO("skin "<<strFullPath<<" id is "<<nID);
 			SStringT strDesc;
 			if(ExtractSkinInfo(strFullPath,strDesc))
 			{
+				nID++;
+				m_mapSkin[nID] = strFullPath;
 				BOOL bInsertSucess= smenu.AppendMenu( MF_STRING , nID, strDesc);
 
 				if (bInsertSucess&&(strFullPath == strCurSkin))
@@ -80,6 +80,10 @@ bool CSkinMananger::ExtractSkinInfo(const SStringT & strSkinPath,SStringW &strDe
 	ZipFile(&param,NULL, strSkinPath);
 	pResProvider->Init((WPARAM)&param,0);
 	int nSize = (int)pResProvider->GetRawBufferSize(_T("uidef"),_T("xml_init"));
+	if(nSize==0){
+		pResProvider->Release();
+		return false;
+	}
 	SAutoBuf buffer(nSize);
 	pResProvider->GetRawBuffer(_T("uidef"),_T("xml_init"),buffer,nSize);
 	pResProvider->Release();
