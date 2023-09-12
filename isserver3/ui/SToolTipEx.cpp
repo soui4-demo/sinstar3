@@ -9,7 +9,7 @@ namespace SOUI
     #define TIMERID_SPAN2     2
 
     STipCtrlEx::STipCtrlEx(void):SHostWnd(UIRES.LAYOUT.wnd_tooltip),m_nDelay(200),m_nShowSpan(5000)
-		, m_Tick(0),m_bUpdated(FALSE)
+		, m_Tick(0),m_bUpdated(FALSE),m_nScale(100)
 		
     {
         m_id.dwHi = m_id.dwLow = 0;
@@ -72,11 +72,7 @@ namespace SOUI
         m_rcTarget=rc;
         m_strTip=pszTip;
 		m_bUpdated = TRUE;
-		if(m_nScale != nScale)
-		{
-			m_nScale = nScale;
-			GetRoot()->SDispatchMessage(UM_SETSCALE, nScale, 0);
-		}
+		m_nScale = nScale;
 
         if(IsWindowVisible())
             ShowTip(TRUE);
@@ -122,6 +118,7 @@ namespace SOUI
 				InitFromXml(&xmlDoc.root().first_child());
 				GetRoot()->SetWindowText(m_strTip);
 			}
+			GetRoot()->SDispatchMessage(UM_SETSCALE,m_nScale, 0);
 			GetRoot()->UpdateLayout();
 			CPoint pt = AdjustTipPos(m_ptTip);
 			SetWindowPos(HWND_TOPMOST,pt.x,pt.y,0,0,SWP_NOSIZE|SWP_SHOWWINDOW|SWP_NOACTIVATE);

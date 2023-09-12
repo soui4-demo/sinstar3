@@ -32,7 +32,6 @@ namespace SOUI
 		CPoint AdjustTipPos(CPoint pt) const;
 
         BEGIN_MSG_MAP_EX(STipCtrlEx)
-			MSG_WM_CREATE(OnCreate)
             MSG_WM_TIMER(OnTimer)
 			CHAIN_MSG_MAP(SHostWnd)
         END_MSG_MAP()
