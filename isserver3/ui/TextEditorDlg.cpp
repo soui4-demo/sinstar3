@@ -22,7 +22,7 @@ BOOL CTextEditorDlg::OnInitDialog(HWND hWnd, LPARAM lp)
 	FindChildByID(R.id.tip_edit_userdef + m_mode)->SetVisible(TRUE, TRUE);
 	SRealWnd * pRealWnd = FindChildByID2<SRealWnd>(R.id.real_scilexer);
 	SASSERT(pRealWnd);
-	m_pSciter = (CScintillaWnd *)pRealWnd->GetUserData();
+	m_pSciter = (CScintillaWnd *)pRealWnd->GetData();
 	m_pSciter->SendMessage(SCI_USEPOPUP, 0, 0);
 
 	FILE *f = _tfopen(m_strFileName, _T("rb"));
