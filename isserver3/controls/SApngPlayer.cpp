@@ -120,4 +120,13 @@ void SApngPlayer::OnDestroy()
     GetContainer()->UnregisterTimelineHandler(this);
     __super::OnDestroy();
 }
+
+void SApngPlayer::OnScaleChanged(int scale)
+{
+	__baseCls::OnScaleChanged(scale);
+	SAutoRefPtr<ISkinObj> aniSkin=m_aniSkin;
+	GetScaleSkin(aniSkin, scale);
+	m_aniSkin=(SSkinAni*)(ISkinObj*)aniSkin;
+}
+
 }

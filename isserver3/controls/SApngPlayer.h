@@ -22,7 +22,8 @@ namespace SOUI
 		BOOL PlayFile(LPCTSTR pszFileName);
 
     protected://SWindowµÄÐéº¯Êý
-        virtual void WINAPI GetDesiredSize(SIZE *ret, int nWid,int nHei );
+        void WINAPI GetDesiredSize(SIZE *ret, int nWid,int nHei ) override;
+		void OnScaleChanged(int scale) override;
     protected://ITimerLineHander
         virtual void WINAPI OnNextFrame();
 
