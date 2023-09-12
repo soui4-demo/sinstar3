@@ -485,7 +485,7 @@ void CIsSvrProxy::OnCheckUpdateResult(EventArgs *e)
 	{
 		if (e2->bManual)
 		{
-			SMessageBox(GetDesktopWindow(), _T("升级服务器不可用!"), _T("提示"), MB_OK | MB_ICONINFORMATION);
+			SMessageBox(NULL, _T("升级服务器不可用!"), _T("提示"), MB_OK | MB_ICONINFORMATION);
 		}
 		return;
 	}
@@ -515,7 +515,7 @@ void CIsSvrProxy::OnCheckUpdateResult(EventArgs *e)
 		}
 		else if (e2->bManual)
 		{
-			SMessageBox(GetDesktopWindow(), _T("没有发现新版本!"), _T("提示"), MB_OK | MB_ICONINFORMATION);
+			SMessageBox(NULL, _T("没有发现新版本!"), _T("提示"), MB_OK | MB_ICONINFORMATION);
 		}
 	}
 }
@@ -528,7 +528,7 @@ INT_PTR CIsSvrProxy::ShowModal(SHostDialog *pDlg)
 		m_pCurModalDlg = NULL;
 	}
 	m_pCurModalDlg = pDlg;
-	INT_PTR uRet = pDlg->DoModal(GetDesktopWindow());
+	INT_PTR uRet = pDlg->DoModal(NULL);
 	m_pCurModalDlg=NULL;
 	return uRet;
 }
@@ -619,20 +619,20 @@ LRESULT CIsSvrProxy::OnDelayCopyData(UINT uMsg,WPARAM wp,LPARAM lp)
 		SStringT strPath = S_CW2T((wchar_t*)lpCopyData->lpData);
 		if(m_pCore->InstallCit(strPath))
 		{
-			SMessageBox(GetDesktopWindow(),_T("码表安装成功！"),_T("提示"),MB_OK|MB_ICONINFORMATION);
+			SMessageBox(NULL,_T("码表安装成功！"),_T("提示"),MB_OK|MB_ICONINFORMATION);
 		}else
 		{
-			SMessageBox(GetDesktopWindow(),SStringT().Format(_T("码表安装失败！错误码:%d"),GetLastError()),_T("提示"),MB_OK|MB_ICONSTOP);
+			SMessageBox(NULL,SStringT().Format(_T("码表安装失败！错误码:%d"),GetLastError()),_T("提示"),MB_OK|MB_ICONSTOP);
 		}
 	}else if(lpCopyData->dwData == CD_CMD_INSTALL_PLT)
 	{//install plt
 		SStringT strPath = S_CW2T((wchar_t*)lpCopyData->lpData);
 		if(m_pCore->InstallPlt(strPath))
 		{
-			SMessageBox(GetDesktopWindow(),_T("词库安装成功！"),_T("提示"),MB_OK|MB_ICONINFORMATION);
+			SMessageBox(NULL,_T("词库安装成功！"),_T("提示"),MB_OK|MB_ICONINFORMATION);
 		}else
 		{
-			SMessageBox(GetDesktopWindow(),SStringT().Format(_T("词库安装失败！错误码:%d"),GetLastError()),_T("提示"),MB_OK|MB_ICONSTOP);
+			SMessageBox(NULL,SStringT().Format(_T("词库安装失败！错误码:%d"),GetLastError()),_T("提示"),MB_OK|MB_ICONSTOP);
 		}
 	}else if(lpCopyData->dwData == CD_CMD_INSTALL_SKIN)
 	{
@@ -642,24 +642,24 @@ LRESULT CIsSvrProxy::OnDelayCopyData(UINT uMsg,WPARAM wp,LPARAM lp)
 		SStringT strDst = m_strDataPath + _T("\\skins")+strName;
 		if(CopyFile(strPath,strDst,FALSE))
 		{
-			if(IDOK==SMessageBox(GetDesktopWindow(),_T("安装皮肤成功！现在使用吗?"),_T("提示"),MB_OKCANCEL|MB_ICONQUESTION))
+			if(IDOK==SMessageBox(NULL,_T("安装皮肤成功！现在使用吗?"),_T("提示"),MB_OKCANCEL|MB_ICONQUESTION))
 			{
 				if(!ChangeSkin(strDst))
 				{
 					DeleteFile(strDst);
-					SMessageBox(GetDesktopWindow(),_T("应用皮肤失败!不支持的皮肤格式"),_T("错误"),MB_OK|MB_ICONSTOP);
+					SMessageBox(NULL,_T("应用皮肤失败!不支持的皮肤格式"),_T("错误"),MB_OK|MB_ICONSTOP);
 				}
 			}
 		}else
 		{
-			SMessageBox(GetDesktopWindow(),SStringT().Format(_T("安装皮肤失败！错误码:%d"),GetLastError()),_T("提示"),MB_OK|MB_ICONSTOP);
+			SMessageBox(NULL,SStringT().Format(_T("安装皮肤失败！错误码:%d"),GetLastError()),_T("提示"),MB_OK|MB_ICONSTOP);
 		}
 
 	}else if(lpCopyData->dwData == CD_CMD_EXPORT_SENT){
 		SStringT strPath = S_CW2T((wchar_t*)lpCopyData->lpData);
 		bool bOk = m_pCore->ExportDataFile(FU_SENTENCE,strPath.GetBuffer(-1));
 		strPath.ReleaseBuffer();
-		SMessageBox(GetDesktopWindow(),SStringT().Format(_T("导出语句库数据%s"),bOk?_T("成功"):_T("失败")),_T("提示"),MB_OK|MB_ICONSTOP);
+		SMessageBox(NULL,SStringT().Format(_T("导出语句库数据%s"),bOk?_T("成功"):_T("失败")),_T("提示"),MB_OK|MB_ICONSTOP);
 	}
 	free(lpCopyData);
 	return 0;
