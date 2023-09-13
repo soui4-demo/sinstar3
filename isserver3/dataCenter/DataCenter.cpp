@@ -219,6 +219,8 @@ namespace SOUI
 			SApplication::getSingleton().AddResProvider(pResProvider, NULL);
 			CSkinMananger::ExtractSkinOffset(pResProvider,m_skinInfo);
 			SUiDef::getSingletonPtr()->PushUiDefInfo(pUiDef);
+			if(g_SettingsG->strFontDesc.IsEmpty())
+				SUiDef::getSingletonPtr()->SetDefFontInfo(pUiDef->GetDefFontInfo());
 			pUiDef->Release();
 		}
 		else if (!g_SettingsG->strSkin.IsEmpty())
@@ -226,7 +228,8 @@ namespace SOUI
 			IResProvider *pLastRes = SApplication::getSingleton().GetTailResProvider();
 			SApplication::getSingleton().RemoveResProvider(pLastRes);
 			SUiDef::getSingletonPtr()->PopUiDefInfo(NULL);
-
+			if(g_SettingsG->strFontDesc.IsEmpty())
+				SUiDef::getSingletonPtr()->SetDefFontInfo(m_defUiDefine->GetDefFontInfo());
 
 			IResProvider *pCurRes = SApplication::getSingleton().GetHeadResProvider();
 			CSkinMananger::ExtractSkinOffset(pCurRes,m_skinInfo);
