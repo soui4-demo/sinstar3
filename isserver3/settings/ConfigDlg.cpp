@@ -63,6 +63,7 @@ namespace SOUI
 			pCheck->SetWindowText(m_arrGroupInfo[position].strName);
 			pCheck->GetEventSet()->setMutedState(true);
 			pCheck->SetAttribute(L"checked", m_arrGroupInfo[position].bEnable?L"1":L"0");
+			subscribeCheckEvent(pCheck);
 			pCheck->GetEventSet()->setMutedState(false);
 
 			pItem->FindChildByID(R.id.txt_group_size)->SetWindowText(SStringT().Format(_T("%d"), m_arrGroupInfo[position].dwCount));
@@ -77,6 +78,7 @@ namespace SOUI
 			return pszColNames[iCol];
 		}
 
+		virtual void subscribeCheckEvent(SCheckBox *pCheck) = 0;
 	protected:
 		SArray<GroupInfo> m_arrGroupInfo;
 	};
