@@ -46,7 +46,7 @@ public:
 private:
 	ITfLangBarItemSink *_pLangBarItemSink;
 	TF_LANGBARITEMINFO _tfLangBarItemInfo;
-	CSinstar3Tsf* _pTextService;
+	SOUI::SComPtr<CSinstar3Tsf> _pTextService;
 	int				 _iconIdOn;
 	int				 _iconIdOff;
 	bool 			 _status;

@@ -107,7 +107,7 @@ class CCandidateList :
 {
 	friend class CSinstar3Tsf;
 private:
-	CSinstar3Tsf* _tsf;
+	SOUI::SComPtr<CSinstar3Tsf> _tsf;
 
 public:
 	CCandidateList(CSinstar3Tsf* pTextService);
