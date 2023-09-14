@@ -83,8 +83,7 @@ namespace SOUI
 		PFLMINFO pflmInfo = (PFLMINFO)lp;
 		if(pflmInfo)
 		{
-			SStringW strFontInfo=L"face:";
-			strFontInfo += pflmInfo->szAddFont;
+			SStringW strFontInfo= SStringW().Format(L"face:%s,charset:1",pflmInfo->szAddFont);
 
 			m_ftPhonetic = GETUIDEF->GetFont(strFontInfo,GetScale());
 		}else
