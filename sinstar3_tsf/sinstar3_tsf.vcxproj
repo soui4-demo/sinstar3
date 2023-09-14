@@ -22,28 +22,29 @@
     <ProjectGuid>{4893E464-3664-442B-8BFB-6D13679EAB23}</ProjectGuid>
     <RootNamespace>sinstar3_tsf</RootNamespace>
     <Keyword>Win32Proj</Keyword>
+    <WindowsTargetPlatformVersion>10.0.22621.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>v140</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
     <WholeProgramOptimization>true</WholeProgramOptimization>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>v140</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>v140</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
     <WholeProgramOptimization>true</WholeProgramOptimization>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>v140</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
@@ -88,7 +89,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>$(SOUI3PATH)\SOUI\include;$(SOUI3PATH)\utilities\include;$(SOUI3PATH)\config;..\ipcobject\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SOUI4PATH)\SOUI\include;$(SOUI4PATH)\utilities\include;$(SOUI4PATH)\config;..\ipcobject\include;..\taskloop;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;SINSTAR3_TSF_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>true</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
@@ -98,7 +99,7 @@
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>helperd.lib;sipcobjectd.lib;sinstar3_proxyd.lib;slog4zd.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>helperd.lib;sipcobjectd.lib;sinstar3_proxyd.lib;slogd.lib;taskloopd.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>..\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <ModuleDefinitionFile>sinstar3_tsf.def</ModuleDefinitionFile>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -115,7 +116,7 @@
     </Midl>
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>$(SOUI3PATH)\SOUI\include;$(SOUI3PATH)\utilities\include;$(SOUI3PATH)\config;..\ipcobject\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SOUI4PATH)\SOUI\include;$(SOUI4PATH)\utilities\include;$(SOUI4PATH)\config;..\ipcobject\include;..\taskloop;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;SINSTAR3_TSF_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>true</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
@@ -125,7 +126,7 @@
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>helperd.lib;sipcobjectd.lib;sinstar3_proxyd.lib;slog4zd.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>helperd.lib;sipcobjectd.lib;sinstar3_proxyd.lib;slogd.lib;taskloopd.lib</AdditionalDependencies>
       <AdditionalLibraryDirectories>..\lib\x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <ModuleDefinitionFile>sinstar3_tsf.def</ModuleDefinitionFile>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -140,7 +141,7 @@
     <ClCompile>
       <Optimization>Disabled</Optimization>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <AdditionalIncludeDirectories>$(SOUI3PATH)\SOUI\include;$(SOUI3PATH)\utilities\include;$(SOUI3PATH)\config;..\ipcobject\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SOUI4PATH)\SOUI\include;$(SOUI4PATH)\utilities\include;$(SOUI4PATH)\config;..\ipcobject\include;..\taskloop;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;SINSTAR3_TSF_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <FunctionLevelLinking>true</FunctionLevelLinking>
@@ -149,7 +150,7 @@
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>helper.lib;sipcobject.lib;sinstar3_proxy.lib;slog4z.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>helper.lib;sipcobject.lib;sinstar3_proxy.lib;slog.lib;taskloop.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>..\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <ModuleDefinitionFile>sinstar3_tsf.def</ModuleDefinitionFile>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -166,7 +167,7 @@
     <ClCompile>
       <Optimization>Disabled</Optimization>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <AdditionalIncludeDirectories>$(SOUI3PATH)\SOUI\include;$(SOUI3PATH)\utilities\include;$(SOUI3PATH)\config;..\ipcobject\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SOUI4PATH)\SOUI\include;$(SOUI4PATH)\utilities\include;$(SOUI4PATH)\config;..\ipcobject\include;..\taskloop;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;SINSTAR3_TSF_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <FunctionLevelLinking>true</FunctionLevelLinking>
@@ -175,7 +176,7 @@
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>helper.lib;sipcobject.lib;sinstar3_proxy.lib;slog4z.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>helper.lib;sipcobject.lib;sinstar3_proxy.lib;slog.lib;taskloop.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>..\lib\x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <ModuleDefinitionFile>sinstar3_tsf.def</ModuleDefinitionFile>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -189,10 +190,13 @@
     <ClCompile Include="ClassFactory.cpp" />
     <ClCompile Include="compartment.cpp" />
     <ClCompile Include="composition.cpp" />
+    <ClCompile Include="DisplayAttributeInfo.cpp" />
     <ClCompile Include="dllmain.cpp" />
     <ClCompile Include="editsession.cpp" />
+    <ClCompile Include="EnumDisplayAttributeInfo.cpp" />
     <ClCompile Include="globals.cpp" />
     <ClCompile Include="keyeventsink.cpp" />
+    <ClCompile Include="LanguageBar.cpp" />
     <ClCompile Include="Minidump.cpp" />
     <ClCompile Include="register.cpp" />
     <ClCompile Include="server.cpp" />
@@ -201,6 +205,7 @@
     <ClCompile Include="texteditsink.cpp" />
     <ClCompile Include="threadmgreventsink.cpp" />
     <ClCompile Include="TsfModule.cpp" />
+    <ClCompile Include="UILess.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="res\version.rc2" />
@@ -210,13 +215,17 @@
     <ClInclude Include="..\include\module_ref.h" />
     <ClInclude Include="..\include\sinstar3_guids.h" />
     <ClInclude Include="ClassFactory.h" />
+    <ClInclude Include="DisplayAttributeInfo.h" />
     <ClInclude Include="editsession.h" />
+    <ClInclude Include="EnumDisplayAttributeInfo.h" />
     <ClInclude Include="Globals.h" />
+    <ClInclude Include="LanguageBar.h" />
     <ClInclude Include="Minidump.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="sinstar3_tsf.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="TsfModule.h" />
+    <ClInclude Include="UILess.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\sinstar3.ICO" />
@@ -227,10 +236,6 @@
   <ItemGroup>
     <ProjectReference Include="..\sinstar3_proxy\sinstar3_proxy.vcxproj">
       <Project>{72550488-bec8-46f2-8f31-6c4d3df1a749}</Project>
-      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
-    </ProjectReference>
-    <ProjectReference Include="..\SLog4Z\SLog4Z.vcxproj">
-      <Project>{4ea43a9c-113f-4eff-b006-ac8020482d6a}</Project>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
     </ProjectReference>
   </ItemGroup>

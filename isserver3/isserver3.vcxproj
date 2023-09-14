@@ -14,17 +14,18 @@
     <ProjectGuid>{C63875CC-075E-49A9-8D9C-2F263D67FBAA}</ProjectGuid>
     <RootNamespace>isserver3</RootNamespace>
     <Keyword>Win32Proj</Keyword>
+    <WindowsTargetPlatformVersion>10.0.22621.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>v140</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
     <WholeProgramOptimization>true</WholeProgramOptimization>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>v140</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
@@ -53,7 +54,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>.;$(SOUI3PATH)\config;$(SOUI3PATH)\components;$(SOUI3PATH)\SOUI\include;$(SOUI3PATH)\utilities\include;$(SolutionDir)include;$(SolutionDir)ipcobject\include;$(SOUI3PATH)\third-part\Scintilla\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.;$(SOUI4PATH)\config;$(SOUI4PATH)\components;$(SOUI4PATH)\SOUI\include;$(SOUI4PATH)\utilities\include;$(SolutionDir)include;$(SolutionDir)ipcobject\include;$(SOUI4PATH)\third-part\Scintilla\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>true</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
@@ -63,8 +64,8 @@
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>imm32.lib;utilitiesd.lib;soui3d.lib;helperd.lib;Scintillad.lib;iscommd.lib;sipcobjectd.lib;slog4zd.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(SolutionDir)lib;$(SOUI3PATH)\bin;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>imm32.lib;utilities4d.lib;soui4d.lib;helperd.lib;Scintillad.lib;iscommd.lib;sipcobjectd.lib;slog4zd.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)lib;$(SOUI4PATH)\bin;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Windows</SubSystem>
       <TargetMachine>MachineX86</TargetMachine>
@@ -74,7 +75,7 @@
     <ClCompile>
       <Optimization>Disabled</Optimization>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <AdditionalIncludeDirectories>.;$(SOUI3PATH)\config;$(SOUI3PATH)\components;$(SOUI3PATH)\SOUI\include;$(SOUI3PATH)\utilities\include;$(SolutionDir)include;$(SolutionDir)ipcobject\include;$(SOUI3PATH)\third-part\Scintilla\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.;$(SOUI4PATH)\config;$(SOUI4PATH)\components;$(SOUI4PATH)\SOUI\include;$(SOUI4PATH)\utilities\include;$(SolutionDir)include;$(SolutionDir)ipcobject\include;$(SOUI4PATH)\third-part\Scintilla\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <FunctionLevelLinking>true</FunctionLevelLinking>
@@ -84,8 +85,8 @@
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>imm32.lib;utilities.lib;soui3.lib;helper.lib;iscomm.lib;Scintilla.lib;sipcobject.lib;slog4z.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(SolutionDir)lib;$(SOUI3PATH)\bin;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>imm32.lib;utilities4.lib;soui4.lib;helper.lib;iscomm.lib;Scintilla.lib;sipcobject.lib;slog4z.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)lib;$(SOUI4PATH)\bin;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Windows</SubSystem>
       <OptimizeReferences>true</OptimizeReferences>
