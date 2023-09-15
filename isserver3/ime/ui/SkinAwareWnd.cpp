@@ -52,7 +52,7 @@ namespace SOUI{
 		SHostWnd::OnCreate(lpCreateStruct);
 		ScaleHost(m_hWnd);
 		GetRoot()->Invalidate();
-		UpdateWindow();
+//		UpdateWindow();
 		return 0;
 	}
 

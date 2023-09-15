@@ -914,7 +914,6 @@ namespace SOUI
 	{
 		if((nItemID>=R.id.skin_def)&&(nItemID<m_skinManager.GetSkinMaxID()) || nFlags&MF_POPUP)
 		{
-			SLOGI()<<"nItemID="<<nItemID<<" nFlags="<<nFlags<<" hMenu="<<menu;
 			if(nFlags&MF_POPUP){
 				SkinPrev_Hide();
 			}else{
@@ -931,7 +930,6 @@ namespace SOUI
 	void CStatusWnd::SkinPrev_Show(int nID,LPCRECT pRc)
 	{
 		SStringT strSkinPath = m_skinManager.SkinPathFromID(nID);
-		SLOGI()<<"skin path="<<strSkinPath.c_str();
 		SAutoRefPtr<IBitmapS> img;
 		if(m_skinManager.ExtractPreview(strSkinPath,&img)){
 			m_skinPreview.SetPreview(img);
@@ -948,6 +946,10 @@ namespace SOUI
 			if(pt.y<info.rcWork.top)
 				pt.y=info.rcWork.top;
 			m_skinPreview.SetWindowPos(HWND_TOPMOST,pt.x,pt.y,0,0,SWP_NOSIZE|SWP_SHOWWINDOW|SWP_NOACTIVATE);
+			SLOGI()<<"skin path="<<strSkinPath.c_str()
+				<<" menuPos="<<pRc->left<<","<<pRc->top
+				<<" imgSize="<<img->Width()<<","<<img->Height()
+				<<" wndSize="<<rcWnd.Width()<<","<<rcWnd.Height();
 		}else{
 			SLOGI()<<"no preview image found in "<<strSkinPath.c_str();
 			m_skinPreview.ShowWindow(SW_HIDE);

@@ -15,5 +15,6 @@ void SkinPreview::SetPreview(IBitmapS *pImg)
 	if(pImgWnd){
 		pImgWnd->SetImage(pImg);
 		pImgWnd->RequestRelayout();
+		GetRoot()->UpdateLayout();
 	}
 }
