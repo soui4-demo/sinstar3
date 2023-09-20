@@ -1235,6 +1235,8 @@ SWindow *pCtrl = FindChildByID(id);\
 			{
 				_tcscpy(g_SettingsG->szBackupDir,szBuf);
 				FindAndSetText(R.id.edit_backup,g_SettingsG->szBackupDir);
+				g_SettingsG->SetModified(true);
+				g_SettingsG->Save(CDataCenter::getSingleton().GetDataPath());
 			}
 		}else
 		{
@@ -1266,7 +1268,7 @@ SWindow *pCtrl = FindChildByID(id);\
 		}
 		if(SMessageBox(m_hWnd,_T("确定要从备份目录恢复数据吗？服务器将自动重启!"),_T("危险操作!"),MB_OKCANCEL|MB_ICONQUESTION)==IDOK)
 		{
-			PostQuitMessage(CODE_RESTORE);
+			CIsSvrProxy::GetInstance()->PostMessage(WM_QUIT,CODE_RESTORE);
 		}
 	}
 

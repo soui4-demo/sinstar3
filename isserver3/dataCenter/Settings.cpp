@@ -115,8 +115,8 @@ void CSettingsGlobal::Save(const SStringT & strDataPath)
 		strSkin2 = strSkin.Right(strSkin.GetLength()-strSkinDir.GetLength());
 	
 	WritePrivateProfileString(KUI,_T("skin"),strSkin2,strConfigIni);
-	WritePrivateProfileString(KUI,_T("InputPosition"),SStringT().Format(_T("%d,%d"),ptInput.x,ptInput.y),strConfigIni);
-	WritePrivateProfileString(KUI,_T("StatusPosition"),SStringT().Format(_T("%d,%d"),ptStatus.x,ptStatus.y),strConfigIni);
+	WritePrivateProfileString(KUI,_T("InputPosition"),SStringT().Format(_T("%d,%d"),ptInput.x,ptInput.y),strConfigIni.c_str());
+	WritePrivateProfileString(KUI,_T("StatusPosition"),SStringT().Format(_T("%d,%d"),ptStatus.x,ptStatus.y),strConfigIni.c_str());
 
 
 	WritePrivateProfileString(KUI,_T("font"),strFontDesc.c_str(),strConfigIni);
