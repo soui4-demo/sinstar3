@@ -399,7 +399,9 @@ BOOL CUiWnd::_InitSinstar3()
 	if(GetFileAttributes(theModule->GetSvrPath()) == INVALID_FILE_ATTRIBUTES)
 		return FALSE;
 	m_pSinstar3 = new CSinstarProxy(this);
-	if (!m_pSinstar3->Init(m_hWnd, theModule->GetSvrPath()))
+	int nInit = m_pSinstar3->Init(m_hWnd, theModule->GetSvrPath());
+	SLOGW()<<"m_pSinstar3->Init ret="<<nInit<<" hWnd="<<m_hWnd<<" svrPath="<<theModule->GetSvrPath();
+	if (nInit!=0)
 	{
 		delete m_pSinstar3;
 		m_pSinstar3 = NULL;

@@ -397,10 +397,6 @@
 				>
 			</File>
 			<File
-				RelativePath="..\slog\slog.cpp"
-				>
-			</File>
-			<File
 				RelativePath=".\stdafx.cpp"
 				>
 			</File>
@@ -468,10 +464,6 @@
 			</File>
 			<File
 				RelativePath=".\sinstar3_tsf.h"
-				>
-			</File>
-			<File
-				RelativePath="..\slog\slog.h"
 				>
 			</File>
 			<File

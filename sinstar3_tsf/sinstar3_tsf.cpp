@@ -436,9 +436,10 @@ BOOL CSinstar3Tsf::_InitSinstar3(HWND hWnd)
 		return FALSE;
 	m_pSinstar3 = new CSinstarProxy(this);
 
-	if (!m_pSinstar3->Init(m_hWnd, theModule->GetSvrPath()))
+	int nInit = m_pSinstar3->Init(m_hWnd, theModule->GetSvrPath());
+	SLOGW()<<"m_pSinstar3->Init ret="<<nInit<<" hWnd="<<m_hWnd<<" svrPath="<<theModule->GetSvrPath();
+	if (nInit!=0)
 	{
-		SLOGW()<<"m_pSinstar3->Init failed! hWnd="<<m_hWnd<<" svrPath="<<theModule->GetSvrPath();
 		delete m_pSinstar3;
 		m_pSinstar3 = NULL;
 		return FALSE;
