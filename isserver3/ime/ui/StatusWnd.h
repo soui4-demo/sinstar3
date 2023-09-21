@@ -58,7 +58,7 @@ namespace SOUI
 		int OnRecreateUI(LPCREATESTRUCT lpCreateStruct);
 
 		bool SwitchToggle(int nID, BOOL  bToggle);
-		void SkinPrev_Show(int nID,LPCRECT pRc);
+		void SkinPrev_Show(int nID,LPCRECT pRc, BOOL bCheck);
 		void SkinPrev_Hide();
 	protected:
 		int OnCreate(LPCREATESTRUCT lpCreateStruct);

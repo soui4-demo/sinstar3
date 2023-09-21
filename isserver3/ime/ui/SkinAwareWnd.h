@@ -12,6 +12,7 @@ namespace SOUI
 		IME_TIP,
 	};
 
+
 	class CSkinAwareWnd;
 	interface IDestroyListener {
 		virtual void OnSkinAwareWndDestroy(CSkinAwareWnd *pWnd) = 0;
@@ -19,6 +20,7 @@ namespace SOUI
 
 	class CSkinAwareWnd : public SHostWnd,public SDpiHandler<CSkinAwareWnd>
 	{
+		enum{UM_UPDATE = WM_USER+6000};
 	public:
 		CSkinAwareWnd(SEventSet *pEvtSets, LPCTSTR pszLayout);
 		virtual ~CSkinAwareWnd();
@@ -45,7 +47,9 @@ namespace SOUI
 			EVENT_HANDLER(EventSetSkin::EventID, OnSetSkin)
 		EVENT_MAP_END()
 
+		LRESULT OnUpdate(UINT,WPARAM,LPARAM);
 		BEGIN_MSG_MAP_EX(CSkinAwareWnd)
+			MESSAGE_HANDLER_EX(UM_UPDATE,OnUpdate)
 			CHAIN_MSG_MAP(SDpiHandler<CSkinAwareWnd>)
 			CHAIN_MSG_MAP(SHostWnd)
 		END_MSG_MAP()

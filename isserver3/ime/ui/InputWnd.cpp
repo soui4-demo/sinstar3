@@ -42,7 +42,17 @@ namespace SOUI
 
 	CPoint CInputWnd::UpdatePosition(CPoint pt,int wid,int hei)
 	{
-		CPoint pos = pt - CDataCenter::getSingleton().GetData().m_skinInfo.ptOffset;
+		CPoint ptOffset=CDataCenter::getSingleton().GetData().m_skinInfo.ptOffset;
+		if(m_offset[0].isValid())
+			ptOffset.x = m_offset[0].toPixelSize(GetScale());
+		else
+			ptOffset.x = SLayoutSize(ptOffset.x).toPixelSize(GetScale());
+		if(m_offset[1].isValid())
+			ptOffset.y = m_offset[1].toPixelSize(GetScale());
+		else
+			ptOffset.y = SLayoutSize(ptOffset.y).toPixelSize(GetScale());
+
+		CPoint pos = pt - ptOffset;
 
 		CRect rcWorkArea;
 		if(::IsWindow(m_hOwner))
@@ -131,6 +141,8 @@ namespace SOUI
 
 	int CInputWnd::OnRecreateUI(LPCREATESTRUCT lpCreateStruct)
 	{
+		m_offset[0].setInvalid();
+		m_offset[1].setInvalid();
 		int nRet = __super::OnRecreateUI(lpCreateStruct);
 		if (nRet != 0) return nRet;
 		UpdateUI();
@@ -732,9 +744,26 @@ namespace SOUI
 
 	void CInputWnd::ReloadLayout()
 	{
-		//todo:hjx
 		EventSetSkin evt(NULL);
 		OnSetSkin(&evt);
+	}
+
+	void CInputWnd::OnUserXmlNode(SXmlNode xmlUser)
+	{
+		if(_wcsicmp(xmlUser.name(),L"user")==0)
+		{
+			SStringW strOffset = xmlUser.attribute(L"offset").as_string();
+			if(!strOffset.IsEmpty())
+			{
+				SStringWList lstOffset;
+				SplitString(strOffset,L',',lstOffset);
+				if(lstOffset.GetCount()==2){
+					m_offset[0]=GETLAYOUTSIZE(lstOffset[0]);
+					m_offset[1]=GETLAYOUTSIZE(lstOffset[1]);
+				}
+			}
+		}
+		__super::OnUserXmlNode(xmlUser);
 	}
 
 }

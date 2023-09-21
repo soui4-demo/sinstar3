@@ -912,7 +912,7 @@ namespace SOUI
 
 	void CStatusWnd::OnMenuSelect(UINT nItemID, UINT nFlags, HMENU menu)
 	{
-		if((nItemID>=R.id.skin_def)&&(nItemID<m_skinManager.GetSkinMaxID()) || nFlags&MF_POPUP)
+		if((nItemID>=R.id.skin_def)&&(nItemID<=m_skinManager.GetSkinMaxID()) || nFlags&MF_POPUP)
 		{
 			if(nFlags&MF_POPUP){
 				SkinPrev_Hide();
@@ -921,13 +921,13 @@ namespace SOUI
 				if(idx!=-1){
 					RECT rcItem;
 					GetMenuItemRect(NULL, menu, idx, &rcItem);
-					SkinPrev_Show(nItemID,&rcItem);
+					SkinPrev_Show(nItemID,&rcItem, nFlags & MF_CHECKED);
 				}
 			}
 		}
 	}
 
-	void CStatusWnd::SkinPrev_Show(int nID,LPCRECT pRc)
+	void CStatusWnd::SkinPrev_Show(int nID,LPCRECT pRc, BOOL bCheck)
 	{
 		SStringT strSkinPath = m_skinManager.SkinPathFromID(nID);
 		SAutoRefPtr<IBitmapS> img;

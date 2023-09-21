@@ -52,7 +52,7 @@ namespace SOUI{
 		SHostWnd::OnCreate(lpCreateStruct);
 		ScaleHost(m_hWnd);
 		GetRoot()->Invalidate();
-//		UpdateWindow();
+		PostMessage(UM_UPDATE);
 		return 0;
 	}
 
@@ -76,6 +76,12 @@ namespace SOUI{
 		{
 			m_bAutoScale = xmlUser.attribute(L"autoScale").as_bool();
 		}
+	}
+
+	LRESULT CSkinAwareWnd::OnUpdate(UINT,WPARAM,LPARAM)
+	{
+		Invalidate();
+		return 0;
 	}
 
 }

@@ -32,9 +32,10 @@ namespace SOUI
 		void OnFlmInfo(PFLMINFO pFlmInfo);
 		void ReloadLayout();
 	protected:
-		virtual void OnSetSkin(EventArgs * e);
-		virtual int OnRecreateUI(LPCREATESTRUCT lpCreateStruct);
-		virtual BOOL OnLoadLayoutFromResourceID(const SStringT &resId);
+		void OnSetSkin(EventArgs * e) override;
+		int OnRecreateUI(LPCREATESTRUCT lpCreateStruct) override;
+		BOOL OnLoadLayoutFromResourceID(const SStringT &resId) override;
+		void OnUserXmlNode(SXmlNode xmlUser) override;
 
 		void UpdateAnchorPosition();
 		CPoint UpdatePosition(CPoint pt,int wid,int hei);
@@ -80,7 +81,6 @@ namespace SOUI
 			MSG_WM_CREATE(OnCreate)
 			CHAIN_MSG_MAP(__super)
 		END_MSG_MAP()
-
 	private:
 		CPoint			 m_ptCaret;
 		int				 m_nCaretHeight;
@@ -96,6 +96,7 @@ namespace SOUI
 		BOOL			m_bDraging;
 
 		CPoint			m_ptAnchor;
+		SLayoutSize		m_offset[2];
 	};
 
 }
