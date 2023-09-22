@@ -14,7 +14,7 @@
     <ProjectGuid>{C63875CC-075E-49A9-8D9C-2F263D67FBAA}</ProjectGuid>
     <RootNamespace>isserver3</RootNamespace>
     <Keyword>Win32Proj</Keyword>
-    <WindowsTargetPlatformVersion>10.0.22621.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
@@ -64,7 +64,7 @@
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>imm32.lib;utilities4d.lib;soui4d.lib;helperd.lib;Scintillad.lib;iscommd.lib;sipcobjectd.lib;slog4zd.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>imm32.lib;utilities4d.lib;soui4d.lib;helperd.lib;Scintillad.lib;iscommd.lib;sipcobjectd.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(SolutionDir)lib;$(SOUI4PATH)\bin;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Windows</SubSystem>
@@ -85,7 +85,7 @@
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>imm32.lib;utilities4.lib;soui4.lib;helper.lib;iscomm.lib;Scintilla.lib;sipcobject.lib;slog4z.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>imm32.lib;utilities4.lib;soui4.lib;helper.lib;iscomm.lib;Scintilla.lib;sipcobject.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(SolutionDir)lib;$(SOUI4PATH)\bin;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Windows</SubSystem>
@@ -96,6 +96,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Base64.cpp" />
+    <ClCompile Include="ime\ui\SkinPreview.cpp" />
     <ClCompile Include="ui\CAppBarUtils.cpp" />
     <ClCompile Include="controls\QR_Encode.cpp" />
     <ClCompile Include="controls\SApngPlayer.cpp" />
@@ -158,6 +159,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Base64.h" />
+    <ClInclude Include="ime\ui\SkinPreview.h" />
     <ClInclude Include="ui\CAppBarUtils.h" />
     <ClInclude Include="controls\QR_Encode.h" />
     <ClInclude Include="controls\SAniImgFrame.h" />

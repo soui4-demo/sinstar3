@@ -22,14 +22,13 @@
     <ProjectGuid>{4893E464-3664-442B-8BFB-6D13679EAB23}</ProjectGuid>
     <RootNamespace>sinstar3_tsf</RootNamespace>
     <Keyword>Win32Proj</Keyword>
-    <WindowsTargetPlatformVersion>10.0.22621.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <PlatformToolset>v140</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
-    <WholeProgramOptimization>true</WholeProgramOptimization>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
@@ -64,7 +63,7 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup>
-    <_ProjectFileVersion>16.0.30028.132</_ProjectFileVersion>
+    <_ProjectFileVersion>16.0.33801.447</_ProjectFileVersion>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <OutDir>$(SolutionDir)data\program\</OutDir>
@@ -89,7 +88,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>$(SOUI4PATH)\SOUI\include;$(SOUI4PATH)\utilities\include;$(SOUI4PATH)\config;..\ipcobject\include;..\taskloop;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.;$(SOUI4PATH)\SOUI\include;$(SOUI4PATH)\utilities\include;$(SOUI4PATH)\config;..\ipcobject\include;..\TaskLoop;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;SINSTAR3_TSF_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>true</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
@@ -116,7 +115,7 @@
     </Midl>
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>$(SOUI4PATH)\SOUI\include;$(SOUI4PATH)\utilities\include;$(SOUI4PATH)\config;..\ipcobject\include;..\taskloop;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SOUI4PATH)\SOUI\include;$(SOUI4PATH)\utilities\include;$(SOUI4PATH)\config;..\ipcobject\include;..\TaskLoop;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;SINSTAR3_TSF_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>true</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
@@ -126,7 +125,7 @@
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>helperd.lib;sipcobjectd.lib;sinstar3_proxyd.lib;slogd.lib;taskloopd.lib</AdditionalDependencies>
+      <AdditionalDependencies>helperd.lib;sipcobjectd.lib;sinstar3_proxyd.lib;slogd.lib;taskloopd.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>..\lib\x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <ModuleDefinitionFile>sinstar3_tsf.def</ModuleDefinitionFile>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -141,7 +140,7 @@
     <ClCompile>
       <Optimization>Disabled</Optimization>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <AdditionalIncludeDirectories>$(SOUI4PATH)\SOUI\include;$(SOUI4PATH)\utilities\include;$(SOUI4PATH)\config;..\ipcobject\include;..\taskloop;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.;$(SOUI4PATH)\SOUI\include;$(SOUI4PATH)\utilities\include;$(SOUI4PATH)\config;..\ipcobject\include;..\TaskLoop;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;SINSTAR3_TSF_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <FunctionLevelLinking>true</FunctionLevelLinking>
@@ -157,7 +156,6 @@
       <SubSystem>Windows</SubSystem>
       <OptimizeReferences>true</OptimizeReferences>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
-      <TargetMachine>MachineX86</TargetMachine>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -167,7 +165,7 @@
     <ClCompile>
       <Optimization>Disabled</Optimization>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <AdditionalIncludeDirectories>$(SOUI4PATH)\SOUI\include;$(SOUI4PATH)\utilities\include;$(SOUI4PATH)\config;..\ipcobject\include;..\taskloop;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SOUI4PATH)\SOUI\include;$(SOUI4PATH)\utilities\include;$(SOUI4PATH)\config;..\ipcobject\include;..\TaskLoop;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;SINSTAR3_TSF_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <FunctionLevelLinking>true</FunctionLevelLinking>
@@ -176,7 +174,7 @@
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>helper.lib;sipcobject.lib;sinstar3_proxy.lib;slog.lib;taskloop.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>helper.lib;sipcobject.lib;sinstar3_proxy.lib;slog.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>..\lib\x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <ModuleDefinitionFile>sinstar3_tsf.def</ModuleDefinitionFile>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -208,6 +206,9 @@
     <ClCompile Include="UILess.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="res\ImeModeOff.ico" />
+    <None Include="res\ImeModeOn.ico" />
+    <None Include="res\sinstar3.ICO" />
     <None Include="res\version.rc2" />
     <None Include="sinstar3_tsf.def" />
   </ItemGroup>
@@ -228,16 +229,7 @@
     <ClInclude Include="UILess.h" />
   </ItemGroup>
   <ItemGroup>
-    <Image Include="res\sinstar3.ICO" />
-  </ItemGroup>
-  <ItemGroup>
     <ResourceCompile Include="sinstar3_tsf.rc" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\sinstar3_proxy\sinstar3_proxy.vcxproj">
-      <Project>{72550488-bec8-46f2-8f31-6c4d3df1a749}</Project>
-      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
