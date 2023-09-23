@@ -508,7 +508,7 @@ void CInputState::StatusbarUpdate()
 
 BOOL CInputState::HandleKeyDown(UINT uVKey,UINT uScanCode,const BYTE * lpbKeyState)
 {
-	SLOGFMTI(_T("HandleKeyDown, uKey=%x,uScanCode=%x,bDown:%d"),uVKey,uScanCode, lpbKeyState[uVKey] & 0x01);
+	SLOGFMTI(_T("HandleKeyDown, uKey=%x,uScanCode=%x,bDown:%d"),uVKey,uScanCode, (int)(lpbKeyState[uVKey] & 0x01));
 	//首先使用VK处理快捷键及重码翻页键
 	int iHotKey = TestHotKey(uVKey, lpbKeyState);
 	if (iHotKey != -1)
