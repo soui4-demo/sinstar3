@@ -61,7 +61,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="imm32.lib utilities4d.lib soui4d.lib helperd.lib Scintillad.lib iscommd.lib sipcobjectd.lib slog4zd.lib"
+				AdditionalDependencies="imm32.lib utilities4d.lib soui4d.lib helperd.lib Scintillad.lib iscommd.lib sipcobjectd.lib"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="&quot;$(SolutionDir)lib&quot;;&quot;$(SOUI4PATH)\bin&quot;"
 				GenerateDebugInformation="true"
@@ -138,7 +138,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="imm32.lib utilities4.lib soui4.lib helper.lib iscomm.lib Scintilla.lib sipcobject.lib slog4z.lib"
+				AdditionalDependencies="imm32.lib utilities4.lib soui4.lib helper.lib iscomm.lib Scintilla.lib sipcobject.lib"
 				LinkIncremental="1"
 				AdditionalLibraryDirectories="&quot;$(SolutionDir)lib&quot;;&quot;$(SOUI4PATH)\bin&quot;"
 				GenerateDebugInformation="true"
@@ -510,11 +510,11 @@
 				>
 			</File>
 			<File
-				RelativePath=".\resource.h"
+				RelativePath=".\res\resource.h"
 				>
 			</File>
 			<File
-				RelativePath=".\res\resource.h"
+				RelativePath=".\resource.h"
 				>
 			</File>
 			<File
