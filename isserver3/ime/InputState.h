@@ -119,7 +119,8 @@ private:
 	DWORD			 m_tmInputStart;
 	DWORD			 m_tmInputEnd;
 
-	BOOL m_bPressOther;
-	BOOL m_bPressShift;
-	BOOL m_bPressCtrl;
+	BOOL m_bPressOther;		//flag for other key is down.
+	BOOL m_bReleaseOther;   //flag for other key had been down.
+	BOOL m_bPressShift;     //flag for shift key down
+	BOOL m_bPressCtrl;      //flag for ctrl key down
 };
