@@ -75,13 +75,15 @@ namespace SOUI
 		{
 			pos.x = rcWorkArea.right - wid;
 		}
-		if (pos.y + m_nCaretHeight + SIZE_BELOW + hei > rcWorkArea.bottom)
+
+		int nSizeBelow = SIZE_BELOW*GetScale();
+		if (pos.y + m_nCaretHeight + nSizeBelow + hei > rcWorkArea.bottom)
 		{
-			pos.y = pt.y - hei - SIZE_BELOW;
+			pos.y = pt.y - hei - nSizeBelow;
 		}
 		else
 		{
-			pos.y = pos.y + m_nCaretHeight + SIZE_BELOW;
+			pos.y = pos.y + m_nCaretHeight + nSizeBelow;
 		}
 		return pos;
 	}
