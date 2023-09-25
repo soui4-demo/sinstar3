@@ -2362,6 +2362,11 @@ BOOL CInputState::KeyIn_Test_FuncKey(UINT uKey,LPARAM lKeyData,const BYTE * lpbK
 	return bRet;
 }
 
+static inline BOOL IsCompEmpty(InputContext &ctx){
+	return (ctx.compMode == IM_SHAPECODE && ctx.cComp==0)
+		|| (ctx.compMode == IM_SPELL && ctx.bySyllables==1 && ctx.spellData[0].bySpellLen==0);
+}
+
 BOOL CInputState::TestKeyDown(UINT uKey,LPARAM lKeyData,const BYTE * lpbKeyState)
 {
 	BOOL bRet=FALSE;
@@ -2380,8 +2385,7 @@ BOOL CInputState::TestKeyDown(UINT uKey,LPARAM lKeyData,const BYTE * lpbKeyState
 	}
 	if(uKey==VK_SPACE)
 	{
-		if(m_ctx.inState==INST_CODING 
-			&& m_ctx.bySyllables==0 && m_ctx.cComp==0)
+		if(m_ctx.inState==INST_CODING && IsCompEmpty(m_ctx))
 		{
 			if(!g_SettingsG->bFullSpace && ((m_ctx.sbState!=SBST_SENTENCE && m_ctx.sCandCount==0)
 				||(m_ctx.sbState==SBST_ASSOCIATE && g_SettingsG->byAstMode==AST_ENGLISH && !(lpbKeyState[VK_CONTROL]&0x80))))
