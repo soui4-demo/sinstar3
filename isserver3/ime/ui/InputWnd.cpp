@@ -76,7 +76,7 @@ namespace SOUI
 			pos.x = rcWorkArea.right - wid;
 		}
 
-		int nSizeBelow = SIZE_BELOW*GetScale();
+		int nSizeBelow = SIZE_BELOW*GetScale()/100;
 		if (pos.y + m_nCaretHeight + nSizeBelow + hei > rcWorkArea.bottom)
 		{
 			pos.y = pt.y - hei - nSizeBelow;
