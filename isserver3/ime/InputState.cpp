@@ -438,6 +438,15 @@ void CInputState::InputStart()
 	}
 }
 
+static DWORD GetTimeSpan(DWORD dwStart,DWORD dwEnd){
+	DWORD dwSpan = 0;
+	if(dwStart<dwEnd)
+		dwSpan = dwEnd-dwStart;
+	else
+		dwSpan = (UINT32_MAX-dwStart)+dwEnd;
+	return dwSpan;
+}
+
 BOOL CInputState::InputResult(const SStringW &strResult,BYTE byAstMask)
 {
 	SLOGI()<<"result:"<<strResult<<" astMask:"<<byAstMask;
@@ -467,7 +476,7 @@ BOOL CInputState::InputResult(const SStringW &strResult,BYTE byAstMask)
 	}
 
 	m_tmInputEnd = GetTickCount();
-	CDataCenter::getSingletonPtr()->GetData().m_tmInputSpan += m_tmInputEnd - m_tmInputStart;
+	CDataCenter::getSingletonPtr()->GetData().m_tmInputSpan += GetTimeSpan(m_tmInputStart,m_tmInputEnd);
 	CDataCenter::getSingletonPtr()->GetData().m_cInputCount+= strTemp.GetLength();
 	return bRet;
 }
@@ -2371,12 +2380,20 @@ BOOL CInputState::TestKeyDown(UINT uKey,LPARAM lKeyData,const BYTE * lpbKeyState
 	}
 	if(uKey==VK_SPACE)
 	{
-		if(!g_SettingsG->bFullSpace
-			&& m_ctx.inState==INST_CODING 
+		if(m_ctx.inState==INST_CODING 
 			&& m_ctx.bySyllables==0 && m_ctx.cComp==0)
 		{
-			if((m_ctx.sbState!=SBST_SENTENCE && m_ctx.sCandCount==0)
-				||(m_ctx.sbState==SBST_ASSOCIATE && g_SettingsG->byAstMode==AST_ENGLISH && !(lpbKeyState[VK_CONTROL]&0x80)))
+			if(!g_SettingsG->bFullSpace && ((m_ctx.sbState!=SBST_SENTENCE && m_ctx.sCandCount==0)
+				||(m_ctx.sbState==SBST_ASSOCIATE && g_SettingsG->byAstMode==AST_ENGLISH && !(lpbKeyState[VK_CONTROL]&0x80))))
+			{
+				if(bKeyDown) 
+				{
+					m_bPressOther=TRUE;
+				}
+				return FALSE;
+			}
+			DWORD dwNow = GetTickCount();
+			if(m_tmInputEnd== 0 || GetTimeSpan(m_tmInputEnd,dwNow)>=60*1000)
 			{
 				if(bKeyDown) 
 				{
@@ -2704,4 +2721,7 @@ void CInputState::OnSetFocus(BOOL bFocus)
 	m_bReleaseOther=FALSE;
 	m_bPressShift = FALSE;
 	m_bPressCtrl = FALSE;
+
+	m_tmInputStart = 0;
+	m_tmInputEnd = 0;
 }
