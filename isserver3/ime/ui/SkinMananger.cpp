@@ -72,6 +72,22 @@ int CSkinMananger::InitSkinMenu(HMENU hMenu, const SStringT &strSkinPath, int nS
 static const int KMinVer[4]={0,0,0,0};
 static const int KMaxVer[4]={4,0,0,0};
 
+struct EnumSkinFileCtx{
+	IResProvider *pResProvider;
+	BOOL bGood;
+	SStringT strResId;
+};
+
+static BOOL CALLBACK EnumSkinFileCallback(LPCTSTR pszType, LPCTSTR pszName, LPARAM lp){
+	EnumSkinFileCtx * ctx = (EnumSkinFileCtx*)lp;
+	if(ctx->pResProvider->GetRawBufferSize(pszType,pszName)!=0)
+		return TRUE;
+
+	ctx->strResId=SStringT().Format(_T("%s:%s"),pszType,pszName);
+	ctx->bGood=FALSE;
+	return FALSE;
+}
+
 bool CSkinMananger::ExtractSkinInfo(const SStringT & strSkinPath,SStringW &strDesc)
 {
 	IResProvider *pResProvider = NULL;
@@ -81,6 +97,15 @@ bool CSkinMananger::ExtractSkinInfo(const SStringT & strSkinPath,SStringW &strDe
 	pResProvider->Init((WPARAM)&param,0);
 	int nSize = (int)pResProvider->GetRawBufferSize(_T("uidef"),_T("xml_init"));
 	if(nSize==0){
+		pResProvider->Release();
+		return false;
+	}
+	//verify skin resource
+	EnumSkinFileCtx ctxEnumFile ={pResProvider,TRUE};
+	pResProvider->EnumResource(EnumSkinFileCallback,(LPARAM)&ctxEnumFile);
+	if(!ctxEnumFile.bGood)
+	{
+		SLOGW()<<"load skin "<<strSkinPath.c_str()<<" failed! resource id of "<<ctxEnumFile.strResId.c_str()<<" not found!";
 		pResProvider->Release();
 		return false;
 	}
@@ -115,7 +140,6 @@ bool CSkinMananger::ExtractSkinInfo(const SStringT & strSkinPath,SStringW &strDe
 	}
 	if(!bValid)
 		return false;
-
 	strDesc = S_CW2T(SStringW(xmlDesc.attribute(L"name").value())+L":"+xmlDesc.attribute(L"version").value()+L"["+xmlDesc.attribute(L"author").value()+L"]");
 	return true;
 }
