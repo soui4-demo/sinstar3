@@ -88,7 +88,7 @@ static BOOL CALLBACK EnumSkinFileCallback(LPCTSTR pszType, LPCTSTR pszName, LPAR
 		ctx->errReport+=L"\n";
 	ctx->errReport+=resId;
 	ctx->bGood=FALSE;
-	return !ctx->bVerify;
+	return ctx->bVerify;
 }
 
 bool CSkinMananger::VerifySkin(const SStringT & strSkinPath,SStringW &strErrReport)

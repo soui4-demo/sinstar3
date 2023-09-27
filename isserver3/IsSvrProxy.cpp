@@ -638,27 +638,29 @@ LRESULT CIsSvrProxy::OnDelayCopyData(UINT uMsg,WPARAM wp,LPARAM lp)
 	}else if(lpCopyData->dwData == CD_CMD_INSTALL_SKIN)
 	{
 		SStringT strPath = S_CW2T((wchar_t*)lpCopyData->lpData);
-		int nPos = strPath.ReverseFind('\\');
-		SStringT strName = strPath.Mid(nPos);
-		SStringT strDst = m_strDataPath + _T("\\skins")+strName;
-		if(strPath.CompareNoCase(strDst.c_str())==0 || CopyFile(strPath,strDst,FALSE))
-		{
-			SStringW errReport;
-			if(!CSkinMananger::VerifySkin(strPath,errReport)){
-				SMessageBox(NULL,S_CW2T(errReport),_T("错误"),MB_OK|MB_ICONSTOP);
-			}else if(IDOK==SMessageBox(NULL,_T("安装皮肤成功！现在使用吗?"),_T("提示"),MB_OKCANCEL|MB_ICONQUESTION))
-			{
-				if(!ChangeSkin(strDst))
-				{
-					DeleteFile(strDst);
-					SMessageBox(NULL,_T("应用皮肤失败!不支持的皮肤格式"),_T("错误"),MB_OK|MB_ICONSTOP);
-				}
-			}
+		SStringW errReport;
+		if(!CSkinMananger::VerifySkin(strPath,errReport)){
+			SMessageBox(NULL,S_CW2T(errReport),_T("皮肤效验失败"),MB_OK|MB_ICONSTOP);
 		}else
 		{
-			SMessageBox(NULL,SStringT().Format(_T("安装皮肤失败！错误码:%d"),GetLastError()),_T("提示"),MB_OK|MB_ICONSTOP);
+			int nPos = strPath.ReverseFind('\\');
+			SStringT strName = strPath.Mid(nPos);
+			SStringT strDst = m_strDataPath + _T("\\skins")+strName;
+			if(strPath.CompareNoCase(strDst.c_str())==0 || CopyFile(strPath,strDst,FALSE))
+			{
+				if(IDOK==SMessageBox(NULL,_T("安装皮肤成功！现在使用吗?"),_T("提示"),MB_OKCANCEL|MB_ICONQUESTION))
+				{
+					if(!ChangeSkin(strDst))
+					{
+						DeleteFile(strDst);
+						SMessageBox(NULL,_T("应用皮肤失败!不支持的皮肤格式"),_T("错误"),MB_OK|MB_ICONSTOP);
+					}
+				}
+			}else
+			{
+				SMessageBox(NULL,SStringT().Format(_T("安装皮肤失败！错误码:%d"),GetLastError()),_T("提示"),MB_OK|MB_ICONSTOP);
+			}
 		}
-
 	}else if(lpCopyData->dwData == CD_CMD_EXPORT_SENT){
 		SStringT strPath = S_CW2T((wchar_t*)lpCopyData->lpData);
 		bool bOk = m_pCore->ExportDataFile(FU_SENTENCE,strPath.GetBuffer(-1));
