@@ -665,7 +665,7 @@ LRESULT CIsSvrProxy::OnDelayCopyData(UINT uMsg,WPARAM wp,LPARAM lp)
 		SStringT strPath = S_CW2T((wchar_t*)lpCopyData->lpData);
 		bool bOk = m_pCore->ExportDataFile(FU_SENTENCE,strPath.GetBuffer(-1));
 		strPath.ReleaseBuffer();
-		SMessageBox(NULL,SStringT().Format(_T("导出语句库数据%s"),bOk?_T("成功"):_T("失败")),_T("提示"),MB_OK|MB_ICONSTOP);
+		SMessageBox(NULL,SStringT().Format(_T("导出语句库数据%s"),bOk?_T("成功"):_T("失败")),_T("提示"),MB_OK|MB_ICONINFORMATION);
 	}
 	free(lpCopyData);
 	return 0;
