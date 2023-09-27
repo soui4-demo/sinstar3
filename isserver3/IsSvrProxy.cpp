@@ -9,6 +9,7 @@
 #include "../include/reg.h"
 #include "worker.h"
 #include <process.h>
+#include "ime/ui/SkinMananger.h"
 
 #define TIMERID_DELAY_EXIT	200
 #define SPAN_DELAY_EXIT		5000
@@ -640,9 +641,12 @@ LRESULT CIsSvrProxy::OnDelayCopyData(UINT uMsg,WPARAM wp,LPARAM lp)
 		int nPos = strPath.ReverseFind('\\');
 		SStringT strName = strPath.Mid(nPos);
 		SStringT strDst = m_strDataPath + _T("\\skins")+strName;
-		if(CopyFile(strPath,strDst,FALSE))
+		if(strPath.CompareNoCase(strDst.c_str())==0 || CopyFile(strPath,strDst,FALSE))
 		{
-			if(IDOK==SMessageBox(NULL,_T("安装皮肤成功！现在使用吗?"),_T("提示"),MB_OKCANCEL|MB_ICONQUESTION))
+			SStringW errReport;
+			if(!CSkinMananger::VerifySkin(strPath,errReport)){
+				SMessageBox(NULL,S_CW2T(errReport),_T("错误"),MB_OK|MB_ICONSTOP);
+			}else if(IDOK==SMessageBox(NULL,_T("安装皮肤成功！现在使用吗?"),_T("提示"),MB_OKCANCEL|MB_ICONQUESTION))
 			{
 				if(!ChangeSkin(strDst))
 				{
