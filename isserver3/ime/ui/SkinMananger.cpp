@@ -49,7 +49,6 @@ int CSkinMananger::InitSkinMenu(HMENU hMenu, const SStringT &strSkinPath, int nS
 		do {
 
 			SStringT strFullPath = strSkinPath + _T("\\") + findData.cFileName;
-			//SLOG_INFO("skin "<<strFullPath<<" id is "<<nID);
 			SStringT strDesc;
 			if(ExtractSkinInfo(strFullPath,strDesc))
 			{
@@ -61,6 +60,8 @@ int CSkinMananger::InitSkinMenu(HMENU hMenu, const SStringT &strSkinPath, int nS
 				{
 					CheckMenuItem(hMenu,nID, MF_BYCOMMAND | MF_CHECKED);
 				}
+			}else{
+				SLOGW()<<"ExtractSkinInfo failed! "<<strFullPath;
 			}
 		} while (FindNextFile(hFind, &findData));
 		FindClose(hFind);
@@ -199,7 +200,7 @@ bool CSkinMananger::_ExtractSkinInfo(const SStringT & strSkinPath,SStringW &strR
 		return false;
 	}
 	//verify skin resource
-	EnumSkinFileCtx ctxEnumFile ={pResProvider,TRUE,bVerify};
+	EnumSkinFileCtx ctxEnumFile ={pResProvider,bVerify,TRUE};
 	pResProvider->EnumResource(EnumSkinFileCallback,(LPARAM)&ctxEnumFile);
 	if(!ctxEnumFile.bGood)
 	{
