@@ -137,10 +137,11 @@ void GetCompString(InputContext* inputContext, std::wstring& _outstr)
 			{
 				if (inputContext->sbState == SBST_NORMALSTATE)
 				{
-					SWindow* pMutexView = NULL;
 					if (inputContext->compMode == IM_SPELL)
 					{
-						_outstr = std::wstring(inputContext->spellData[inputContext->byCaret].szSpell, inputContext->spellData[inputContext->byCaret].bySpellLen);
+						for(BYTE i=0;i<inputContext->bySyllables;i++){
+							_outstr += std::wstring(inputContext->spellData[i].szSpell, inputContext->spellData[i].bySpellLen);
+						}
 					}
 					else {
 						_outstr = std::wstring(inputContext->szComp, inputContext->cComp);
@@ -163,6 +164,7 @@ void GetCompString(InputContext* inputContext, std::wstring& _outstr)
 				break;
 			}
 	}
+	SLOGI()<<"comp str:"<<_outstr.c_str();
 }
 
 void GetFirst(InputContext* inputContext, std::wstring& _outstr, bool bOnlyOne = false)
@@ -170,23 +172,39 @@ void GetFirst(InputContext* inputContext, std::wstring& _outstr, bool bOnlyOne =
 	if ((inputContext->sCandCount == 0) || bOnlyOne && (inputContext->sCandCount > 1))
 		GetCompString(inputContext, _outstr);
 	else {
-		if (inputContext->inState == INST_ENGLISH)
+		if(inputContext->inState == INST_CODING){
+			if (inputContext->sbState == SBST_NORMALSTATE)
+			{
+				if(inputContext->compMode == IM_SPELL){
+					SStringW strLeft = SStringW(inputContext->szWord,inputContext->byCaret);
+					SStringT strEdit;
+					if(inputContext->spellData[inputContext->byCaret].bySpellLen>0)
+						strEdit=SStringW(inputContext->szWord[inputContext->byCaret]);
+					else
+						strEdit=L"　";
+					SStringW strRight = SStringW(inputContext->szWord+inputContext->byCaret+1,
+						inputContext->bySyllables-inputContext->byCaret-1);
+					SStringW strComp=strLeft+strEdit+ strRight;
+					_outstr=strComp.c_str();
+				}else{
+					const BYTE* p = inputContext->ppbyCandInfo[0] + 2;
+					_outstr = std::wstring((const wchar_t*)(p + 1), p[0]);
+				}
+			}
+			else if(inputContext->sbState == SBST_SENTENCE)
+			{
+				const BYTE* pbyCandData = inputContext->ppbyCandInfo[0];
+				const char* p = (const char*)pbyCandData;
+				_outstr = std::wstring((WCHAR*)(p + 3) + p[0], p[2] - p[0]);
+			}
+		}
+		else if (inputContext->inState == INST_ENGLISH)
 		{
 			const BYTE* p = inputContext->ppbyCandInfo[0];
 			_outstr = std::wstring((const WCHAR*)(p + 1), p[0]);
 		}
-		else if (inputContext->sbState == SBST_NORMALSTATE)
-		{
-			const BYTE* p = inputContext->ppbyCandInfo[0] + 2;
-			_outstr = std::wstring((const wchar_t*)(p + 1), p[0]);
-		}
-		else if(inputContext->sbState == SBST_SENTENCE)
-		{
-			const BYTE* pbyCandData = inputContext->ppbyCandInfo[0];
-			const char* p = (const char*)pbyCandData;
-			_outstr = std::wstring((WCHAR*)(p + 3) + p[0], p[2] - p[0]);
-		}
 	}
+	SLOGI()<<"GetFirst str:"<<_outstr.c_str();
 }
 
 
@@ -237,38 +255,32 @@ void UpdateCandidateListInfo(InputContext* inputContext, Context& _ctx)
 	}
 }
 
-void CSinstar3Impl::UpdateInline()
+void CSinstar3Impl::UpdateComposition()
 {
-	if (m_curImeContext == 0)return;
-	//通知TSF刷新
-	CSvrConnection* focusConn = CIsSvrProxy::GetInstance()->GetFocusConn();
-	if (focusConn)
+	if (m_curImeContext == 0)
+		return;
+
+	std::wstring strComp;
+	switch (g_SettingsUI->enumInlineMode)
 	{
-		Param_UpdatePreedit param;
-		param.imeContext = m_curImeContext;
-
-		switch (g_SettingsUI->enumInlineMode)
+	case CSettingsUI::INLINE_Coms:
 		{
-			case CSettingsUI::INLINE_Coms:
-				{
-					GetCompString(m_inputState.GetInputContext(), param.strPreedit);
-				}
-				break;
-			case CSettingsUI::INLINE_NUMONE:
-				{
-					GetFirst(m_inputState.GetInputContext(), param.strPreedit);
-				}
-				break;
-			case CSettingsUI::INLINE_ONLYONE:
-				{
-					GetFirst(m_inputState.GetInputContext(), param.strPreedit, true);
-				}
-			default:
-				break;
+			GetCompString(m_inputState.GetInputContext(), strComp);
 		}
-
-		focusConn->CallFun(&param);
+		break;
+	case CSettingsUI::INLINE_NUMONE:
+		{
+			GetFirst(m_inputState.GetInputContext(), strComp);
+		}
+		break;
+	case CSettingsUI::INLINE_ONLYONE:
+		{
+			GetFirst(m_inputState.GetInputContext(), strComp, true);
+		}
+	default:
+		break;
 	}
+	m_pTxtSvr->UpdateResultAndCompositionStringW(m_curImeContext,NULL,0,strComp.c_str(),strComp.length());
 }
 
 void CSinstar3Impl::UpdateUI()
@@ -276,11 +288,13 @@ void CSinstar3Impl::UpdateUI()
 	if (m_bShowUI) {
 		m_pInputWnd->UpdateUI();
 		if (g_SettingsUI->enumInlineMode != CSettingsUI::INLINE_NO)
-			UpdateInline();
+		{//update inline composition
+			UpdateComposition();
+		}
 	}
 	else {
 		if (m_curImeContext == 0)return;
-		//通知TSF刷新
+		//通知TSF刷新candidate list
 		CSvrConnection* focusConn = CIsSvrProxy::GetInstance()->GetFocusConn();
 		if (focusConn)
 		{
@@ -589,18 +603,16 @@ void CSinstar3Impl::OnInputEnd()
 }
 
 
-void CSinstar3Impl::OnInputResult(const SStringT& strResult, const SStringT& strComp/*=SStringT() */)
+void CSinstar3Impl::OnInputResult(const SStringW& strResult, const SStringW& strComp/*=SStringT() */)
 {
 	if (!m_curImeContext) return;
 	SLOGI()<<"bTyping:" << m_bTyping;
 	if (!IsCompositing())
 	{
-		SLOGW()<<"input result but not in compositing status: " << strResult;
+		SLOGW()<<"input result but not in compositing status: " << strResult.c_str();
 		return;
 	}
-	SStringW strResultW = S_CT2W(strResult);
-	SStringW strCompW = S_CT2W(strComp);
-	m_pTxtSvr->UpdateResultAndCompositionStringW(m_curImeContext, strResult, strResult.GetLength(), strCompW, strCompW.GetLength());
+	m_pTxtSvr->UpdateResultAndCompositionStringW(m_curImeContext, strResult, strResult.GetLength(), strComp, strComp.GetLength());
 }
 
 BOOL CSinstar3Impl::GoNextPage()

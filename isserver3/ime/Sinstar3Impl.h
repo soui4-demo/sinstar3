@@ -53,7 +53,7 @@ protected://IInputListener
 	virtual BOOL IsCompositing() const;
 	virtual HWND GetHwnd() const;
 	virtual void OnInputStart();
-	virtual void OnInputResult(const SStringT & strResult,const SStringT & strComp=SStringT() );
+	virtual void OnInputResult(const SStringW & strResult,const SStringW & strComp=SStringW() );
 	virtual void OnInputEnd();
 	virtual void UpdateInputWnd();
 	virtual void OnCapital(BOOL bCap);	
@@ -81,7 +81,7 @@ protected://IInputWndListener
 public:
 	BOOL ChangeSkin(const SStringT & strSkin);
 	void OnSkinChanged();
-	void UpdateInline();
+	void UpdateComposition();
 	void UpdateUI();
 
 	void OpenConfig();

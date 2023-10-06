@@ -81,50 +81,14 @@ SOUI::SComPtr<ITfContext> CCandidateList::GetContextDocument()
 	return SOUI::SComPtr<ITfContext>();
 }
 
-//HRESULT __stdcall CCandidateList::GetContext(ITfContext** ppic)
-//{
-//	return E_NOTIMPL;
-//}
-//
-//HRESULT __stdcall CCandidateList::GetString(BSTR* pstr)
-//{
-//	auto str = SysAllocString(L"我是谁？");
-//	if (pstr)
-//	{
-//		*pstr = str;
-//	}
-//	return S_OK;
-//}
-//
-//HRESULT __stdcall CCandidateList::GetMaxReadingStringLength(UINT* pcchMax)
-//{
-//	if (pcchMax)
-//		return E_INVALIDARG;
-//	*pcchMax = 10;
-//	return S_OK;
-//}
-//
-//HRESULT __stdcall CCandidateList::GetErrorIndex(UINT* pErrorIndex)
-//{
-//	if (pErrorIndex)
-//		return E_INVALIDARG;
-//	*pErrorIndex = 10;
-//	return S_OK;
-//}
-//
-//HRESULT __stdcall CCandidateList::IsVerticalOrderPreferred(BOOL* pfVertical)
-//{
-//	if (pfVertical)
-//		return E_INVALIDARG; 
-//	*pfVertical = TRUE;
-//	return S_OK;
-//}
-
 CCandidateList::CCandidateList(CSinstar3Tsf* pTextService) :
 	_tsf(pTextService),
 	_ui_id(TF_INVALID_UIELEMENTID),
 	_pbShow(FALSE),
 	_changed_flags(0),
+#if __REQUIRED_RPCNDR_H_VERSION__ > 500
+	_selectionStyle(STYLE_IMPLIED_SELECTION),
+#endif
 	_idx(0)
 {
 	_ctx.cinfo.highlighted = 0;
@@ -165,7 +129,7 @@ STDMETHODIMP CCandidateList::QueryInterface(REFIID riid, void** ppvObj)
 	{
 		*ppvObj = (ITfCandidateListUIElementBehavior*)this;
 	}
-#if WINVER>= 0x0602
+#if __REQUIRED_RPCNDR_H_VERSION__ > 500
 	else if (IsEqualIID(riid, __uuidof(ITfFnSearchCandidateProvider)))
 	{
 		*ppvObj = (ITfFnSearchCandidateProvider*)this;
@@ -178,17 +142,13 @@ STDMETHODIMP CCandidateList::QueryInterface(REFIID riid, void** ppvObj)
 #endif
 	if (*ppvObj)
 	{
-		std::wstring outlogstr = _T("UILess::QueryInterface INTERFACE GUID------");
-		outlogstr += GuidToString(riid);
-		SLOGFMTI(outlogstr.c_str());
+		SLOGI()<<"UILess::QueryInterface INTERFACE GUID "<< GuidToString(riid).c_str();
 		AddRef();
 		return S_OK;
 	}
 	else//请求了不支持的IID。记录下来。
 	{
-		std::wstring outlogstr = _T("UILess::QueryInterface NOINTERFACE GUID------");
-		outlogstr += GuidToString(riid);
-		SLOGFMTI(outlogstr.c_str());
+		SLOGW()<<"UILess::QueryInterface NOINTERFACE GUID "<< GuidToString(riid).c_str();
 	}
 
 	return E_NOINTERFACE;
@@ -395,8 +355,7 @@ STDMETHODIMP CCandidateList::Abort(void)
 	return S_OK;
 }
 
-#if WINVER>= 0x0602
-
+#if __REQUIRED_RPCNDR_H_VERSION__ > 500
 STDMETHODIMP CCandidateList::SetIntegrationStyle(GUID guidIntegrationStyle)
 {
 	SLOGFMTI("UILess::SetIntegrationStyle");
@@ -432,7 +391,7 @@ STDMETHODIMP CCandidateList::FinalizeExactCompositionString()
 
 HRESULT __stdcall CCandidateList::GetDisplayName(BSTR* pbstrName)
 {
-	*pbstrName = SysAllocString(L"启程之星");
+	*pbstrName = SysAllocString(L"启程输入法");
 	return S_OK;
 }
 
@@ -446,7 +405,6 @@ HRESULT __stdcall CCandidateList::SetResult(BSTR bstrQuery, BSTR bstrApplication
 {
 	return S_OK;
 }
-
 #endif
 
 HRESULT CCandidateList::BeginUIElement()

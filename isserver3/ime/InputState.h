@@ -11,7 +11,7 @@ interface IInputListener: public ICmdListener {
 	virtual BOOL IsCompositing() const = 0;
 	virtual HWND GetHwnd() const = 0;
 	virtual void OnInputStart() = 0;
-	virtual void OnInputResult(const SStringT & strResult,const SStringT & strComp=SStringT())=0;
+	virtual void OnInputResult(const SStringW & strResult,const SStringW & strComp=SStringW())=0;
 	virtual void OnInputEnd() = 0;
 	virtual void UpdateInputWnd() = 0;
 	virtual void OnCapital(BOOL bCap) = 0;
