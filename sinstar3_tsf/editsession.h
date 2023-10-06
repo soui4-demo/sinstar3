@@ -98,4 +98,5 @@ public:
 private:
 	WCHAR *m_pszResultStr,*m_pszCompStr;
 	int    m_nResStrLen,m_nCompStrLen;
+	SOUI::SComPtr<ITfComposition> m_pComposition;
 };

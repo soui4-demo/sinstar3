@@ -136,7 +136,6 @@ void CSinstar3Tsf::UpdateUI(ITfContext* pContext,bool bPageChanged, UINT curPage
 			_pcand->_ctx.cinfo.currentPage = curPage;
 		else
 			m_pSinstar3->GetCandidateListInfo(_pcand->_ctx);
-		UILess::_ShowInlinePreedit(this, _tfClientId, pContext);
 
 		static bool _bReBegin=false;
 		//说明已经StartComposition则不需要再调用BeginUIElement因为StartComposition会调用BeginUIElement
@@ -158,18 +157,6 @@ void CSinstar3Tsf::UpdateUI(ITfContext* pContext,bool bPageChanged, UINT curPage
 		else
 			_pcand->UpdateUIElement();
 	}
-}
-
-void CSinstar3Tsf::UpdatePreedit(UINT64 pContext, const std::wstring& strPreedit)
-{
-	//UILESS模式可能会让显示界面的情况则使用_pcand->_ctx.preedit来保存strPreedit
-	if (_pcand)
-		_pcand->_ctx.preedit.str = strPreedit;
-	else
-		_strPreedit = strPreedit;
-	ITfContext *pItfContext = ImeContext2ItfContext(pContext);
-	if(!pItfContext) return;
-	UILess::_ShowInlinePreedit(this, _tfClientId,pItfContext);
 }
 
 void CSinstar3Tsf::UpdateUI(UINT64 imeContext, bool bPageChanged, UINT curPage)

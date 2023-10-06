@@ -5,11 +5,6 @@
 #include <atl.mini/SComCli.h>
 
 class CSinstar3Tsf;
-class UILess
-{
-public:
-	static BOOL _ShowInlinePreedit(CSinstar3Tsf* pTextService, DWORD _tfClientId, SOUI::SComPtr<ITfContext> pContext);
-};
 
 enum TextAttributeType
 {
@@ -83,15 +78,13 @@ struct Context
 	Context() {}
 	void clear()
 	{
-		preedit.clear();
 		aux.clear();
 		cinfo.clear();
 	}
 	bool empty() const
 	{
-		return preedit.empty() && aux.empty() && cinfo.empty();
+		return aux.empty() && cinfo.empty();
 	}
-	Text preedit;
 	Text aux;
 	CandidateInfo cinfo;
 };

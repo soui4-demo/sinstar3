@@ -287,6 +287,7 @@ CEsUpdateResultAndComp::CEsUpdateResultAndComp(CSinstar3Tsf *pTextService,
 		m_pszCompStr=NULL;
 		m_nCompStrLen=0;
 	}
+	m_pComposition = pTextService->GetITfComposition();
 }
 
 CEsUpdateResultAndComp::~CEsUpdateResultAndComp()
@@ -300,43 +301,23 @@ STDMETHODIMP CEsUpdateResultAndComp::DoEditSession(TfEditCookie ec)
 	SLOGI()<<"TfEditCookie:"<<ec;
 
 	SOUI::SComPtr<ITfRange> pRangeComposition;
-	SOUI::SComPtr<ITfProperty> pDisplayAttributeProperty;
-
-
-	BOOL fEmpty=TRUE;
-
-	if (!_pTextService->_IsCompositing())
-	{
-		SLOGW()<<"force start composition in CEsUpdateResultAndComp!!!";
-		_pTextService->_StartComposition(_pContext);
-	}
-	if(!_pTextService->_IsCompositing())
-		return E_FAIL;
-	SOUI::SComPtr<ITfComposition> pComposition=_pTextService->GetITfComposition();
-	SASSERT_RET(pComposition, return E_FAIL);
+	SASSERT_RET(m_pComposition, return E_FAIL);
 	//将当前数据上屏
-	pComposition->GetRange(&pRangeComposition);
+	m_pComposition->GetRange(&pRangeComposition);
 	if(!pRangeComposition)
 	{
 		SLOGW()<<"CEsUpdateResultAndComp::DoEditSession getRange return null";
 		return E_FAIL;
 	}
-	// get our the display attribute property
-	if (_pContext->GetProperty(GUID_PROP_ATTRIBUTE, &pDisplayAttributeProperty) == S_OK)
-	{
-		// clear the value over the range
-		pDisplayAttributeProperty->Clear(ec, pRangeComposition);
-	}
-	
-	if(m_pszResultStr)
+	if(m_pszResultStr && m_nResStrLen)
 	{
 		pRangeComposition->SetText(ec,0,m_pszResultStr,m_nResStrLen);
-	}
-
-	if(pRangeComposition->IsEmpty(ec,&fEmpty)==S_OK && !fEmpty)
-	{
-		pRangeComposition->Collapse(ec,TF_ANCHOR_END);
-		pComposition->ShiftStart(ec,pRangeComposition);
+		BOOL fEmpty=TRUE;
+		if(pRangeComposition->IsEmpty(ec,&fEmpty)==S_OK && !fEmpty)
+		{
+			pRangeComposition->Collapse(ec,TF_ANCHOR_END);
+			m_pComposition->ShiftStart(ec,pRangeComposition);
+		}
 	}
 
 	TF_SELECTION tfSelection;
@@ -344,10 +325,10 @@ STDMETHODIMP CEsUpdateResultAndComp::DoEditSession(TfEditCookie ec)
 	tfSelection.style.fInterimChar = FALSE;
 	tfSelection.range=pRangeComposition;
 	//插入新的编码
-	if(m_pszCompStr)
+	if(m_pszCompStr && m_nCompStrLen)
 	{
 		POINT pt={-1,-1};
-		_pTextService->m_pSinstar3->OnSetFocusSegmentPosition(pt,0);
+		if(_pTextService->m_pSinstar3) _pTextService->m_pSinstar3->OnSetFocusSegmentPosition(pt,0);
 		pRangeComposition->SetText(ec,0,m_pszCompStr,m_nCompStrLen);
 
 		pRangeComposition->Clone(&tfSelection.range);
@@ -355,6 +336,21 @@ STDMETHODIMP CEsUpdateResultAndComp::DoEditSession(TfEditCookie ec)
 		_pContext->SetSelection(ec,1,&tfSelection);
 		tfSelection.range->Release();
 
+		TfGuidAtom  gaDisplayAttribute = _pTextService->GetDisplayAttribInfo();	
+		if (TF_INVALID_GUIDATOM != gaDisplayAttribute)
+		{
+			SOUI::SComPtr<ITfProperty> pDisplayAttributeProperty;
+			if (SUCCEEDED(_pContext->GetProperty(GUID_PROP_ATTRIBUTE, &pDisplayAttributeProperty)))
+			{
+				VARIANT var;
+				VariantInit(&var);
+				//All display attributes are TfGuidAtoms and TfGuidAtoms are VT_I4. 
+				var.vt = VT_I4;
+				var.lVal = gaDisplayAttribute;
+				//Set the display attribute value over the range. 
+				pDisplayAttributeProperty->SetValue(ec, pRangeComposition, &var);
+			}
+		}
 		if(_pTextService->m_pSinstar3) _pTextService->m_pSinstar3->OnCompositionChanged();
 	}else
 	{

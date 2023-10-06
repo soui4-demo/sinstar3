@@ -54,14 +54,13 @@ void LogWriter::Sinstar3_LogCallback(const char *tag, const char *pLogStr, int l
 	DWORD pid = GetCurrentProcessId();
 	std::stringstream ss;
 	static const char * kLevelStr[] = {
-		"unknown",
-		"default",
-		"verbose",
-		"debug",
-		"info",
-		"warn",
-		"error",
-		"fatal"
+		"TRACE",
+		"DEBUG",
+		"INFO",
+		"WARN",
+		"ERROR",
+		"ALARM",
+		"FATAL",
 	};
 	ss << "pid="<<pid << " tid=" << tid << " ";
 	//time

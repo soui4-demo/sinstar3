@@ -146,6 +146,10 @@ void GetCompString(InputContext* inputContext, std::wstring& _outstr)
 					else {
 						_outstr = std::wstring(inputContext->szComp, inputContext->cComp);
 					}
+				}else if(inputContext->sbState == SBST_SENTENCE)
+				{
+					SStringW strSel(inputContext->szSentText, inputContext->sSentCaret);
+					_outstr = strSel.c_str();
 				}
 				else
 				{//update sentence input state
@@ -191,12 +195,6 @@ void GetFirst(InputContext* inputContext, std::wstring& _outstr, bool bOnlyOne =
 					_outstr = std::wstring((const wchar_t*)(p + 1), p[0]);
 				}
 			}
-			else if(inputContext->sbState == SBST_SENTENCE)
-			{
-				const BYTE* pbyCandData = inputContext->ppbyCandInfo[0];
-				const char* p = (const char*)pbyCandData;
-				_outstr = std::wstring((WCHAR*)(p + 3) + p[0], p[2] - p[0]);
-			}
 		}
 		else if (inputContext->inState == INST_ENGLISH)
 		{
@@ -210,8 +208,6 @@ void GetFirst(InputContext* inputContext, std::wstring& _outstr, bool bOnlyOne =
 
 void UpdateCandidateListInfo(InputContext* inputContext, Context& _ctx)
 {
-	//update composition string
-	GetCompString(inputContext, _ctx.preedit.str);
 	//update candidate
 	int nPageSize = 5;
 	inputContext->iCandBegin = 0;
@@ -280,6 +276,7 @@ void CSinstar3Impl::UpdateComposition()
 	default:
 		break;
 	}
+	SLOGI()<<"UpdateComposition="<<strComp.c_str();
 	m_pTxtSvr->UpdateResultAndCompositionStringW(m_curImeContext,NULL,0,strComp.c_str(),strComp.length());
 }
 
