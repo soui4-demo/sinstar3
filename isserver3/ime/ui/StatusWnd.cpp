@@ -182,6 +182,13 @@ namespace SOUI
 			{
 				smenuPopup.CheckMenuItem(R.id.sent_record, MF_BYCOMMAND | g_SettingsUI->bRecord ? MF_CHECKED : 0);
 				smenuPopup.CheckMenuItem(R.id.sent_associate, MF_BYCOMMAND | g_SettingsUI->bSentAssocite ? MF_CHECKED : 0);
+				SStringT strItem;
+				smenuPopup.GetMenuString(R.id.sent_record_clear_all,MF_BYCOMMAND,&strItem);
+				strItem+=SStringT().Format(_T("[%d]"),CIsSvrProxy::GetSvrCore()->GetTotalSentCount());
+				smenuPopup.ModifyMenuString(R.id.sent_record_clear_all,MF_BYCOMMAND,strItem);
+				smenuPopup.GetMenuString(R.id.sent_record_clear_today,MF_BYCOMMAND,&strItem);
+				strItem+=SStringT().Format(_T("[%d]"),CIsSvrProxy::GetSvrCore()->GetTodaySentCount());
+				smenuPopup.ModifyMenuString(R.id.sent_record_clear_today,MF_BYCOMMAND,strItem);
 				break;
 			}
 		case 2:
