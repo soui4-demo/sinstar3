@@ -618,13 +618,7 @@ LRESULT CIsSvrProxy::OnDelayCopyData(UINT uMsg,WPARAM wp,LPARAM lp)
 	if(lpCopyData->dwData == CD_CMD_INSTALL_CIT)
 	{//install cit
 		SStringT strPath = S_CW2T((wchar_t*)lpCopyData->lpData);
-		if(m_pCore->InstallCit(strPath))
-		{
-			SMessageBox(NULL,_T("码表安装成功！"),_T("提示"),MB_OK|MB_ICONINFORMATION);
-		}else
-		{
-			SMessageBox(NULL,SStringT().Format(_T("码表安装失败！错误码:%d"),GetLastError()),_T("提示"),MB_OK|MB_ICONSTOP);
-		}
+		InstallCit(strPath);
 	}else if(lpCopyData->dwData == CD_CMD_INSTALL_PLT)
 	{//install plt
 		SStringT strPath = S_CW2T((wchar_t*)lpCopyData->lpData);
@@ -888,4 +882,16 @@ ULONG_PTR CIsSvrProxy::OnNewConnection(IIpcHandle * pIpcHandle, IIpcConnection *
 	CSvrConnection *pConn = new CSvrConnection(pIpcHandle,m_hWnd,this);
 	*ppConn = pConn;
 	return (ULONG_PTR)pConn->m_hWnd;
+}
+
+void CIsSvrProxy::InstallCit(const SStringT & citPath)
+{
+	if(m_pCore->InstallCit(citPath))
+	{
+		SMessageBox(NULL,_T("码表安装成功！"),_T("提示"),MB_OK|MB_ICONINFORMATION);
+	}else
+	{
+		SMessageBox(NULL,SStringT().Format(_T("码表安装失败！错误码:%d"),GetLastError()),_T("提示"),MB_OK|MB_ICONSTOP);
+	}
+
 }

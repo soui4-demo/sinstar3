@@ -665,10 +665,7 @@ namespace SOUI
 			CFileDialogEx openDlg(TRUE, _T("cit"), 0, 6, _T("启程码表(*.cit)\0*.cit\0All files (*.*)\0*.*\0\0"));
 			if (openDlg.DoModal() == IDOK)
 			{
-				if (ISACK_SUCCESS !=CIsSvrProxy::GetSvrCore()->InstallCit(openDlg.m_szFileName))
-				{
-					SMessageBox(GetDesktopWindow(), _T("安装编码失败,可能已经存在该编码"), _T("提示"), MB_OK | MB_ICONSTOP);
-				}
+				CIsSvrProxy::GetInstance()->InstallCit(openDlg.m_szFileName);
 			}
 		}
 		else if (nRet > R.id.comp_install && nRet < PopupMenuEndID(R.id.comp_install))

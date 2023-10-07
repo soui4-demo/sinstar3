@@ -85,6 +85,8 @@ public:
 	void CloseBackup();
 	static int BackupDir(const SStringT &strFrom,const SStringT & strTo);
 	static bool IsBackupDirValid(const SStringT & strDir);
+
+	void InstallCit(const SStringT & citPath);
 protected:
 	void OnCheckUpdateResult(EventArgs *e);
 	EVENT_MAP_BEGIN()
@@ -104,6 +106,8 @@ protected:
 	LRESULT OnBuildIndexProg(UINT uMsg, WPARAM wp, LPARAM lp);
 	LRESULT OnCopyData(HWND hWnd,PCOPYDATASTRUCT lpCopyData);
 	LRESULT OnDelayCopyData(UINT uMsg,WPARAM wp,LPARAM lp);
+
+
 	void OnTimer(UINT_PTR uID);
 
 	void OnMenuExit(UINT uNotifyCode, int nID, HWND wndCtl);
