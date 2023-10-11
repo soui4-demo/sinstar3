@@ -1,8 +1,8 @@
-这份代码是启程输入法3.0版本的代码，除算法部分是dll外，其它的模块全部开源。
-启程输入法从2003年发布第一版以来，得到了大量用户的好评，2009年停止更新。2018年重新开始更新，历时一年多，现在已经基本测试完成。
+这份代码是启程输入法4.0版本的代码，除算法部分是dll外，其它的模块全部开源。
+启程输入法从2003年发布第一版以来，得到了大量用户的好评，2009年停止更新。2018年重新开始更新。
 
-要编译这份代码首先要clone soui的最新master.
-soui git: https://github.com/soui3/soui.git
+要编译这份代码首先要clone soui4的最新master.
+soui git: https://github.com/soui4/soui.git
 在编译soui前,先使用soui的build.bat生成32位DLL版本. 另外还必须安装soui的向导.这样sinstar3编译时才能找到soui代码.
 
 调试前先编译Debug版本,包含32位,和64位版本.
@@ -17,4 +17,4 @@ debug版本下所有输出都在项目的Data目录下。
 
 皮肤仓库：https://gitee.com/setoutsoft/sinstar3.skin
 
-启程软件  2019年9月14日
+启程软件  2023年10月11日
