@@ -11,7 +11,7 @@ interface IInputListener: public ICmdListener {
 	virtual BOOL IsCompositing() const = 0;
 	virtual HWND GetHwnd() const = 0;
 	virtual void OnInputStart() = 0;
-	virtual void OnInputResult(const SStringT & strResult,const SStringT & strComp=SStringT())=0;
+	virtual void OnInputResult(const SStringW & strResult,const SStringW & strComp=SStringW())=0;
 	virtual void OnInputEnd() = 0;
 	virtual void UpdateInputWnd() = 0;
 	virtual void OnCapital(BOOL bCap) = 0;
@@ -119,7 +119,8 @@ private:
 	DWORD			 m_tmInputStart;
 	DWORD			 m_tmInputEnd;
 
-	BOOL m_bPressOther;
-	BOOL m_bPressShift;
-	BOOL m_bPressCtrl;
+	BOOL m_bPressOther;		//flag for other key is down.
+	BOOL m_bReleaseOther;   //flag for other key had been down.
+	BOOL m_bPressShift;     //flag for shift key down
+	BOOL m_bPressCtrl;      //flag for ctrl key down
 };

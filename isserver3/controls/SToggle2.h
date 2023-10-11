@@ -4,13 +4,13 @@ namespace SOUI
 {
 	class SToggle2 : public SToggle
 	{
-		SOUI_CLASS_NAME(SToggle2,L"toggle2")
+		DEF_SOBJECT(SToggle,L"toggle2")
 	public:
 		SToggle2(void);
 		~SToggle2(void);
 
 	protected:
-		virtual CSize GetDesiredSize(int wid, int hei) override;
+		virtual void WINAPI GetDesiredSize(SIZE *ret,int wid, int hei) override;
 		virtual void OnScaleChanged(int scale);
 
 		void OnPaint(IRenderTarget *pRT);

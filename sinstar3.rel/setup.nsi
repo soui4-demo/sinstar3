@@ -2,7 +2,7 @@
 Unicode true
 ; HM NIS Edit Wizard helper defines
 !define PRODUCT_NAME "启程输入法"
-!define PRODUCT_VERSION "3.1"
+!define PRODUCT_VERSION "4.0"
 !define PRODUCT_PUBLISHER "启程软件"
 !define PRODUCT_WEB_SITE "http://soime.cn"
 !define PRODUCT_UNINST_KEY "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PRODUCT_NAME}"
@@ -19,7 +19,7 @@ VIAddVersionKey /LANG=${LANG_ENGLISH} "LegalCopyright" "Copyright (c) ${PRODUCT_
 VIAddVersionKey /LANG=${LANG_ENGLISH} "FileDescription" "${PRODUCT_NAME} "
 VIAddVersionKey /LANG=${LANG_ENGLISH} "ProductVersion" "${PRODUCT_VERSION}"
 VIAddVersionKey /LANG=${LANG_ENGLISH} "FileVersion" "${PRODUCT_VERSION}"
-VIAddVersionKey /LANG=${LANG_ENGLISH} "OriginalFilename" "sinstar3_Setup.exe"
+VIAddVersionKey /LANG=${LANG_ENGLISH} "OriginalFilename" "sinstar4_Setup.exe"
 VIAddVersionKey /LANG=${LANG_ENGLISH} "Package Build Date" "${__DATE__}"
 
 ; MUI 1.67 compatible ------
@@ -69,7 +69,7 @@ FunctionEnd
 ; MUI end ------
 
 Name "${PRODUCT_NAME} ${PRODUCT_VERSION}"
-OutFile "sinstar3_setup.exe"
+OutFile "sinstar4_setup.exe"
 InstallDir "$PROGRAMFILES\sinstar3"
 ShowInstDetails show
 ShowUnInstDetails show
@@ -136,7 +136,7 @@ SectionEnd
 Section "五笔新世纪" COMP_WB2k
    SetOverwrite ifnewer
    SetOutPath "$INSTDIR\server"
-   File /a "server\新世纪.cit"
+   File /a "server\新世纪（王码官版）.cit"
 SectionEnd
 Section "表形码26" COMP_BXM26
    SetOverwrite ifnewer

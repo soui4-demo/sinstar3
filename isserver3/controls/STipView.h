@@ -2,13 +2,13 @@
 
 namespace SOUI
 {
-	SEVENT_BEGIN(EventSwitchTip, EVT_EXTERNAL_BEGIN + 800)
+	DEF_EVT_EXT(EventSwitchTip, EVT_EXTERNAL_BEGIN + 800,{
 		bool bNext;
-	SEVENT_END()
+	})
 
 	class STipView : public SWindow
 	{
-		SOUI_CLASS_NAME(STipView,L"tipview")
+		DEF_SOBJECT(SWindow,L"tipview")
 	public:
 		STipView();
 		~STipView();

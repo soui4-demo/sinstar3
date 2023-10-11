@@ -56,7 +56,11 @@ int SSkinAPNG::LoadFromFile( LPCTSTR pszFileName )
 {
     CAutoRefPtr<IImgX> imgX;
     GETRENDERFACTORY->GetImgDecoderFactory()->CreateImgX(&imgX);
-    imgX->LoadFromFile(pszFileName);
+#ifdef _UNICODE
+    imgX->LoadFromFileW(pszFileName);
+#else
+	imgX->LoadFromFileA(pszFileName);
+#endif
     return _InitImgFrame(imgX);
 }
 
@@ -81,7 +85,7 @@ int SSkinAPNG::_InitImgFrame( IImgX *pImgX )
     for(int i=0;i<m_nFrames;i++)
     {
         GETRENDERFACTORY->CreateBitmap(&m_pFrames[i].pBmp);
-        m_pFrames[i].pBmp->Init(pImgX->GetFrame(i));
+        m_pFrames[i].pBmp->Init2(pImgX->GetFrame(i));
         m_pFrames[i].nDelay=pImgX->GetFrame(i)->GetDelay();
     }
     return m_nFrames;
@@ -117,7 +121,7 @@ SIZE SSkinAPNG::GetSkinSize() const
 	return sz;
 }
 
-IBitmap * SSkinAPNG::GetFrameImage(int iFrame/*=-1*/)
+IBitmapS * SSkinAPNG::GetFrameImage(int iFrame/*=-1*/)
 {
 	if(iFrame==-1) iFrame=m_iFrame;
 	long nRet=-1;
@@ -143,11 +147,11 @@ void SSkinAPNG::_Scale(ISkinObj *pObj, int nScale)
 	pClone->m_pFrames = new SAniFrame[m_nFrames];
 
 	CSize szSkin = GetSkinSize();
-	szSkin.cx = MulDiv(szSkin.cx, nScale, 100);
-	szSkin.cy = MulDiv(szSkin.cy, nScale, 100);
+	szSkin.cx = MulDiv(szSkin.cx, nScale, GetScale());
+	szSkin.cy = MulDiv(szSkin.cy, nScale, GetScale());
 	for(int i=0;i<m_nFrames;i++)
 	{
-		m_pFrames[i].pBmp->Scale(&pClone->m_pFrames[i].pBmp, szSkin.cx, szSkin.cy, kHigh_FilterLevel);
+		m_pFrames[i].pBmp->Scale2(&pClone->m_pFrames[i].pBmp, szSkin.cx, szSkin.cy, kHigh_FilterLevel);
 		pClone->m_pFrames[i].nDelay = m_pFrames[i].nDelay;
 	}
 }

@@ -3,8 +3,9 @@
 #include "../include/sinstar-i.h"
 #include "../include/unknown.h"
 #include "../include/protocol.h"
+#include "../ThreadObject.h"
 
-#include <unknown/obj-ref-impl.hpp>
+#include <helper/obj-ref-impl.hpp>
 #include <core/SNativeWnd.h>
 
 class CSvrConnection;
@@ -14,7 +15,11 @@ struct IConntionFocusListener
 	virtual void OnKillFocus(CSvrConnection * pConn) = 0;
 };
 
-class CSvrConnection : public ITextService, public TObjRefImpl<SOUI::IIpcConnection>, public SNativeWnd  {
+class CSvrConnection : public ITextService, 
+	public TObjRefImpl<SOUI::IIpcConnection>, 
+	public SNativeWnd,
+	protected CThreadObject
+{
 	friend class CIsSvrProxy;
 public:
 	CSvrConnection(IIpcHandle *pIpcHandle,HWND hSvr,IConntionFocusListener * pFocusListener);
@@ -30,7 +35,12 @@ public:
 
 	bool CallFun(IFunParams *params) const;
 	void OnSkinChanged();
-
+	void OnLoseFocus();
+protected:
+	void OnThreadStart() override;
+	void OnThreadStop() override;
+	UINT Run(LPARAM lp) override;
+	void Quit() override;
 protected:
 	LRESULT OnReq(UINT msg,WPARAM wp,LPARAM lp);
 	BEGIN_MSG_MAP_EX(CSvrConnection)
@@ -104,6 +114,10 @@ protected:
 		FUN_HANDLER(Param_CandidateListInfo, HandleGetCadidateListInfo)
 		FUN_HANDLER(Param_ClickLanguageBarIcon, HandleOnLanguageBarClick)
 	FUN_END
+
+protected:
+	void _OnSkinChanged();
+	void _OnLoseFocus();
 private:
 	SComPtr<ISinstar>	m_pSinstar;
 	HWND				m_hSvr;
@@ -112,4 +126,5 @@ private:
 	float				m_yScale;
 	SAutoRefPtr<IIpcHandle> m_ipcHandle;
 	IConntionFocusListener	* m_pFocusListener;
+	SAutoRefPtr<IMessageLoop> m_msgLoop;
 };

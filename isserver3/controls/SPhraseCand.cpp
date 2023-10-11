@@ -55,23 +55,22 @@ namespace SOUI
 		RequestRelayout();
 	}
 
-	CSize SPhraseCand::GetDesiredSize(int nParentWid, int nParentHei)
+	void SPhraseCand::GetDesiredSize(SIZE *szRet,int nParentWid, int nParentHei)
 	{
-		CSize szRet,sz;
+		CSize sz;
 		IRenderTarget *pRT=NULL;
 		GETRENDERFACTORY->CreateRenderTarget(&pRT,0,0);
 
 		BeforePaintEx(pRT);
 		pRT->MeasureText(m_strIndex,m_strIndex.GetLength(),&sz);
-		szRet.cx = sz.cx;
-		szRet.cy = sz.cy;
+		szRet->cx = sz.cx;
+		szRet->cy = sz.cy;
 
 		pRT->MeasureText(m_strCand,m_strCand.GetLength(),&sz);
-		szRet.cx += sz.cx;
-		szRet.cy = smax(szRet.cy,sz.cy);
+		szRet->cx += sz.cx;
+		szRet->cy = smax(szRet->cy,sz.cy);
 
 		pRT->Release();
-		return szRet;
 	}
 
 }

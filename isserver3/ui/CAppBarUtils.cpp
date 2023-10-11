@@ -5,7 +5,7 @@ CAppBarUtils* g_AppBar = NULL;
 
 CAppBarUtils::CAppBarUtils() : m_uMsgAppBar(0) , bFullScreen(false){
 	m_uMsgAppBar = RegisterWindowMessage(L"my_appbar_callback_msg");
-	Create(L"my_appbar_callback_window", 0, 0, 0, 0, 0, 0, HWND_MESSAGE, NULL);
+	CreateNative(L"my_appbar_callback_window", 0, 0, 0, 0, 0, 0, HWND_MESSAGE, NULL);
 
 	abd.cbSize = sizeof(APPBARDATA);
 	abd.hWnd = m_hWnd;

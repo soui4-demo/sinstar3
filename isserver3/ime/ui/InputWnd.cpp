@@ -42,7 +42,17 @@ namespace SOUI
 
 	CPoint CInputWnd::UpdatePosition(CPoint pt,int wid,int hei)
 	{
-		CPoint pos = pt - CDataCenter::getSingleton().GetData().m_skinInfo.ptOffset;
+		CPoint ptOffset=CDataCenter::getSingleton().GetData().m_skinInfo.ptOffset;
+		if(m_offset[0].isValid())
+			ptOffset.x = m_offset[0].toPixelSize(GetScale());
+		else
+			ptOffset.x = SLayoutSize(ptOffset.x).toPixelSize(GetScale());
+		if(m_offset[1].isValid())
+			ptOffset.y = m_offset[1].toPixelSize(GetScale());
+		else
+			ptOffset.y = SLayoutSize(ptOffset.y).toPixelSize(GetScale());
+
+		CPoint pos = pt - ptOffset;
 
 		CRect rcWorkArea;
 		if(::IsWindow(m_hOwner))
@@ -65,20 +75,22 @@ namespace SOUI
 		{
 			pos.x = rcWorkArea.right - wid;
 		}
-		if (pos.y + m_nCaretHeight + SIZE_BELOW + hei > rcWorkArea.bottom)
+
+		int nSizeBelow = SIZE_BELOW*GetScale()/100;
+		if (pos.y + m_nCaretHeight + nSizeBelow + hei > rcWorkArea.bottom)
 		{
-			pos.y = pt.y - hei - SIZE_BELOW;
+			pos.y = pt.y - hei - nSizeBelow;
 		}
 		else
 		{
-			pos.y = pos.y + m_nCaretHeight + SIZE_BELOW;
+			pos.y = pos.y + m_nCaretHeight + nSizeBelow;
 		}
 		return pos;
 	}
 
 	void CInputWnd::MoveTo(CPoint pt,int nCaretHeight)
 	{
-		SLOG_INFO("pt:" << pt.x <<","<<pt.y<<" caretHeight:"<<nCaretHeight<<" followCaret:"<< g_SettingsUI->bMouseFollow);
+		SLOGI()<<"pt:" << pt.x <<","<<pt.y<<" caretHeight:"<<nCaretHeight<<" followCaret:"<< g_SettingsUI->bMouseFollow;
 
 		if(nCaretHeight>0)
 		{
@@ -105,7 +117,7 @@ namespace SOUI
 
 	void CInputWnd::Show(BOOL bShow, BOOL bClearLocateInfo)
 	{
-		SLOG_INFO("bShow:"<<bShow<<" located:"<<m_bLocated);
+		SLOGI()<<"bShow:"<<bShow<<" located:"<<m_bLocated;
 		if(m_bLocated || !g_SettingsUI->bMouseFollow)
 		{
 			if (!g_SettingsUI->bMouseFollow && bShow)
@@ -131,6 +143,8 @@ namespace SOUI
 
 	int CInputWnd::OnRecreateUI(LPCREATESTRUCT lpCreateStruct)
 	{
+		m_offset[0].setInvalid();
+		m_offset[1].setInvalid();
 		int nRet = __super::OnRecreateUI(lpCreateStruct);
 		if (nRet != 0) return nRet;
 		UpdateUI();
@@ -150,17 +164,17 @@ namespace SOUI
 		EventSwndUpdateTooltip *e2 = sobj_cast<EventSwndUpdateTooltip>(e);
 		SASSERT(e2);
 		SStringT strAccel;
-		switch (e->sender->GetID())
+		switch (e->Sender()->GetID())
 		{
 		case R.id.btn_prevpage:
 			e2->bUpdated = TRUE;
 			strAccel = SAccelerator::FormatAccelKey(g_SettingsG->byTurnPageUpVK);
-			e2->strToolTip = SStringT().Format(_T("ÖØÂëÇ°·­Ò³,·­Ò³¼ü:%s"), strAccel);
+			e2->strToolTip->Copy(&SStringT().Format(_T("ÖØÂëÇ°·­Ò³,·­Ò³¼ü:%s"), strAccel.c_str()));
 			break;
 		case R.id.btn_nextpage:
 			e2->bUpdated = TRUE;
 			strAccel = SAccelerator::FormatAccelKey(g_SettingsG->byTurnPageDownVK);
-			e2->strToolTip = SStringT().Format(_T("ÖØÂëºó·­Ò³,·­Ò³¼ü:%s"),strAccel);
+			e2->strToolTip->Copy(&SStringT().Format(_T("ÖØÂëºó·­Ò³,·­Ò³¼ü:%s"),strAccel.c_str()));
 			break;
 		}
 	}
@@ -169,7 +183,7 @@ namespace SOUI
 	{
 		EventSwitchTip *e2 = sobj_cast<EventSwitchTip>(e);
 		SASSERT(e2);
-		STipView *pTipView = sobj_cast<STipView>(e->sender);
+		STipView *pTipView = sobj_cast<STipView>(e->Sender());
 		SASSERT(pTipView);
 		m_pInputWndListener->OnSwitchTip(m_pInputContext, e2->bNext);
 		pTipView->SetWindowText(m_pInputContext->szTip);
@@ -550,7 +564,7 @@ namespace SOUI
 
 	void CInputWnd::OnFlmInfo(PFLMINFO pFlmInfo)
 	{
-		SDispatchMessage(UM_FLMINFO, 0, (LPARAM)pFlmInfo);
+		GetRoot()->SDispatchMessage(UM_FLMINFO, 0, (LPARAM)pFlmInfo);
 	}
 
 	void CInputWnd::OnSetSkin(EventArgs * e)
@@ -628,7 +642,7 @@ namespace SOUI
 			return;
 		}
 
-		SWindow::SetCapture();
+		SetCapture();
 		m_ptClick = point;
 		m_bDraging = TRUE;
 	}
@@ -641,7 +655,7 @@ namespace SOUI
 			return;
 		}
 		m_bDraging = FALSE;
-		SWindow::ReleaseCapture();
+		ReleaseCapture();
 
 		CRect rcWnd;
 		GetNative()->GetWindowRect(&rcWnd);
@@ -672,8 +686,9 @@ namespace SOUI
 
 	void CInputWnd::OnWndClick(EventArgs *e)
 	{
-		e->bubbleUp=true;
-		SStringW strSound = e->sender->GetAttribute(L"cmd_sound");
+		e->SetBubbleUp(TRUE);
+		SStringW strSound;
+		e->Sender()->GetAttribute(L"cmd_sound",&strSound);
 		if(!strSound.IsEmpty())
 		{
 			CWorker::getSingletonPtr()->PlaySoundFromResource(strSound);
@@ -731,8 +746,26 @@ namespace SOUI
 
 	void CInputWnd::ReloadLayout()
 	{
-		EventSetSkin evt(this);
+		EventSetSkin evt(NULL);
 		OnSetSkin(&evt);
+	}
+
+	void CInputWnd::OnUserXmlNode(SXmlNode xmlUser)
+	{
+		if(_wcsicmp(xmlUser.name(),L"user")==0)
+		{
+			SStringW strOffset = xmlUser.attribute(L"offset").as_string();
+			if(!strOffset.IsEmpty())
+			{
+				SStringWList lstOffset;
+				SplitString(strOffset,L',',lstOffset);
+				if(lstOffset.GetCount()==2){
+					m_offset[0]=GETLAYOUTSIZE(lstOffset[0]);
+					m_offset[1]=GETLAYOUTSIZE(lstOffset[1]);
+				}
+			}
+		}
+		__super::OnUserXmlNode(xmlUser);
 	}
 
 }

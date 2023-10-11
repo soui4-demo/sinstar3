@@ -148,6 +148,7 @@ CInputState::CInputState(void)
 ,m_fOpen(FALSE)
 ,m_bUpdateTips(TRUE)
 ,m_bPressOther(FALSE)
+,m_bReleaseOther(FALSE)
 ,m_bPressShift(FALSE)
 ,m_bPressCtrl(FALSE)
 {
@@ -312,7 +313,7 @@ int CInputState::Tips_Next(BOOL bSpell,TCHAR *pszBuf, int iTip, bool bNext)
 		else
 			_tcscpy_s(pszBuf, 200,  m_tips[TT_BOTH][idx - m_tips[TT_SHAPE].GetCount()]);
 	}
-	SLOG_INFO("iTip:" << iTip << " bNext:" << bNext<<" idx:"<<idx);
+	SLOGI()<<"iTip:" << iTip << " bNext:" << bNext<<" idx:"<<idx;
 	return idx;
 }
 
@@ -321,7 +322,7 @@ void CInputState::GetShapeComp(const WCHAR *pInput,char cLen)
 	if(CIsSvrProxy::GetSvrCore()->ReqQueryComp(pInput,cLen)==ISACK_SUCCESS)
 	{
 		PMSGDATA pData=CIsSvrProxy::GetSvrCore()->GetAck();		
-		swprintf(m_ctx.szTip,L"词\"%s\"的编码=%s",pInput,SStringW((WCHAR*)pData->byData,pData->sSize/2));
+		swprintf(m_ctx.szTip,L"词\"%s\"的编码=%s",pInput,SStringW((WCHAR*)pData->byData,pData->sSize/2).c_str());
 	}else
 	{
 		swprintf(m_ctx.szTip,L"查询词\"%s\"的编码失败",pInput);
@@ -355,7 +356,7 @@ BYTE CInputState::GetKeyinMask(BOOL bAssociate,BYTE byMask)
 
 void CInputState::ClearContext(UINT dwMask)
 {
-	SLOG_INFO("dwMask:"<<dwMask);
+	SLOGI()<<"dwMask:"<<dwMask;
 	if(dwMask&CPC_COMP)
 	{
 		m_ctx.szComp[0]=0;
@@ -423,7 +424,7 @@ void CInputState::ClearContext(UINT dwMask)
 
 void CInputState::InputStart()
 {
-	SLOG_INFO("");
+	SLOGI()<<"";
 	m_pListener->OnInputStart();
 
 	DWORD tmCur = GetTickCount();
@@ -437,9 +438,18 @@ void CInputState::InputStart()
 	}
 }
 
+static DWORD GetTimeSpan(DWORD dwStart,DWORD dwEnd){
+	DWORD dwSpan = 0;
+	if(dwStart<dwEnd)
+		dwSpan = dwEnd-dwStart;
+	else
+		dwSpan = (UINT32_MAX-dwStart)+dwEnd;
+	return dwSpan;
+}
+
 BOOL CInputState::InputResult(const SStringW &strResult,BYTE byAstMask)
 {
-	SLOG_INFO("result:"<<strResult<<" astMask:"<<byAstMask);
+	SLOGI()<<"result:"<<strResult<<" astMask:"<<byAstMask;
 
 	SASSERT(m_pListener);
 	SStringW strTemp = strResult;
@@ -466,7 +476,7 @@ BOOL CInputState::InputResult(const SStringW &strResult,BYTE byAstMask)
 	}
 
 	m_tmInputEnd = GetTickCount();
-	CDataCenter::getSingletonPtr()->GetData().m_tmInputSpan += m_tmInputEnd - m_tmInputStart;
+	CDataCenter::getSingletonPtr()->GetData().m_tmInputSpan += GetTimeSpan(m_tmInputStart,m_tmInputEnd);
 	CDataCenter::getSingletonPtr()->GetData().m_cInputCount+= strTemp.GetLength();
 	return bRet;
 }
@@ -475,27 +485,27 @@ BOOL CInputState::InputResult(const SStringW &strResult,BYTE byAstMask)
 
 void CInputState::InputEnd()
 {
-	SLOG_INFO("");
+	SLOGI()<<"";
 	m_pListener->OnInputEnd();
 }
 
 void CInputState::InputUpdate()
 {
-	SLOG_INFO("");
+	SLOGI()<<"";
 	m_pListener->UpdateInputWnd();
 }
 
 
 void CInputState::InputOpen()
 {
-	SLOG_INFO("");
+	SLOGI()<<"";
 	m_pListener->OpenInputWnd();
 
 }
 
 void CInputState::InputHide(BOOL bDelay)
 {
-	SLOG_INFO("delay:"<<bDelay);
+	SLOGI()<<"delay:"<<bDelay;
 	if(m_pListener->IsCompositing()) 
 		m_pListener->OnInputEnd();
 	m_pListener->CloseInputWnd(bDelay);
@@ -508,7 +518,7 @@ void CInputState::StatusbarUpdate()
 
 BOOL CInputState::HandleKeyDown(UINT uVKey,UINT uScanCode,const BYTE * lpbKeyState)
 {
-	SLOGFMTI(_T("HandleKeyDown, uKey=%x,uScanCode=%x,bDown:%d"),uVKey,uScanCode);
+	SLOGFMTI(_T("HandleKeyDown, uKey=%x,uScanCode=%x,bDown:%d"),uVKey,uScanCode, (int)(lpbKeyState[uVKey] & 0x01));
 	//首先使用VK处理快捷键及重码翻页键
 	int iHotKey = TestHotKey(uVKey, lpbKeyState);
 	if (iHotKey != -1)
@@ -2215,7 +2225,7 @@ void CInputState::TurnToTempSpell()
 		InputOpen();
 		InputUpdate();
 		StatusbarUpdate();
-		SLOG_INFO("");
+		SLOGI()<<"";
 		if (!m_pListener->IsCompositing())
 		{//query cursor position
 			InputStart();
@@ -2287,19 +2297,18 @@ BOOL CInputState::KeyIn_Test_FuncKey(UINT uKey,LPARAM lKeyData,const BYTE * lpbK
 		UINT byScanCode = (UINT)(lKeyData >> 16) & 0x000000ff;//scan code
 		if (bKeyDown)
 		{//按下SHIFT
-			if(m_bPressCtrl)
-			{
-				m_bPressOther = TRUE;
-			}else
-			{//初始化状态
-				m_bPressShift = TRUE;
-				m_bPressOther = FALSE;
-			}
+			m_bPressShift = TRUE;
 		}else if(m_bPressShift)
 		{
 			m_bPressShift = FALSE;
-			if(m_bPressOther ||m_bPressCtrl || lpbKeyState[VK_SPACE]&0x80)
+			if(m_bPressOther || m_bReleaseOther ||m_bPressCtrl || lpbKeyState[VK_SPACE]&0x80)
+			{
+				if(m_bReleaseOther && !m_bPressCtrl)
+				{
+					m_bReleaseOther=FALSE;
+				}
 				return FALSE;
+			}
 			if(byScanCode == Right_Shift)
 				fun = g_SettingsG->m_funRightShift;
 			else
@@ -2310,19 +2319,18 @@ BOOL CInputState::KeyIn_Test_FuncKey(UINT uKey,LPARAM lKeyData,const BYTE * lpbK
 		UINT byScanCode = (UINT)(lKeyData >> 24) & 0x000000ff;//scan code
 		if (bKeyDown)
 		{//按下SHIFT
-			if(m_bPressShift)
-			{
-				m_bPressOther = TRUE;
-			}else
-			{//初始化状态
-				m_bPressCtrl = TRUE;
-				m_bPressOther = FALSE;
-			}
+			m_bPressCtrl = TRUE;
 		}else if(m_bPressCtrl)
 		{
 			m_bPressCtrl=FALSE; 
-			if(m_bPressOther ||m_bPressShift)
+			SLOGI()<<"pressOther="<<m_bPressOther<<" releaseOther="<<m_bReleaseOther<<" pressShift="<<m_bPressShift;
+			if(m_bPressOther || m_bReleaseOther||m_bPressShift)
+			{
+				if(m_bReleaseOther && !m_bPressShift){
+					m_bReleaseOther=FALSE;
+				}
 				return FALSE;
+			}
 			if(byScanCode == Right_Ctrl)
 				fun = g_SettingsG->m_funRightCtrl;
 			else
@@ -2354,25 +2362,52 @@ BOOL CInputState::KeyIn_Test_FuncKey(UINT uKey,LPARAM lKeyData,const BYTE * lpbK
 	return bRet;
 }
 
+static inline BOOL IsCompEmpty(InputContext &ctx){
+	return (ctx.compMode == IM_SHAPECODE && ctx.cComp==0)
+		|| (ctx.compMode == IM_SPELL && ctx.bySyllables==1 && ctx.spellData[0].bySpellLen==0);
+}
+
 BOOL CInputState::TestKeyDown(UINT uKey,LPARAM lKeyData,const BYTE * lpbKeyState)
 {
 	BOOL bRet=FALSE;
 	BOOL bKeyDown = !(lKeyData & 0x80000000);
+	SLOGFMTI(_T("TestKeyDown, uKey=%x,lKeyData=%x,bDown:%d"),uKey,lKeyData,bKeyDown);
 	if (!bKeyDown && (uKey != VK_SHIFT && uKey !=VK_CONTROL))
+	{
+		m_bPressOther=FALSE;
+		if(!m_bPressCtrl && !m_bPressShift)
+		{
+			m_bReleaseOther=FALSE;
+		}else{
+			m_bReleaseOther=TRUE;
+		}
 		return FALSE;
+	}
 	if(uKey==VK_SPACE)
 	{
-		if(!g_SettingsG->bFullSpace
-			&& m_ctx.inState==INST_CODING 
-			&& m_ctx.bySyllables==0 && m_ctx.cComp==0)
+		if(m_ctx.inState==INST_CODING && IsCompEmpty(m_ctx))
 		{
-			if((m_ctx.sbState!=SBST_SENTENCE && m_ctx.sCandCount==0)
-				||(m_ctx.sbState==SBST_ASSOCIATE && g_SettingsG->byAstMode==AST_ENGLISH && !(lpbKeyState[VK_CONTROL]&0x80)))
+			if(!g_SettingsG->bFullSpace && ((m_ctx.sbState!=SBST_SENTENCE && m_ctx.sCandCount==0)
+				||(m_ctx.sbState==SBST_ASSOCIATE && g_SettingsG->byAstMode==AST_ENGLISH && !(lpbKeyState[VK_CONTROL]&0x80))))
+			{
+				if(bKeyDown) 
+				{
+					m_bPressOther=TRUE;
+				}
 				return FALSE;
+			}
+			DWORD dwNow = GetTickCount();
+			if(m_tmInputEnd== 0 || GetTimeSpan(m_tmInputEnd,dwNow)>=60*1000)
+			{
+				if(bKeyDown) 
+				{
+					m_bPressOther=TRUE;
+				}
+				return FALSE;
+			}
 		}
 	}
 
-	SLOGFMTI(_T("TestKeyDown, uKey=%x,lKeyData=%x,bDown:%d"),uKey,lKeyData,bKeyDown);
 	BOOL bOpen = m_pListener->IsInputEnable();
 	if (!bOpen)
 	{
@@ -2381,17 +2416,20 @@ BOOL CInputState::TestKeyDown(UINT uKey,LPARAM lKeyData,const BYTE * lpbKeyState
 			if (bKeyDown)
 			{
 				m_bPressShift = TRUE;
-				m_bPressOther = FALSE;
 			}
 			if (!bKeyDown && m_bPressShift)
 			{
 				m_bPressShift = FALSE;
 				UINT uScanCode = (lKeyData >> 16)&0x000000ff;
-				if (!m_bPressOther && !m_bPressCtrl
+				if (!m_bPressOther && !m_bReleaseOther && !m_bPressCtrl
 					&& ((uScanCode==Left_Shift && g_SettingsG->m_funLeftShift==Fun_Ime_Switch)||(uScanCode == Right_Shift && g_SettingsG->m_funRightShift==Fun_Ime_Switch)))
 				{//激活输入
 					SetOpenStatus(TRUE);
 					return TRUE;
+				}
+				if(m_bReleaseOther && !m_bPressCtrl)
+				{
+					m_bReleaseOther=FALSE;
 				}
 			}
 			return FALSE;
@@ -2400,17 +2438,21 @@ BOOL CInputState::TestKeyDown(UINT uKey,LPARAM lKeyData,const BYTE * lpbKeyState
 			if (bKeyDown)
 			{
 				m_bPressCtrl = TRUE;
-				m_bPressOther = FALSE;
 			}
 			if (!bKeyDown && m_bPressCtrl)
 			{
 				m_bPressCtrl = FALSE;
+				SLOGI()<<"pressOther="<<m_bPressOther<<" releaseOther="<<m_bReleaseOther<<" pressShift="<<m_bPressShift;
 				UINT uScanCode = (lKeyData >> 24)&0x000000ff;
-				if (!m_bPressOther && !m_bPressShift
+				if (!m_bPressOther && !m_bReleaseOther && !m_bPressShift
 					&& ((uScanCode==Left_Ctrl && g_SettingsG->m_funLeftCtrl==Fun_Ime_Switch)||(uScanCode == Right_Ctrl && g_SettingsG->m_funRightCtrl==Fun_Ime_Switch)))
 				{//激活输入
 					SetOpenStatus(TRUE);
 					return TRUE;
+				}
+				if(m_bReleaseOther && !m_bPressShift)
+				{
+					m_bReleaseOther=FALSE;
 				}
 			}
 			return FALSE;
@@ -2572,14 +2614,14 @@ BOOL CInputState::TestKeyDown(UINT uKey,LPARAM lKeyData,const BYTE * lpbKeyState
 
 void CInputState::OnImeSelect(BOOL bSelect)
 {
-	SLOG_INFO("fOpen:" << bSelect);
+	SLOGI()<<"fOpen:" << bSelect;
 	m_fOpen = bSelect;
 }
 
 
 BOOL CInputState::OnSvrNotify(UINT wp, PMSGDATA pMsg)
 {
-	SLOG_INFO("code="<<wp<<",m_fOpen:"<<m_fOpen);
+	SLOGI()<<"code="<<wp<<",m_fOpen:"<<m_fOpen;
 	if(wp == NT_KEYIN)
 	{//输入时返回的联想数据
 		if(m_fOpen)
@@ -2604,7 +2646,7 @@ BOOL CInputState::OnSvrNotify(UINT wp, PMSGDATA pMsg)
 							pbyData+=pbyData[2]*2+3;
 						}
 						ctx->sCandCount=sCount;
-						SLOG_INFO("词组联想:"<<ctx->sCandCount);
+						SLOGI()<<"词组联想:"<<ctx->sCandCount;
 					}
 					if(pbyData-pMsg->byData<pMsg->sSize && pbyData[0]==MKI_ASTENGLISH)
 					{//英文联想
@@ -2621,7 +2663,7 @@ BOOL CInputState::OnSvrNotify(UINT wp, PMSGDATA pMsg)
 							pbyData+=pbyData[0]*2+1;
 							pbyData+=pbyData[0]*2+1;						
 						}
-						SLOG_INFO("英文联想:"<<ctx->sCandCount);
+						SLOGI()<<"英文联想:"<<ctx->sCandCount;
 					}
 					if(pbyData-pMsg->byData<pMsg->sSize && pbyData[0]==MKI_PHRASEREMIND)
 					{//已有词组提示
@@ -2631,7 +2673,7 @@ BOOL CInputState::OnSvrNotify(UINT wp, PMSGDATA pMsg)
 						wcsncpy(ctx->szTip+5,(WCHAR*)(pbyData+2),pbyData[1]);
 						ctx->szTip[5+pbyData[1]]=0;
 						pbyData+=2+pbyData[1]*2;
-						SLOG_INFO("已有词组提示:"<<ctx->szTip);
+						SLOGI()<<"已有词组提示:"<<ctx->szTip;
 					}
 					if(pbyData-pMsg->byData<pMsg->sSize && pbyData[0]==MKI_ASTSENT)
 					{//句子联想
@@ -2643,12 +2685,12 @@ BOOL CInputState::OnSvrNotify(UINT wp, PMSGDATA pMsg)
 						wcsncpy(ctx->szSentText,(WCHAR*)pbyData,sLen);
 						ctx->sSentCaret=0;
 						ctx->sSentLen=sLen;
-						SLOG_INFO("句子联想:"<<SStringW(ctx->szSentText,sLen));
+						SLOGI()<<"句子联想:"<<SStringW(ctx->szSentText,sLen);
 					}
 				}
 				if(ctx->bShowTip || ctx->sCandCount || ctx->sSentLen)
 				{//有联想词组或有联想句子
-					SLOG_INFO("Update Input Window");
+					SLOGI()<<"Update Input Window";
 					if (ctx->sCandCount == 0 && g_SettingsG->bShowOpTip && !ctx->bShowTip)
 					{//没有候选时,在侯选位置显示操作提示
 						ctx->bShowTip=TRUE;
@@ -2660,7 +2702,7 @@ BOOL CInputState::OnSvrNotify(UINT wp, PMSGDATA pMsg)
 					InputUpdate();
 				}else
 				{//关闭窗口
-					SLOG_INFO("Close Input Window");
+					SLOGI()<<"Close Input Window";
 					InputHide();
 				}
 
@@ -2670,7 +2712,7 @@ BOOL CInputState::OnSvrNotify(UINT wp, PMSGDATA pMsg)
 			}
 		}else
 		{
-			SLOG_INFO("Close Input Window");
+			SLOGI()<<"Close Input Window";
 			InputHide();
 		}
 	}
@@ -2680,6 +2722,10 @@ BOOL CInputState::OnSvrNotify(UINT wp, PMSGDATA pMsg)
 void CInputState::OnSetFocus(BOOL bFocus)
 {
 	m_bPressOther = FALSE;
+	m_bReleaseOther=FALSE;
 	m_bPressShift = FALSE;
 	m_bPressCtrl = FALSE;
+
+	m_tmInputStart = 0;
+	m_tmInputEnd = 0;
 }

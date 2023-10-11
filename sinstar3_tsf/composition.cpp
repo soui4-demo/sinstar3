@@ -14,7 +14,7 @@ void CSinstar3Tsf::_StartComposition(ITfContext *pContext)
 {
 	if(IsCompositing()) return;
 	CEsStartComposition *pStartCompositionEditSession = new CEsStartComposition(this, pContext);
-	SLOG_INFO("pContext:"<<pContext);
+	SLOGI()<<"CSinstar3Tsf::_StartComposition,pContext:"<<pContext;
 
 	_bCompositing = TRUE;
 	_bChangedDocMgr = true;
@@ -45,14 +45,14 @@ STDAPI CSinstar3Tsf::OnCompositionTerminated(TfEditCookie ecWrite, ITfCompositio
 {
 	if(pComposition == _pComposition)
 	{
-		SLOG_INFO("CSinstar3Tsf::OnCompositionTerminated,TfEditCookie:"<<ecWrite<< " pComposition:"<<pComposition);
+		SLOGI()<<"CSinstar3Tsf::OnCompositionTerminated,TfEditCookie:"<<ecWrite<< " pComposition:"<<pComposition;
 		ITfContext *pCtx = GetImeContext();
 		//_TerminateComposition(ecWrite,pCtx,true);
 		_EndComposition(pCtx,true);
 		ReleaseImeContext(pCtx);
 	}else
 	{
-		SLOG_WARN("pCompsition:"<<pComposition<<" _pComposition:"<<_pComposition);
+		SLOGW()<<"CSinstar3Tsf::OnCompositionTerminated,pCompsition:"<<pComposition<<" _pComposition:"<<_pComposition;
 	}
 	return S_OK;
 }
@@ -60,7 +60,7 @@ STDAPI CSinstar3Tsf::OnCompositionTerminated(TfEditCookie ecWrite, ITfCompositio
 
 void CSinstar3Tsf::_EndComposition(ITfContext *pContext,bool bClearCtx)
 {
-	SLOG_INFO("_EndComposition IsCompositing()="<<_IsCompositing()<<" inKeyProc:"<<_bInKeyProc);
+	SLOGI()<<"CSinstar3Tsf::_EndComposition IsCompositing()="<<_IsCompositing()<<" inKeyProc:"<<_bInKeyProc;
 	if(!_IsCompositing()) return;
     CEsEndComposition *pEditSession = new CEsEndComposition(this, pContext,bClearCtx);
     HRESULT hr;
@@ -82,25 +82,23 @@ void CSinstar3Tsf::_ChangeComposition(ITfContext *pContext,int nLeft,int nRight,
 		pContext->RequestEditSession(_tfClientId, pEditSession, (_bInKeyProc?TF_ES_SYNC:TF_ES_ASYNCDONTCARE) | TF_ES_READWRITE, &hr);
 		pEditSession->Release();
 	}
-	//UpdateUI(pContext);
 }
 
 void CSinstar3Tsf::_UpdateResultAndCompositionStringW(ITfContext * pContext,const WCHAR *wszResultStr,int nResStrLen,const WCHAR *wszCompStr,int nCompStrLen)
 {
-	HRESULT hr;
-
+	SLOGI()<<"CSinstar3Tsf::_UpdateResultAndCompositionStringW,wszResultStr:"<<wszResultStr<< " wszCompStr:"<<wszCompStr<<" isComposition:"<<IsCompositing();
 	CEsUpdateResultAndComp *pEditSession;
 	if (pEditSession = new CEsUpdateResultAndComp(this, pContext,wszResultStr,nResStrLen,wszCompStr,nCompStrLen))
 	{
+		HRESULT hr;
 		pContext->RequestEditSession(_tfClientId, pEditSession, (_bInKeyProc?TF_ES_SYNC:TF_ES_ASYNCDONTCARE) | TF_ES_READWRITE, &hr);
 		pEditSession->Release();
 	}
-	//UpdateUI(pContext);
 }
 
 void CSinstar3Tsf::_TerminateComposition(TfEditCookie ecWrite,ITfContext *pCtx, bool bClearCtx)
 {
-	SLOG_INFO("pComposition:"<<_pComposition<<" bCompositing:"<<_bCompositing);
+	SLOGI()<<"CSinstar3Tsf::_TerminateComposition, pComposition:"<<_pComposition<<" bCompositing:"<<_bCompositing;
 	_pComposition = NULL;
 	_bCompositing = FALSE;
 	if ( pCtx != NULL)

@@ -37,16 +37,8 @@ public:
 public:
     CSinstar3Tsf();
     virtual ~CSinstar3Tsf();
-	std::wstring GetPeeditString()
-	{
-		if (_pcand)
-		{
-			return _pcand->_ctx.preedit.str;
-		}
-		return _strPreedit;
-	}
+
 	void UpdateUI(ITfContext* pContext, bool bPageChanged, UINT curPage);
-	void UpdatePreedit(UINT64 pContext,const std::wstring &strPreedit);
 	TfGuidAtom GetDisplayAttribInfo()const
 	{
 		return _gaDisplayAttributeInput;
@@ -200,8 +192,6 @@ private:
 	CCandidateList* _pcand;
 	TfGuidAtom _gaDisplayAttributeInput;
 	TfGuidAtom _gaDisplayAttributeConverted;
-	//非uiless模式下保存inline字符串
-	std::wstring _strPreedit;
 
 	std::set<ITfContext*> m_contextSet;
 public:

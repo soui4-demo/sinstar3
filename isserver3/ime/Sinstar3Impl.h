@@ -9,15 +9,15 @@
 #include "CmdHandler.h"
 #include "../../sinstar3_tsf/UILess.h"
 
+class CSinstar3Sender;
+
 class CSinstar3Impl:
 	public CUnknown,
 	public ISinstar,
+	public SEventSet,
 	public IInputListener,
 	public IDestroyListener,
-	public IInputWndListener,
-	public SOUI::SObject,
-	public SOUI::SNativeWnd,
-	public SOUI::SEventSet
+	public IInputWndListener
 {
 	friend class CCmdHandler;// CCmdHandler need access this private members.
 	enum {
@@ -49,13 +49,11 @@ public:
 	virtual void GetCandidateListInfo(Context& _ctx);
 
 	void OnLanguageBarClick(TfLBIClick click, POINT &pt, RECT &prcArea);
-public:
-	virtual int GetID() const {	return SENDER_SINSTSR3;}
 protected://IInputListener
 	virtual BOOL IsCompositing() const;
 	virtual HWND GetHwnd() const;
 	virtual void OnInputStart();
-	virtual void OnInputResult(const SStringT & strResult,const SStringT & strComp=SStringT() );
+	virtual void OnInputResult(const SStringW & strResult,const SStringW & strComp=SStringW() );
 	virtual void OnInputEnd();
 	virtual void UpdateInputWnd();
 	virtual void OnCapital(BOOL bCap);	
@@ -83,7 +81,7 @@ protected://IInputWndListener
 public:
 	BOOL ChangeSkin(const SStringT & strSkin);
 	void OnSkinChanged();
-	void UpdateInline();
+	void UpdateComposition();
 	void UpdateUI();
 
 	void OpenConfig();
@@ -92,6 +90,8 @@ public:
 	void InputSpchar(LPCTSTR pszText);
 	void Broadcast(UINT uCmd, LPVOID pData, DWORD nLen);
 
+	HWND Hwnd() const;
+protected:
 	LRESULT OnSvrNotify(UINT uMsg, WPARAM wParam, LPARAM lParam);
 	LRESULT OnAsyncCopyData(UINT uMsg, WPARAM wParam, LPARAM lParam);
 
@@ -103,7 +103,6 @@ public:
 		MESSAGE_HANDLER_EX(UM_SVR_NOTIFY,OnSvrNotify)
 		MSG_WM_TIMER(OnTimer)
 		CHAIN_MSG_MAP_MEMBER(m_cmdHandler)
-		CHAIN_MSG_MAP(SOUI::SNativeWnd)
 	END_MSG_MAP()
 
 public:
@@ -133,7 +132,23 @@ private:
 	BOOL			m_bOpen;
 	bool			m_bShowUI;
 	bool			m_bPageChanged;
+	CSinstar3Sender *m_evtSender;
 };
 
+class CSinstar3Sender : public TObjRefImpl<SObject>,  public SNativeWnd{
+public:
+	CSinstar3Sender (CSinstar3Impl *owner);
 
+public:
 
+	STDMETHOD_(int,GetID)() const{return SENDER_SINSTAR3;}
+
+protected:
+	BEGIN_MSG_MAP_EX(CSinstar3Sender)
+		CHAIN_MSG_MAP_MEMBER(*m_owner)
+		CHAIN_MSG_MAP(SNativeWnd)
+	END_MSG_MAP()
+
+protected:
+	CSinstar3Impl * m_owner;
+};

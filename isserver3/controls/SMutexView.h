@@ -4,7 +4,7 @@ namespace SOUI
 {
 	class SMutexView : public SWindow
 	{
-		SOUI_CLASS_NAME(SMutexView,L"mutexView")
+		DEF_SOBJECT(SWindow,L"mutexView")
 	public:
 		SMutexView(void);
 		~SMutexView(void);

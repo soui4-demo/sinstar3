@@ -62,6 +62,8 @@ struct IServerCore {
 
 	virtual int GetSentRecordMax()=0;
 	virtual void SetSentRecordMax(int nSentMax)=0;
+	virtual int GetTotalSentCount() const = 0;
+	virtual int GetTodaySentCount() const = 0;
 	virtual int GetPhraseGroupCount() const=0;
 	virtual bool QueryPhraseGroup(PGROUPINFO pInfo,int nSize)=0;
 	virtual int GetMaxPhraseAstDeepness()=0;

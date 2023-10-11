@@ -1,7 +1,7 @@
 #pragma once
 class SLineSkin : public SSkinObjBase
 {
-	SOUI_CLASS_NAME(SSkinColorRect, L"lineskin")
+	DEF_SOBJECT(SSkinObjBase, L"lineskin")
 public:
 	SLineSkin();
 ~SLineSkin(); 
@@ -10,8 +10,8 @@ protected:
 
 	virtual BOOL IgnoreState() { return GetStates() < 2; }
 
-	virtual int GetStates();
-	virtual ISkinObj * Scale(int nScale);
+	virtual int WINAPI GetStates();
+	virtual ISkinObj * WINAPI Scale(int nScale);
 	SOUI_ATTRS_BEGIN()
 		ATTR_COLOR(L"left_normal", m_crStates[0], FALSE)
 		ATTR_COLOR(L"left_hover", m_crStates[1], FALSE)

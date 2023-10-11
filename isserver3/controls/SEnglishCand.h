@@ -5,15 +5,15 @@ namespace SOUI
 #define UM_FLMINFO	(WM_APP+10000)
 	class SEnglishCand : public SWindow
 	{
-		SOUI_CLASS_NAME(SEnglishCand,L"EnCand")
+		DEF_SOBJECT(SWindow,L"EnCand")
 	public:
 		SEnglishCand(void);
 		~SEnglishCand(void);
 
 		void SetCandData(const BYTE* pbyCandData);
 	protected:
-		virtual CSize GetDesiredSize(int nParentWid, int nParentHei);
-		virtual BOOL OnUpdateToolTip(CPoint pt, SwndToolTipInfo &tipInfo);
+		virtual void WINAPI GetDesiredSize(SIZE *ret,int nParentWid, int nParentHei);
+		virtual BOOL UpdateToolTip(CPoint pt, SwndToolTipInfo &tipInfo);
 
 		void OnPaint(IRenderTarget *pRT);
 		LRESULT OnFlmInfo(UINT uMsg, WPARAM, LPARAM lp);

@@ -22,29 +22,30 @@
     <ProjectGuid>{72550488-BEC8-46F2-8F31-6C4D3DF1A749}</ProjectGuid>
     <RootNamespace>sinstar3_proxy</RootNamespace>
     <Keyword>Qt4VSv1.0</Keyword>
+    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>v140</PlatformToolset>
     <UseOfMfc>false</UseOfMfc>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>v140</PlatformToolset>
     <UseOfMfc>false</UseOfMfc>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>v140</PlatformToolset>
     <UseOfMfc>false</UseOfMfc>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>v140</PlatformToolset>
     <UseOfMfc>false</UseOfMfc>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
@@ -92,7 +93,7 @@
     <ClCompile>
       <AdditionalOptions>/MP %(AdditionalOptions)</AdditionalOptions>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>.;include;$(SOUI3PATH)/utilities/include;$(SOUI3PATH)/soui/include;$(SOUI3PATH)/components;$(SOUI3PATH)/config;..\..\work\soui.git\tools\mkspecs\win32-msvc2008;..\ipcobject\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.;include;$(SOUI4PATH)/utilities/include;$(SOUI4PATH)/soui/include;$(SOUI4PATH)/components;$(SOUI4PATH)/config;..\..\work\soui.git\tools\mkspecs\win32-msvc2008;..\ipcobject\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_WINDOWS;UNICODE;WIN32;QT_NO_DYNAMIC_CAST;NDEBUG;_CRT_NON_CONFORMING_SWPRINTFS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PreprocessToFile>false</PreprocessToFile>
       <PreprocessSuppressLineNumbers>false</PreprocessSuppressLineNumbers>
@@ -129,7 +130,7 @@
     <ClCompile>
       <AdditionalOptions>/MP %(AdditionalOptions)</AdditionalOptions>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>.;include;$(SOUI3PATH)/utilities/include;$(SOUI3PATH)/soui/include;$(SOUI3PATH)/components;$(SOUI3PATH)/config;..\..\work\soui.git\tools\mkspecs\win32-msvc2008;..\ipcobject\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.;include;$(SOUI4PATH)/utilities/include;$(SOUI4PATH)/soui/include;$(SOUI4PATH)/components;$(SOUI4PATH)/config;..\..\work\soui.git\tools\mkspecs\win32-msvc2008;..\ipcobject\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_WINDOWS;UNICODE;WIN32;QT_NO_DYNAMIC_CAST;NDEBUG;_CRT_NON_CONFORMING_SWPRINTFS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PreprocessToFile>false</PreprocessToFile>
       <PreprocessSuppressLineNumbers>false</PreprocessSuppressLineNumbers>
@@ -165,7 +166,7 @@
     <ClCompile>
       <AdditionalOptions>/MP %(AdditionalOptions)</AdditionalOptions>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>.;include;$(SOUI3PATH)/utilities/include;$(SOUI3PATH)/soui/include;$(SOUI3PATH)/components;$(SOUI3PATH)/config;..\..\work\soui.git\tools\mkspecs\win32-msvc2008;..\ipcobject\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.;include;$(SOUI4PATH)/utilities/include;$(SOUI4PATH)/soui/include;$(SOUI4PATH)/components;$(SOUI4PATH)/config;..\..\work\soui.git\tools\mkspecs\win32-msvc2008;..\ipcobject\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_WINDOWS;UNICODE;WIN32;QT_NO_DYNAMIC_CAST;_CRT_NON_CONFORMING_SWPRINTFS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PreprocessToFile>false</PreprocessToFile>
       <PreprocessSuppressLineNumbers>false</PreprocessSuppressLineNumbers>
@@ -202,7 +203,7 @@
     <ClCompile>
       <AdditionalOptions>/MP %(AdditionalOptions)</AdditionalOptions>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>.;include;$(SOUI3PATH)/utilities/include;$(SOUI3PATH)/soui/include;$(SOUI3PATH)/components;$(SOUI3PATH)/config;..\..\work\soui.git\tools\mkspecs\win32-msvc2008;..\ipcobject\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.;include;$(SOUI4PATH)/utilities/include;$(SOUI4PATH)/soui/include;$(SOUI4PATH)/components;$(SOUI4PATH)/config;..\..\work\soui.git\tools\mkspecs\win32-msvc2008;..\ipcobject\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_WINDOWS;UNICODE;WIN32;QT_NO_DYNAMIC_CAST;_CRT_NON_CONFORMING_SWPRINTFS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PreprocessToFile>false</PreprocessToFile>
       <PreprocessSuppressLineNumbers>false</PreprocessSuppressLineNumbers>

@@ -4,14 +4,14 @@ namespace SOUI
 {
 	class SPhraseCand : public SWindow
 	{
-		SOUI_CLASS_NAME(SPhraseCand,L"PhraseCand")
+		DEF_SOBJECT(SWindow,L"PhraseCand")
 	public:
 		SPhraseCand(void);
 		~SPhraseCand(void);
 
 		void SetCandData(const BYTE* pbyCandData);
 	protected:
-		virtual CSize GetDesiredSize(int nParentWid, int nParentHei);
+		virtual void WINAPI  GetDesiredSize(SIZE *ret,int nParentWid, int nParentHei);
 
 		void OnPaint(IRenderTarget *pRT);
 

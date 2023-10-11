@@ -9,6 +9,7 @@
 #include "../include/reg.h"
 #include "worker.h"
 #include <process.h>
+#include "ime/ui/SkinMananger.h"
 
 #define TIMERID_DELAY_EXIT	200
 #define SPAN_DELAY_EXIT		5000
@@ -150,6 +151,7 @@ int CIsSvrProxy::OnCreate(LPCREATESTRUCT pCS)
 
 void CIsSvrProxy::OnDestroy()
 {
+	m_ipcSvr = NULL;//clear all connection.
 	m_trayIcon.Hide();
 	if (m_pCore)
 	{
@@ -175,7 +177,7 @@ LRESULT CIsSvrProxy::OnBuildIndexProg(UINT uMsg, WPARAM wp, LPARAM lp)
 	if (uType == PT_MAX)
 	{
 		m_pBuildIndexProg = new CBuildIndexProgWnd();
-		m_pBuildIndexProg->Create(GetActiveWindow(), WS_POPUP, 0, 0, 0, 0, 0);
+		m_pBuildIndexProg->CreateEx(GetActiveWindow(), WS_POPUP, 0, 0, 0, 0, 0);
 		m_pBuildIndexProg->CenterWindow();
 		m_pBuildIndexProg->SetPage(iPage,nProg);
 		m_pBuildIndexProg->ShowWindow(SW_SHOW);
@@ -275,11 +277,11 @@ void CIsSvrProxy::OnShowKeyMap(IDataBlock * pCompData, LPCWSTR pszName, LPCWSTR 
 	{
 		CAutoRefPtr<IImgX> imgX;
 		imgDecoder->CreateImgX(&imgX);
-		CAutoRefPtr<IBitmap> pImg;
+		CAutoRefPtr<IBitmapS> pImg;
 		if (pCompData && imgX->LoadFromMemory(pCompData->GetData(), pCompData->GetLength()) >= 1)
 		{
 			GETRENDERFACTORY->CreateBitmap(&pImg);
-			pImg->Init(imgX->GetFrame(0));
+			pImg->Init2(imgX->GetFrame(0));
 		}
 		if (m_pKeyMapDlg)
 		{
@@ -287,7 +289,7 @@ void CIsSvrProxy::OnShowKeyMap(IDataBlock * pCompData, LPCWSTR pszName, LPCWSTR 
 		}
 		m_pKeyMapDlg = new CKeyMapDlg(pImg, pszName, pszUrl);
 		m_pKeyMapDlg->SetListener(this);
-		m_pKeyMapDlg->Create(NULL, WS_POPUP | WS_VISIBLE, WS_EX_TOOLWINDOW | WS_EX_TOPMOST, 0, 0, 0, 0);
+		m_pKeyMapDlg->CreateEx(NULL, WS_POPUP | WS_VISIBLE, WS_EX_TOOLWINDOW | WS_EX_TOPMOST, 0, 0, 0, 0);
 		m_pKeyMapDlg->SendMessage(WM_INITDIALOG);
 		m_pKeyMapDlg->CenterWindow(GetDesktopWindow());
 		imgDecoder = NULL;
@@ -435,7 +437,7 @@ void CIsSvrProxy::OnMenuSettings(UINT uNotifyCode, int nID, HWND wndCtl)
 	if(!pConfig)
 	{
 		pConfig = new CConfigDlg(this);
-		pConfig->Create(m_hWnd,WS_POPUP,WS_EX_TOPMOST,0,0,0,0);
+		pConfig->CreateEx(m_hWnd,WS_POPUP,WS_EX_TOPMOST,0,0,0,0);
 		pConfig->SendMessage(WM_INITDIALOG);
 	}
 	pConfig->SetWindowPos(HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_SHOWWINDOW);
@@ -484,7 +486,7 @@ void CIsSvrProxy::OnCheckUpdateResult(EventArgs *e)
 	{
 		if (e2->bManual)
 		{
-			SMessageBox(GetDesktopWindow(), _T("升级服务器不可用!"), _T("提示"), MB_OK | MB_ICONINFORMATION);
+			SMessageBox(NULL, _T("升级服务器不可用!"), _T("提示"), MB_OK | MB_ICONINFORMATION);
 		}
 		return;
 	}
@@ -514,7 +516,7 @@ void CIsSvrProxy::OnCheckUpdateResult(EventArgs *e)
 		}
 		else if (e2->bManual)
 		{
-			SMessageBox(GetDesktopWindow(), _T("没有发现新版本!"), _T("提示"), MB_OK | MB_ICONINFORMATION);
+			SMessageBox(NULL, _T("没有发现新版本!"), _T("提示"), MB_OK | MB_ICONINFORMATION);
 		}
 	}
 }
@@ -527,7 +529,7 @@ INT_PTR CIsSvrProxy::ShowModal(SHostDialog *pDlg)
 		m_pCurModalDlg = NULL;
 	}
 	m_pCurModalDlg = pDlg;
-	INT_PTR uRet = pDlg->DoModal(GetDesktopWindow());
+	INT_PTR uRet = pDlg->DoModal(NULL);
 	m_pCurModalDlg=NULL;
 	return uRet;
 }
@@ -603,7 +605,7 @@ LRESULT CIsSvrProxy::OnDelayCopyData(UINT uMsg,WPARAM wp,LPARAM lp)
 	{
 		if(m_pPendingCmd)
 		{
-			SLOG_WARN("discard shell cmd:"<<lpCopyData->dwData);
+			SLOGW()<<"discard shell cmd:"<<lpCopyData->dwData;
 			free(lpCopyData);
 			return 3;
 		}else	
@@ -616,44 +618,48 @@ LRESULT CIsSvrProxy::OnDelayCopyData(UINT uMsg,WPARAM wp,LPARAM lp)
 	if(lpCopyData->dwData == CD_CMD_INSTALL_CIT)
 	{//install cit
 		SStringT strPath = S_CW2T((wchar_t*)lpCopyData->lpData);
-		if(m_pCore->InstallCit(strPath))
-		{
-			SMessageBox(GetDesktopWindow(),_T("码表安装成功！"),_T("提示"),MB_OK|MB_ICONINFORMATION);
-		}else
-		{
-			SMessageBox(GetDesktopWindow(),SStringT().Format(_T("码表安装失败！错误码:%d"),GetLastError()),_T("提示"),MB_OK|MB_ICONSTOP);
-		}
+		InstallCit(strPath);
 	}else if(lpCopyData->dwData == CD_CMD_INSTALL_PLT)
 	{//install plt
 		SStringT strPath = S_CW2T((wchar_t*)lpCopyData->lpData);
 		if(m_pCore->InstallPlt(strPath))
 		{
-			SMessageBox(GetDesktopWindow(),_T("词库安装成功！"),_T("提示"),MB_OK|MB_ICONINFORMATION);
+			SMessageBox(NULL,_T("词库安装成功！"),_T("提示"),MB_OK|MB_ICONINFORMATION);
 		}else
 		{
-			SMessageBox(GetDesktopWindow(),SStringT().Format(_T("词库安装失败！错误码:%d"),GetLastError()),_T("提示"),MB_OK|MB_ICONSTOP);
+			SMessageBox(NULL,SStringT().Format(_T("词库安装失败！错误码:%d"),GetLastError()),_T("提示"),MB_OK|MB_ICONSTOP);
 		}
 	}else if(lpCopyData->dwData == CD_CMD_INSTALL_SKIN)
 	{
 		SStringT strPath = S_CW2T((wchar_t*)lpCopyData->lpData);
-		int nPos = strPath.ReverseFind('\\');
-		SStringT strName = strPath.Mid(nPos);
-		SStringT strDst = m_strDataPath + _T("\\skins")+strName;
-		if(CopyFile(strPath,strDst,FALSE))
-		{
-			if(IDOK==SMessageBox(GetDesktopWindow(),_T("安装皮肤成功！现在使用吗?"),_T("提示"),MB_OKCANCEL|MB_ICONQUESTION))
-			{
-				if(!ChangeSkin(strDst))
-				{
-					DeleteFile(strDst);
-					SMessageBox(GetDesktopWindow(),_T("应用皮肤失败!不支持的皮肤格式"),_T("错误"),MB_OK|MB_ICONSTOP);
-				}
-			}
+		SStringW errReport;
+		if(!CSkinMananger::VerifySkin(strPath,errReport)){
+			SMessageBox(NULL,S_CW2T(errReport),_T("皮肤效验失败"),MB_OK|MB_ICONSTOP);
 		}else
 		{
-			SMessageBox(GetDesktopWindow(),SStringT().Format(_T("安装皮肤失败！错误码:%d"),GetLastError()),_T("提示"),MB_OK|MB_ICONSTOP);
+			int nPos = strPath.ReverseFind('\\');
+			SStringT strName = strPath.Mid(nPos);
+			SStringT strDst = m_strDataPath + _T("\\skins")+strName;
+			if(strPath.CompareNoCase(strDst.c_str())==0 || CopyFile(strPath,strDst,FALSE))
+			{
+				if(IDOK==SMessageBox(NULL,_T("安装皮肤成功！现在使用吗?"),_T("提示"),MB_OKCANCEL|MB_ICONQUESTION))
+				{
+					if(!ChangeSkin(strDst))
+					{
+						DeleteFile(strDst);
+						SMessageBox(NULL,_T("应用皮肤失败!不支持的皮肤格式"),_T("错误"),MB_OK|MB_ICONSTOP);
+					}
+				}
+			}else
+			{
+				SMessageBox(NULL,SStringT().Format(_T("安装皮肤失败！错误码:%d"),GetLastError()),_T("提示"),MB_OK|MB_ICONSTOP);
+			}
 		}
-
+	}else if(lpCopyData->dwData == CD_CMD_EXPORT_SENT){
+		SStringT strPath = S_CW2T((wchar_t*)lpCopyData->lpData);
+		bool bOk = m_pCore->ExportDataFile(FU_SENTENCE,strPath.GetBuffer(-1));
+		strPath.ReleaseBuffer();
+		SMessageBox(NULL,SStringT().Format(_T("导出语句库数据%s"),bOk?_T("成功"):_T("失败")),_T("提示"),MB_OK|MB_ICONINFORMATION);
 	}
 	free(lpCopyData);
 	return 0;
@@ -663,7 +669,9 @@ LRESULT CIsSvrProxy::OnCopyData(HWND hWnd,PCOPYDATASTRUCT lpCopyData)
 {
 	if(!(lpCopyData->dwData == CD_CMD_INSTALL_CIT
 		|| lpCopyData->dwData == CD_CMD_INSTALL_PLT
-		|| lpCopyData->dwData == CD_CMD_INSTALL_SKIN))
+		|| lpCopyData->dwData == CD_CMD_INSTALL_SKIN
+		|| lpCopyData->dwData == CD_CMD_EXPORT_SENT
+		))
 	{
 		SetMsgHandled(FALSE);
 		return 0;
@@ -679,15 +687,12 @@ LRESULT CIsSvrProxy::OnCopyData(HWND hWnd,PCOPYDATASTRUCT lpCopyData)
 
 void CIsSvrProxy::OnSetFocus(CSvrConnection * pConn)
 {
-	SLOG_INFO("pConn:" << pConn<<" curConn:"<< m_pFocusConn);
+	SLOGI()<<"pConn:" << pConn<<" curConn:"<< m_pFocusConn;
 	if(m_pFocusConn)
 	{
 		if(m_pFocusConn!=pConn)
 		{
-			Param_OnSetFocus param;
-			param.bFocus = FALSE;
-			param.dwActiveWnd = 0;
-			m_pFocusConn->HandleOnSetFocus(param);
+			m_pFocusConn->OnLoseFocus();
 		}
 	}
 	m_pFocusConn = pConn;
@@ -695,7 +700,7 @@ void CIsSvrProxy::OnSetFocus(CSvrConnection * pConn)
 
 void CIsSvrProxy::OnKillFocus(CSvrConnection * pConn)
 {
-	SLOG_INFO("pConn:" << pConn<<" curFocusConn:"<<m_pFocusConn);
+	SLOGI()<<"pConn:" << pConn<<" curFocusConn:"<<m_pFocusConn;
 	if(pConn == m_pFocusConn)
 		m_pFocusConn=NULL;
 }
@@ -725,7 +730,7 @@ LRESULT CIsSvrProxy::OnChangeSkin(UINT uMsg, WPARAM wp, LPARAM lp)
 
 BOOL CIsSvrProxy::ChangeSkin(const SStringT & strSkin)
 {
-	SLOG_INFO("change skin, new skin:" << strSkin.c_str() << " old skin:" << g_SettingsG->strSkin.c_str() << " this:" << this);
+	SLOGI()<<"change skin, new skin:" << strSkin.c_str() << " old skin:" << g_SettingsG->strSkin.c_str() << " this:" << this;
 	if(g_SettingsG->strSkin != strSkin || g_SettingsG->bEnableDebugSkin)
 	{
 		SStringT skinPath = strSkin;
@@ -782,7 +787,7 @@ void CIsSvrProxy::OnCheckReconn()
 			break;
 		if(!m_ipcSvr->FindConnection((ULONG_PTR)hFind))
 		{
-			SLOG_INFO("onDataLoaded, notify client to reconnect:"<<hFind);
+			SLOGI()<<"onDataLoaded, notify client to reconnect:"<<hFind;
 			::PostMessage(hFind,UM_RECONN,0,0);
 		}
 		hAfter = hFind;
@@ -800,7 +805,7 @@ void CIsSvrProxy::BackupData()
 {
 	if(m_strDataPath.CompareNoCase(g_SettingsG->szBackupDir)==0)
 	{
-		SLOG_WARN("backup dir is same as instal dir");
+		SLOGW()<<"backup dir is same as instal dir";
 		return;
 	}
 
@@ -822,13 +827,13 @@ static const LPCTSTR KBackupDirs[]={
 };
 int CIsSvrProxy::BackupDir(const SStringT &strFrom,const SStringT & strTo)
 {
-	SLOG_INFO("backup dir from "<<strFrom<<" to"<<strTo);
+	SLOGI()<<"backup dir from "<<strFrom<<" to"<<strTo;
 
 	for(int i=0;i<ARRAYSIZE(KBackupDirs);i++)
 	{
 		TCHAR szSour[MAX_PATH]={0},szDest[MAX_PATH]={0};
-		_stprintf(szSour,_T("%s\\%s"),strFrom,KBackupDirs[i]);
-		_stprintf(szDest,_T("%s\\%s"),strTo,KBackupDirs[i]);
+		_stprintf(szSour,_T("%s\\%s"),strFrom.c_str(), KBackupDirs[i]);
+		_stprintf(szDest,_T("%s\\%s"),strTo.c_str(),KBackupDirs[i]);
 		SHFILEOPSTRUCT fileOp = { 0 };
 
 		if(GetFileAttributes(szDest)!=INVALID_FILE_ATTRIBUTES)
@@ -837,7 +842,7 @@ int CIsSvrProxy::BackupDir(const SStringT &strFrom,const SStringT & strTo)
 			fileOp.fFlags = FOF_NOCONFIRMATION | FOF_SILENT | FOF_FILESONLY;
 			fileOp.pFrom = szDest;
 			int nRet = SHFileOperation(&fileOp);
-			SLOG_INFO("delete "<<szDest<<" return "<<nRet);
+			SLOGI()<<"delete "<<szDest<<" return "<<nRet;
 			if(nRet != 0)
 				return nRet;
 		}
@@ -846,7 +851,7 @@ int CIsSvrProxy::BackupDir(const SStringT &strFrom,const SStringT & strTo)
 		fileOp.pFrom = szSour;
 		fileOp.pTo = szDest;
 		int nRet = SHFileOperation(&fileOp);
-		SLOG_INFO("backup "<<KBackupDirs[i]<<" return "<<nRet);
+		SLOGI()<<"backup "<<KBackupDirs[i]<<" return "<<nRet;
 		if(nRet != 0)
 			return nRet;
 	}
@@ -858,7 +863,7 @@ bool CIsSvrProxy::IsBackupDirValid(const SStringT & strDir)
 	for(int i=0;i<ARRAYSIZE(KBackupDirs);i++)
 	{
 		TCHAR szDest[MAX_PATH]={0};
-		_stprintf(szDest,_T("%s\\%s"),strDir,KBackupDirs[i]);
+		_stprintf(szDest,_T("%s\\%s"),strDir.c_str(),KBackupDirs[i]);
 		if(GetFileAttributes(szDest)==INVALID_FILE_ATTRIBUTES)
 			return false;
 	}
@@ -877,4 +882,16 @@ ULONG_PTR CIsSvrProxy::OnNewConnection(IIpcHandle * pIpcHandle, IIpcConnection *
 	CSvrConnection *pConn = new CSvrConnection(pIpcHandle,m_hWnd,this);
 	*ppConn = pConn;
 	return (ULONG_PTR)pConn->m_hWnd;
+}
+
+void CIsSvrProxy::InstallCit(const SStringT & citPath)
+{
+	if(m_pCore->InstallCit(citPath))
+	{
+		SMessageBox(NULL,_T("码表安装成功！"),_T("提示"),MB_OK|MB_ICONINFORMATION);
+	}else
+	{
+		SMessageBox(NULL,SStringT().Format(_T("码表安装失败！错误码:%d"),GetLastError()),_T("提示"),MB_OK|MB_ICONSTOP);
+	}
+
 }

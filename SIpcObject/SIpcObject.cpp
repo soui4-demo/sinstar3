@@ -78,7 +78,7 @@ namespace SOUI
 		if (!IsWindow(hSvr))
 			return E_INVALIDARG;
 		DWORD_PTR dwResult = 0;
-		LRESULT lRet = ::SendMessageTimeout(hSvr, UM_CALL_FUN, FUN_ID_CONNECT, (LPARAM)idLocal, SMTO_ABORTIFHUNG,100,&dwResult);
+		LRESULT lRet = ::SendMessageTimeout(hSvr, UM_CALL_FUN, FUN_ID_CONNECT, (LPARAM)idLocal, SMTO_ABORTIFHUNG,1000,&dwResult);
 		if (lRet == 0)
 		{
 			return E_FAIL;
@@ -268,6 +268,16 @@ namespace SOUI
 		, m_hSvr(NULL)
 	{}
 
+	SIpcServer::~SIpcServer()
+	{
+		ConnMap::iterator it = m_mapClients.begin();
+		while(it!=m_mapClients.end()){
+			it->second->Release();
+			it++;
+		}
+		m_mapClients.clear();
+	}
+
 	LRESULT SIpcServer::OnMessage(ULONG_PTR idLocal, UINT uMsg, WPARAM wp, LPARAM lp,BOOL &bHandled)
 	{
 		bHandled = FALSE;
@@ -398,5 +408,11 @@ namespace SOUI
 		return TRUE;
 	}
 }
+
+EXTERN_C BOOL Ipc_SCreateInstance(IObjRef **ppIpcFactory)
+{
+	return SOUI::IPC::SCreateInstance(ppIpcFactory);
+}
+
 
  

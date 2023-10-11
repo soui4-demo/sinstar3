@@ -19,7 +19,7 @@
 #define RATE_USERDICT	0xF7	//user dict
 
 enum{
-	SENDER_SINSTSR3	= 100,
+	SENDER_SINSTAR3	= 100,
 	SENDER_SKINMANAGER,
 };
 
@@ -36,15 +36,14 @@ enum{
 
 namespace SOUI
 {
-	SEVENT_BEGIN(EventSvrNotify,EVENT_SVRNOTIFY)
+	DEF_EVT_EXT(EventSvrNotify,EVENT_SVRNOTIFY,{
 		WPARAM wp;
 		LPARAM lp;
-	SEVENT_END()
+	})
 
-	SEVENT_BEGIN(EventSetSkin,EVENT_SETSKIN)
-	SEVENT_END()
+	DEF_EVT_EXT(EventSetSkin,EVENT_SETSKIN,{int fake;})
 
-	SEVENT_BEGIN(EventCheckUpdateResult,EVENT_CHECK_UPDATE_RESULT)
+	DEF_EVT_EXT(EventCheckUpdateResult,EVENT_CHECK_UPDATE_RESULT,{
 		bool    bServerOK;
 		bool	bManual;
 		SStringW strUrl;
@@ -52,17 +51,18 @@ namespace SOUI
 		SStringW strNewUpdateUrl;
 		DWORD	 dwNewVer;
 		DWORD    dwCurVer;
-	SEVENT_END()
+	})
 
-	SEVENT_BEGIN(EventCandClick,EVENT_CAND_CLICK)
+	DEF_EVT_EXT(EventCandClick,EVENT_CAND_CLICK,{
 		SStringW strText;
 		BYTE	 byRate;
-	SEVENT_END()
+	})
+	
 
-	SEVENT_BEGIN(EventQueryTip,EVENT_QUERY_TIP)
+	DEF_EVT_EXT(EventQueryTip,EVENT_QUERY_TIP,{
 		SStringW strText;
 		SStringW strTip;
-	SEVENT_END()
+	})
 
 }
 

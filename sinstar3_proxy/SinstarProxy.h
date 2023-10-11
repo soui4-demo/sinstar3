@@ -3,7 +3,7 @@
 #include "../include/sinstar-i.h"
 #include "../include/unknown.h"
 #include "../include/protocol.h"
-#include <unknown\obj-ref-impl.hpp>
+#include <helper\obj-ref-impl.hpp>
 
 class CClientConnection : public SOUI::TObjRefImpl<SOUI::IIpcConnection>
 {
@@ -30,7 +30,6 @@ protected:
 	void OnGetOpenStatus( Param_GetOpenStatus &param);
 	void OnGetActiveWnd( Param_GetActiveWnd &param);
 	void OnUpdateUI(Param_UpdateUI&);
-	void OnUpdatePreedit(Param_UpdatePreedit&);
 	FUN_BEGIN
 		FUN_HANDLER(Param_InputStringW, OnInputStringW)
 		FUN_HANDLER(Param_IsCompositing, OnIsCompositing)
@@ -44,7 +43,6 @@ protected:
 		FUN_HANDLER(Param_GetOpenStatus, OnGetOpenStatus)
 		FUN_HANDLER(Param_GetActiveWnd, OnGetActiveWnd)
 		FUN_HANDLER(Param_UpdateUI,OnUpdateUI)
-		FUN_HANDLER(Param_UpdatePreedit, OnUpdatePreedit)
 	FUN_END
 
 private:
@@ -61,7 +59,7 @@ public:
 	CSinstarProxy(ITextService *pTxtService);
 	~CSinstarProxy();
 
-	BOOL Init(HWND hClient,  LPCTSTR pszSvrPath);
+	int Init(HWND hClient,  LPCTSTR pszSvrPath);
 
 	BOOL ProcessWindowMessage(HWND hWnd, UINT uMsg, WPARAM wp, LPARAM lp, LRESULT &result)
 	{

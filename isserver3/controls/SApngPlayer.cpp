@@ -59,7 +59,7 @@ void SApngPlayer::OnNextFrame()
 
 HRESULT SApngPlayer::OnAttrSkin( const SStringW & strValue, BOOL bLoading )
 {
-	ISkinObj *pSkin = SSkinPoolMgr::getSingleton().GetSkin(strValue,GetScale());
+	ISkinObj *pSkin = GETSKIN(strValue,GetScale());
 	if(!pSkin) return E_FAIL;
 	if(!pSkin->IsClass(SSkinAni::GetClassName())) return S_FALSE;
 	m_aniSkin=static_cast<SSkinAni*>(pSkin);
@@ -74,20 +74,19 @@ HRESULT SApngPlayer::OnAttrSkin( const SStringW & strValue, BOOL bLoading )
 	return bLoading?S_OK:S_FALSE;
 }
 
-CSize SApngPlayer::GetDesiredSize( int nWid,int nHei )
+void SApngPlayer::GetDesiredSize(SIZE *szRet, int nWid,int nHei )
 {
-	CSize szRet = __super::GetDesiredSize(nWid,nHei);
+	__baseCls::GetDesiredSize(szRet,nWid,nHei);
 	CSize szSkin;
 	if(m_aniSkin) szSkin=m_aniSkin->GetSkinSize();
 	if(GetLayoutParam()->IsWrapContent(Horz))
-		szRet.cx = szSkin.cx;
+		szRet->cx = szSkin.cx;
 	else if(GetLayoutParam()->IsSpecifiedSize(Horz))
-		szRet.cx = GetLayoutParam()->GetSpecifiedSize(Horz).toPixelSize(GetScale());
+		szRet->cx = GetLayoutParam()->GetSpecifiedSize(Horz).toPixelSize(GetScale());
 	if(GetLayoutParam()->IsWrapContent(Vert))
-		szRet.cy = szSkin.cy;
+		szRet->cy = szSkin.cy;
 	else if(GetLayoutParam()->IsSpecifiedSize(Vert))
-		szRet.cy = GetLayoutParam()->GetSpecifiedSize(Vert).toPixelSize(GetScale());
-	return szRet;
+		szRet->cy = GetLayoutParam()->GetSpecifiedSize(Vert).toPixelSize(GetScale());
 }
 
 
@@ -121,4 +120,13 @@ void SApngPlayer::OnDestroy()
     GetContainer()->UnregisterTimelineHandler(this);
     __super::OnDestroy();
 }
+
+void SApngPlayer::OnScaleChanged(int scale)
+{
+	__baseCls::OnScaleChanged(scale);
+	SAutoRefPtr<ISkinObj> aniSkin=m_aniSkin;
+	GetScaleSkin(aniSkin, scale);
+	m_aniSkin=(SSkinAni*)(ISkinObj*)aniSkin;
+}
+
 }

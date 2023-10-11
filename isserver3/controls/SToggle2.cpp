@@ -26,11 +26,11 @@ namespace SOUI
 		pSkin->DrawByIndex(pRT,rcWnd,iState);
 	}
 
-	CSize SToggle2::GetDesiredSize(int wid,int hei)
+	void SToggle2::GetDesiredSize(SIZE *szRet,int wid,int hei)
 	{
 		if(!m_pSkin1)
-			return CSize();
-		return m_pSkin1->GetSkinSize();
+			return;
+		*szRet = m_pSkin1->GetSkinSize();
 	}
 
 	void SToggle2::OnScaleChanged(int scale)

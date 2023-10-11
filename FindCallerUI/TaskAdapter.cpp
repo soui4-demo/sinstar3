@@ -46,7 +46,7 @@ namespace SOUI {
 		return m_arrTasks.GetCount();
 	}
 
-	void CTaskAdapter::getView(int position, SWindow * pItem, pugi::xml_node xmlTemplate)
+	void CTaskAdapter::getView(int position, IWindow * pItem, IXmlNode * xmlTemplate)
 	{
 		if (pItem->GetChildrenCount() == 0)
 		{
@@ -54,9 +54,9 @@ namespace SOUI {
 		}
 
 		TASKINFO &ti = m_arrTasks[position];
-		pItem->FindChildByID(R.id.txt_pid)->SetWindowText(SStringT().Format(_T("%u"),ti.pid));
-		pItem->FindChildByID(R.id.txt_name)->SetWindowText(ti.szName);
-		pItem->FindChildByID(R.id.txt_path)->SetWindowText(ti.szPath);
+		pItem->FindIChildByID(R.id.txt_pid)->SetWindowText(SStringT().Format(_T("%u"),ti.pid));
+		pItem->FindIChildByID(R.id.txt_name)->SetWindowText(ti.szName);
+		pItem->FindIChildByID(R.id.txt_path)->SetWindowText(ti.szPath);
 	}
 
 	//删除一行，提供外部调用。
@@ -79,9 +79,9 @@ namespace SOUI {
 		return KColNames[iCol];
 	}
 
-	 bool CTaskAdapter::OnSort(int iCol, SHDSORTFLAG * stFlags, int nCols)
+	 BOOL CTaskAdapter::OnSort(int iCol, UINT * stFlags, int nCols)
 	{
-		return true;
+		return TRUE;
 	}
 
 	 int CTaskAdapter::SortCmp(void * context, const void * p1, const void * p2)

@@ -66,7 +66,7 @@
     </window>
     <window  layout="hbox">
       <text text="语句模式切换:" name="key_to_sentmode"/>
-      <hotkey size="50dp,-1" name="hk_to_sentmode" extend_left="10" invalidComb="7" padding="5,0,5,0"/>
+      <hotkey size="50dp,-1" name="hk_to_sentmode" extend_left="10" invalidSysKey="ctrl|alt|shift" invalidModifier="" padding="5,0,5,0"/>
     </window>
     <window  layout="vbox">
       <text text="重码上屏模式:"/>

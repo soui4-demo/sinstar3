@@ -23,7 +23,7 @@ protected:
 
         pT->SNativeWnd::GetWindowRect(rcWindow);
         pT->SNativeWnd::GetClientRect(rcClient);
-        pT->SNativeWnd::ClientToScreen(rcClient);
+        pT->SNativeWnd::ClientToScreen2(&rcClient);
 
         rcClient.OffsetRect(- rcWindow.TopLeft());
 

@@ -41,8 +41,8 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories=".;&quot;$(SOUI3PATH)\config&quot;;&quot;$(SOUI3PATH)\components&quot;;&quot;$(SOUI3PATH)\SOUI\include&quot;;&quot;$(SOUI3PATH)\utilities\include&quot;;&quot;$(SolutionDir)include&quot;;&quot;$(SolutionDir)ipcobject\include&quot;;&quot;$(SOUI3PATH)\third-part\Scintilla\include&quot;"
-				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS"
+				AdditionalIncludeDirectories=".;&quot;$(SOUI4PATH)\config&quot;;&quot;$(SOUI4PATH)\components&quot;;&quot;$(SOUI4PATH)\SOUI\include&quot;;&quot;$(SOUI4PATH)\utilities\include&quot;;&quot;$(SolutionDir)include&quot;;&quot;$(SolutionDir)ipcobject\include&quot;;&quot;$(SOUI4PATH)\third-part\Scintilla\include&quot;"
+				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_CRT_NONSTDC_NO_WARNINGS"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="1"
@@ -61,9 +61,9 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="imm32.lib utilitiesd.lib soui3d.lib helperd.lib Scintillad.lib iscommd.lib sipcobjectd.lib slog4zd.lib"
+				AdditionalDependencies="imm32.lib utilities4d.lib soui4d.lib helperd.lib Scintillad.lib iscommd.lib sipcobjectd.lib"
 				LinkIncremental="2"
-				AdditionalLibraryDirectories="&quot;$(SolutionDir)lib&quot;;&quot;$(SOUI3PATH)\bin&quot;"
+				AdditionalLibraryDirectories="&quot;$(SolutionDir)lib&quot;;&quot;$(SOUI4PATH)\bin&quot;"
 				GenerateDebugInformation="true"
 				SubSystem="2"
 				TargetMachine="1"
@@ -118,8 +118,8 @@
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				EnableIntrinsicFunctions="true"
-				AdditionalIncludeDirectories=".;&quot;$(SOUI3PATH)\config&quot;;&quot;$(SOUI3PATH)\components&quot;;&quot;$(SOUI3PATH)\SOUI\include&quot;;&quot;$(SOUI3PATH)\utilities\include&quot;;&quot;$(SolutionDir)include&quot;;&quot;$(SolutionDir)ipcobject\include&quot;;&quot;$(SOUI3PATH)\third-part\Scintilla\include&quot;"
-				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS"
+				AdditionalIncludeDirectories=".;&quot;$(SOUI4PATH)\config&quot;;&quot;$(SOUI4PATH)\components&quot;;&quot;$(SOUI4PATH)\SOUI\include&quot;;&quot;$(SOUI4PATH)\utilities\include&quot;;&quot;$(SolutionDir)include&quot;;&quot;$(SolutionDir)ipcobject\include&quot;;&quot;$(SOUI4PATH)\third-part\Scintilla\include&quot;"
+				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_CRT_NONSTDC_NO_WARNINGS"
 				RuntimeLibrary="0"
 				EnableFunctionLevelLinking="true"
 				UsePrecompiledHeader="0"
@@ -138,9 +138,9 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="imm32.lib utilities.lib soui3.lib helper.lib iscomm.lib Scintilla.lib sipcobject.lib slog4z.lib"
+				AdditionalDependencies="imm32.lib utilities4.lib soui4.lib helper.lib iscomm.lib Scintilla.lib sipcobject.lib"
 				LinkIncremental="1"
-				AdditionalLibraryDirectories="&quot;$(SolutionDir)lib&quot;;&quot;$(SOUI3PATH)\bin&quot;"
+				AdditionalLibraryDirectories="&quot;$(SolutionDir)lib&quot;;&quot;$(SOUI4PATH)\bin&quot;"
 				GenerateDebugInformation="true"
 				SubSystem="2"
 				OptimizeReferences="2"
@@ -309,6 +309,10 @@
 			</File>
 			<File
 				RelativePath=".\ime\ui\SkinMananger.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ime\ui\SkinPreview.cpp"
 				>
 			</File>
 			<File
@@ -506,11 +510,11 @@
 				>
 			</File>
 			<File
-				RelativePath=".\resource.h"
+				RelativePath=".\res\resource.h"
 				>
 			</File>
 			<File
-				RelativePath=".\res\resource.h"
+				RelativePath=".\resource.h"
 				>
 			</File>
 			<File
@@ -575,6 +579,10 @@
 			</File>
 			<File
 				RelativePath=".\ime\ui\SkinMananger.h"
+				>
+			</File>
+			<File
+				RelativePath=".\ime\ui\SkinPreview.h"
 				>
 			</File>
 			<File

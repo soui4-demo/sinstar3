@@ -4,7 +4,7 @@ namespace SOUI
 {
 	class SFlagView : public SWindow
 	{
-		SOUI_CLASS_NAME(SFlagView,L"FlagView")
+		DEF_SOBJECT(SWindow,L"FlagView")
 	public:
 		SFlagView();
 		~SFlagView();

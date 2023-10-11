@@ -12,16 +12,17 @@
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{662BB87E-E016-4610-87F4-8DECCB0CB085}</ProjectGuid>
+    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>v140</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>v140</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
@@ -50,7 +51,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>$(SOUI3PATH)\config;$(SOUI3PATH)\components;$(SOUI3PATH)\SOUI\include;$(SOUI3PATH)\utilities\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SOUI4PATH)\config;$(SOUI4PATH)\components;$(SOUI4PATH)\SOUI\include;$(SOUI4PATH)\utilities\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_WINDOWS;STRICT;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
@@ -65,9 +66,9 @@
       <Culture>0x0804</Culture>
     </ResourceCompile>
     <Link>
-      <AdditionalDependencies>utilitiesd.lib;soui3d.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>utilities4d.lib;soui4d.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <SuppressStartupBanner>true</SuppressStartupBanner>
-      <AdditionalLibraryDirectories>$(SOUI3PATH)\bin;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SOUI4PATH)\bin;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Windows</SubSystem>
     </Link>
@@ -75,7 +76,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
       <WholeProgramOptimization>true</WholeProgramOptimization>
-      <AdditionalIncludeDirectories>$(SOUI3PATH)\config;$(SOUI3PATH)\components;$(SOUI3PATH)\SOUI\include;$(SOUI3PATH)\utilities\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SOUI4PATH)\config;$(SOUI4PATH)\components;$(SOUI4PATH)\SOUI\include;$(SOUI4PATH)\utilities\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
@@ -87,9 +88,9 @@
       <Culture>0x0804</Culture>
     </ResourceCompile>
     <Link>
-      <AdditionalDependencies>utilities.lib;soui3.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>utilities4.lib;soui4.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <SuppressStartupBanner>true</SuppressStartupBanner>
-      <AdditionalLibraryDirectories>$(SOUI3PATH)\bin;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SOUI4PATH)\bin;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Windows</SubSystem>
     </Link>
@@ -118,11 +119,11 @@
     <None Include="res\soui_res.rc2" />
     <CustomBuild Include="uires\uires.idx">
       <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Building SoUI Resource</Message>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">"$(SOUI3PATH)\tools\uiresbuilder.exe" -i "%(FullPath)" -p uires -r .\res\soui_res.rc2 -h .\res\resource.h idtable
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">"$(SOUI4PATH)\tools\uiresbuilder.exe" -i "%(FullPath)" -p uires -r .\res\soui_res.rc2 -h .\res\resource.h idtable
 </Command>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">.\res\soui_res.rc2;%(Outputs)</Outputs>
       <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Building SoUI Resource</Message>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">"$(SOUI3PATH)\tools\uiresbuilder.exe" -i "%(FullPath)" -p uires -r .\res\soui_res.rc2 -h .\res\resource.h idtable
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">"$(SOUI4PATH)\tools\uiresbuilder.exe" -i "%(FullPath)" -p uires -r .\res\soui_res.rc2 -h .\res\resource.h idtable
 </Command>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">.\res\soui_res.rc2;%(Outputs)</Outputs>
     </CustomBuild>

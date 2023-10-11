@@ -8,7 +8,7 @@ author:		huangjianxiong
 *********************************************************************/
 #pragma once
 #include <interface/SSkinobj-i.h>
-#include <unknown/obj-ref-impl.hpp>
+#include <helper/obj-ref-impl.hpp>
 
 #include "SSkinAni.h"
 
@@ -23,7 +23,7 @@ namespace SOUI
     */
     class SSkinPNGX : public SSkinAni
     {
-        SOUI_CLASS_NAME(SSkinPNGX, L"pngx")
+        DEF_SOBJECT(SSkinAni, L"pngx")
     public:
 		SSkinPNGX();
 
@@ -33,9 +33,9 @@ namespace SOUI
 			ATTR_BOOL(L"vert",m_bVert,FALSE)
         SOUI_ATTRS_END()
 	protected:
-		virtual int GetStates() const  override;
+		virtual int WINAPI GetStates() const  override;
 
-        virtual SIZE GetSkinSize() const override;
+        virtual SIZE WINAPI GetSkinSize() const override;
 
         /**
         * GetFrameDelay

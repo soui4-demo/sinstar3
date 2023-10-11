@@ -2,6 +2,7 @@
 #include "TextServiceProxy.h"
 #include "../helper/helper.h"
 #include "Sinstar3Impl.h"
+#include <helper/SFunctor.hpp>
 
 CSvrConnection::CSvrConnection(IIpcHandle *pIpcHandle,HWND hSvr,IConntionFocusListener * pFocusListener)
 :m_ipcHandle(pIpcHandle)
@@ -10,12 +11,13 @@ CSvrConnection::CSvrConnection(IIpcHandle *pIpcHandle,HWND hSvr,IConntionFocusLi
 ,m_yScale(1.0f)
 ,m_pFocusListener(pFocusListener)
 {
-	Create(L"svr_conn_wnd",0,0,0,0,0,0,HWND_MESSAGE,NULL);
+	BeginThread();
 }
 
 CSvrConnection::~CSvrConnection(void)
 {
-	DestroyWindow();
+	PostThreadMessage(GetThreadId(),WM_QUIT,0,0);
+	EndThread();
 }
 
 BOOL CSvrConnection::InputStringW(LPCWSTR pszBuf, int nLen)
@@ -110,7 +112,7 @@ void CSvrConnection::HandleCreate(Param_Create & param)
 	TCHAR szVer[100];
 	m_strHostPath = param.strHostPath;
 	Helper_VersionString(param.dwVer, szVer);
-	SLOG_INFO("create connection, host:" << m_strHostPath.c_str() << " ver:" << szVer);
+	SLOGI()<<"create connection, host:" << m_strHostPath.c_str() << " ver:" << szVer;
 	m_pSinstar.Attach(new CSinstar3Impl(this, m_hSvr));
 }
 
@@ -128,7 +130,7 @@ void CSvrConnection::HandleScaleInfo(Param_ScaleInfo &param)
 			m_yScale = rcWnd.Height()*1.0f/param.szWnd.cy;
 	}else
 	{
-		SLOG_ERROR("ref hwnd is invalid");
+		SLOGE()<<"ref hwnd is invalid";
 	}
 }
 
@@ -140,7 +142,10 @@ void CSvrConnection::HandleDestroy(Param_Destroy & param)
 
 void CSvrConnection::HandleOnImeSelect(Param_OnImeSelect & param)
 {
-	if(!m_pSinstar) return;
+	if(!m_pSinstar){
+		SLOGE()<<"HandleOnImeSelect failed! m_pSinstar not created! bSelect="<<param.bSelect;
+		return;
+	}
 	m_pSinstar->OnIMESelect(param.bSelect);
 
 }
@@ -200,7 +205,7 @@ void CSvrConnection::HandleTranslateKey(Param_TranslateKey &param)
 
 void CSvrConnection::HandleOnSetFocus(Param_OnSetFocus &param)
 {
-	SLOG_INFO("OnSetFocus, host:"<<m_strHostPath.c_str()<<" bFocus:"<<param.bFocus);
+	SLOGI()<<"OnSetFocus, host:"<<m_strHostPath.c_str()<<" bFocus:"<<param.bFocus;
 	if(!m_pSinstar) return;
 	m_pSinstar->OnSetFocus(param.bFocus,param.dwActiveWnd);
 	if(m_pFocusListener)
@@ -292,9 +297,28 @@ bool CSvrConnection::CallFun(IFunParams * params) const
 
 void CSvrConnection::OnSkinChanged()
 {
+	STaskHelper::post(m_msgLoop,this,&CSvrConnection::_OnSkinChanged);
+}
+
+void CSvrConnection::_OnSkinChanged()
+{
 	if(!m_pSinstar) return;
 	CSinstar3Impl *pSinstar3 =(CSinstar3Impl*)(ISinstar*)m_pSinstar;
 	pSinstar3->OnSkinChanged();
+}
+
+
+void CSvrConnection::OnLoseFocus()
+{
+	STaskHelper::post(m_msgLoop,this,&CSvrConnection::_OnLoseFocus);
+}
+
+void CSvrConnection::_OnLoseFocus()
+{
+	Param_OnSetFocus param;
+	param.bFocus = FALSE;
+	param.dwActiveWnd = 0;
+	HandleOnSetFocus(param);
 }
 
 int CSvrConnection::GetBufSize() const 
@@ -311,4 +335,30 @@ LRESULT CSvrConnection::OnReq(UINT msg,WPARAM wp,LPARAM lp)
 {
 	BOOL bHandled = FALSE;
 	return GetIpcHandle()->OnMessage((ULONG_PTR)m_hWnd,msg,wp,lp,bHandled);
+}
+
+UINT CSvrConnection::Run(LPARAM lp)
+{
+	return m_msgLoop->Run();//run message loop
+}
+
+void CSvrConnection::Quit()
+{
+	CThreadObject::Quit();
+}
+
+void CSvrConnection::OnThreadStart()
+{
+	SLOGI()<<"new connection thread id="<<GetThreadId();
+	SApplication::getSingleton().GetMsgLoopFactory()->CreateMsgLoop(&m_msgLoop, NULL);
+	SApplication::getSingleton().AddMsgLoop(m_msgLoop);
+	CreateNative(L"svr_conn_wnd",0,0,0,0,0,0,HWND_MESSAGE,NULL);
+}
+
+void CSvrConnection::OnThreadStop()
+{
+	m_pSinstar=NULL;
+	DestroyWindow();
+	SApplication::getSingleton().RemoveMsgLoop();
+	m_msgLoop=NULL;
 }

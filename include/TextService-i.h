@@ -55,5 +55,4 @@ interface ITextService
 	virtual BOOL GetOpenStatus() const =NULL;
 	virtual DWORD GetActiveWnd() const = NULL;
 	virtual void UpdateUI(UINT64 imeContext, bool bPageChanged, UINT curPage) {}
-	virtual void UpdatePreedit(UINT64 pContext, const std::wstring& strPreedit) {};
 };

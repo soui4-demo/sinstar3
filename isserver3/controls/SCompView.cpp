@@ -82,23 +82,22 @@ namespace SOUI
 	{
 	}
 
-	CSize SCompView::GetDesiredSize(int wid, int hei)
+	void SCompView::GetDesiredSize(SIZE *szRet,int wid, int hei)
 	{
 		SStringT strComp = GetWindowText();
 		if(strComp.IsEmpty())
 			SetWindowText(_T("A"));
-		CSize szRet = SWindow::GetDesiredSize(wid, hei);
+		SWindow::GetDesiredSize(szRet,wid, hei);
 		if(strComp.IsEmpty())
 		{
 			SetWindowText(strComp);
 			if(GetLayoutParam()->IsWrapContent(Horz))
-				szRet.cx = 0;
+				szRet->cx = 0;
 		}
 		if (GetLayoutParam()->IsWrapContent(Horz))
 		{
-			szRet.cx += m_caretWidth.toPixelSize(GetScale());
+			szRet->cx += m_caretWidth.toPixelSize(GetScale());
 		}
-		return szRet;
 	}
 
 	void SCompView::OnNextFrame()

@@ -2,7 +2,9 @@
 #include "DataCenter.h"
 #include "../ime/ui/SkinMananger.h"
 #include "../IsSvrProxy.h"
+#include <SouiFactory.h>
 
+//#define kLogTag "CDataCenter"
 namespace SOUI
 {
 	template<>
@@ -78,7 +80,7 @@ namespace SOUI
 		TCHAR szFilter[MAX_PATH];
 		TCHAR szFullPath[MAX_PATH];
 		COMPHEAD header = { 0 };
-		_stprintf(szFilter, _T("%s\\*.cit"), GetDataPath());
+		_stprintf(szFilter, _T("%s\\*.cit"), GetDataPath().c_str());
 		WIN32_FIND_DATA fd;
 		HANDLE hFind = FindFirstFile(szFilter, &fd);
 		if (hFind != INVALID_HANDLE_VALUE)
@@ -86,7 +88,7 @@ namespace SOUI
 			do {
 				if (!(fd.dwFileAttributes&FILE_ATTRIBUTE_DIRECTORY))
 				{
-					_stprintf(szFullPath, _T("%s\\%s"), GetDataPath(), fd.cFileName);
+					_stprintf(szFullPath, _T("%s\\%s"), GetDataPath().c_str(), fd.cFileName);
 					if (CIsSvrProxy::GetSvrCore()->ExtractCompInfo(szFullPath, &header, NULL))
 					{
 						CNameTypePair item;
@@ -110,7 +112,7 @@ namespace SOUI
 		TCHAR szFilter[MAX_PATH];
 		TCHAR szFullPath[MAX_PATH];
 		FLMINFO header = { 0 };
-		_stprintf(szFilter, _T("%s\\*.flm"), GetDataPath());
+		_stprintf(szFilter, _T("%s\\*.flm"), GetDataPath().c_str());
 		WIN32_FIND_DATA fd;
 		HANDLE hFind = FindFirstFile(szFilter, &fd);
 		if (hFind != INVALID_HANDLE_VALUE)
@@ -118,7 +120,7 @@ namespace SOUI
 			do {
 				if (!(fd.dwFileAttributes&FILE_ATTRIBUTE_DIRECTORY))
 				{
-					_stprintf(szFullPath, _T("%s\\%s"), GetDataPath(), fd.cFileName);
+					_stprintf(szFullPath, _T("%s\\%s"), GetDataPath().c_str(), fd.cFileName);
 					if (CIsSvrProxy::GetSvrCore()->ExtractFlmInfo(szFullPath, &header))
 					{
 						CNameTypePair item;
@@ -177,6 +179,7 @@ namespace SOUI
 
 	bool CMyData::changeSkin(const SStringT &strSkin)
 	{
+		SouiFactory souiFac;
 		DWORD dwBegin = GetTickCount();
 		if (!strSkin.IsEmpty())
 		{//加载外部皮肤
@@ -185,18 +188,19 @@ namespace SOUI
 			{
 				g_ComMgr2->CreateResProvider_ZIP((IObjRef**)&pResProvider);
 				ZIPRES_PARAM param;
-				param.ZipFile(GETRENDERFACTORY, strSkin);
+				ZipFile(&param,GETRENDERFACTORY, strSkin);
 				if (!pResProvider->Init((WPARAM)&param, 0))
 					return false;
 			}else
 			{//load folder
-				CreateResProvider(RES_FILE,(IObjRef**)&pResProvider);
+				pResProvider.Attach(souiFac.CreateResProvider(RES_FILE));
 				if(!pResProvider->Init((WPARAM)(LPCTSTR)strSkin,0))
 					return false;
 			}
 
 			SApplication::getSingleton().AddResProvider(pResProvider, NULL);
-			IUiDefInfo * pUiDef = SUiDef::CreateUiDefInfo2(pResProvider, _T("uidef:xml_init"));
+			IUiDefInfo *pUiDef = SUiDef::CreateUiDefInfo();
+			pUiDef->Init(pResProvider, _T("uidef:xml_init"));
 			SApplication::getSingleton().RemoveResProvider(pResProvider);
 			if (pUiDef->GetObjDefAttr())
 			{//不允许皮肤中存在全局的object default attribute
@@ -206,47 +210,31 @@ namespace SOUI
 
 			if (!g_SettingsG->strSkin.IsEmpty() && g_SettingsG->strSkin!= strSkin)
 			{//清除正在使用的外置皮肤。
+				//remove skin pool and style pool created from this resource package.
 				IResProvider *pLastRes = SApplication::getSingleton().GetTailResProvider();
 				SApplication::getSingleton().RemoveResProvider(pLastRes);
-
-				//remove skin pool and style pool created from this resource package.
-				IUiDefInfo *pCurUiDef = SUiDef::getSingleton().GetUiDef();
-				if(pCurUiDef->GetSkinPool())
-					SSkinPoolMgr::getSingleton().PopSkinPool(pCurUiDef->GetSkinPool());
-				if(pCurUiDef->GetStylePool())
-					SStylePoolMgr::getSingleton().PopStylePool(pCurUiDef->GetStylePool());
+				SUiDef::getSingletonPtr()->PopUiDefInfo(NULL);
 			}
 
 			SApplication::getSingleton().AddResProvider(pResProvider, NULL);
 			CSkinMananger::ExtractSkinOffset(pResProvider,m_skinInfo);
-
-			if(pUiDef->GetSkinPool())
-				SSkinPoolMgr::getSingleton().PushSkinPool(pUiDef->GetSkinPool());
-			if(pUiDef->GetStylePool())
-				SStylePoolMgr::getSingleton().PushStylePool(pUiDef->GetStylePool());
-			pUiDef->GetNamedColor().Merge(m_defUiDefine->GetNamedColor());
-			pUiDef->GetNamedString().Merge(m_defUiDefine->GetNamedString());
-			pUiDef->GetNamedDimension().Merge(m_defUiDefine->GetNamedDimension());
-			pUiDef->SetObjDefAttr(m_defUiDefine->GetObjDefAttr());
-			SUiDef::getSingleton().SetUiDef(pUiDef,g_SettingsG->strFontDesc.IsEmpty());
+			SUiDef::getSingletonPtr()->PushUiDefInfo(pUiDef);
+			if(g_SettingsG->strFontDesc.IsEmpty())
+				SUiDef::getSingletonPtr()->SetDefFontInfo(pUiDef->GetDefFontInfo());
 			pUiDef->Release();
 		}
 		else if (!g_SettingsG->strSkin.IsEmpty())
 		{//清除正在使用的外置皮肤,还原使用系统内置皮肤
 			IResProvider *pLastRes = SApplication::getSingleton().GetTailResProvider();
 			SApplication::getSingleton().RemoveResProvider(pLastRes);
-			IUiDefInfo *pCurUiDef = SUiDef::getSingleton().GetUiDef();
-			if(pCurUiDef->GetSkinPool())
-				SSkinPoolMgr::getSingleton().PopSkinPool(pCurUiDef->GetSkinPool());
-			if(pCurUiDef->GetStylePool())
-				SStylePoolMgr::getSingleton().PopStylePool(pCurUiDef->GetStylePool());
-
-			SUiDef::getSingleton().SetUiDef(m_defUiDefine,g_SettingsG->strFontDesc.IsEmpty());
+			SUiDef::getSingletonPtr()->PopUiDefInfo(NULL);
+			if(g_SettingsG->strFontDesc.IsEmpty())
+				SUiDef::getSingletonPtr()->SetDefFontInfo(m_defUiDefine->GetDefFontInfo());
 
 			IResProvider *pCurRes = SApplication::getSingleton().GetHeadResProvider();
 			CSkinMananger::ExtractSkinOffset(pCurRes,m_skinInfo);
 		}
-		SLOG_INFO("change skin "<<strSkin<< " cost " << GetTickCount()-dwBegin);
+		SLOGI()<<"change skin "<<strSkin<< " cost " << (GetTickCount()-dwBegin);
 
 		return true;
 	}

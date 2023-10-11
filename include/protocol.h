@@ -107,7 +107,6 @@ enum {
 	ITextService_GetActiveWnd,
 	ITextService_CandidateListInfo,
 	ITextService_UpdateUI,
-	ITextService_UpdatePreedit,
 };
 
 struct Param_Create : FunParams_Base
@@ -130,14 +129,8 @@ struct Param_CandidateListInfo : FunParams_Base
 {
 	void ctxtoParamStream(SOUI::SParamStream& ps, Context& ctx)
 	{
-		ps << ctx.preedit.str;
 		size_t size = ctx.cinfo.candies.size();
 		ps.Write(&size,sizeof(size_t));
-		/*for (const auto &ite : ctx.cinfo.candies)
-		{
-			ps << ite.str;
-		}
-		*/
 		for (std::vector<Text>::const_iterator ite=ctx.cinfo.candies.begin();ite!=ctx.cinfo.candies.end();ite++)
 		{
 			ps << ite->str;
@@ -145,7 +138,6 @@ struct Param_CandidateListInfo : FunParams_Base
 	}
 	void ctxformParamStream(SOUI::SParamStream& ps, Context& ctx)
 	{
-		ps >> ctx.preedit.str;
 		size_t size = 0;
 		ps.Read(&size, sizeof(size_t));		
 		while (size)
@@ -181,14 +173,6 @@ struct Param_ClickLanguageBarIcon : FunParams_Base
 	RECT rc;
 	FUNID(ISinstar_ClickLanguageBarIcon)		
 	PARAMS3(Input, click,pt,rc)
-};
-
-struct Param_UpdatePreedit : FunParams_Base
-{
-	UINT64 imeContext;
-	std::wstring strPreedit;
-	FUNID(ITextService_UpdatePreedit)
-	PARAMS2(Input, imeContext, strPreedit)
 };
 
 struct Param_Destroy : FunParams_Base

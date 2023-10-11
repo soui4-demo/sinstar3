@@ -4,14 +4,14 @@ namespace SOUI
 {
 	class SSpellView: public SWindow
 	{
-		SOUI_CLASS_NAME(SSpellView,L"spellView")
+		DEF_SOBJECT(SWindow,L"spellView")
 	public:
 		SSpellView(void);
 		~SSpellView(void);
 
 		void UpdateByContext(const InputContext *pCtx);
 	protected:
-		virtual CSize GetDesiredSize(int nParentWid, int nParentHei);
+		virtual void WINAPI GetDesiredSize(SIZE *ret,int nParentWid, int nParentHei);
 	protected:
 		void OnPaint(IRenderTarget *pRT);
 

@@ -1,6 +1,6 @@
 #pragma once
 #include <interface/SIpcObj-i.h>
-#include <unknown/obj-ref-impl.hpp>
+#include <helper/obj-ref-impl.hpp>
 #include <map>
 #include "ShareMemBuffer.h"
 
@@ -17,8 +17,8 @@
 #endif
 
 
-namespace SOUI
-{
+SNSBEGIN
+
 	class SIpcHandle : public TObjRefImpl<IIpcHandle>
 	{
 	public:
@@ -75,6 +75,7 @@ namespace SOUI
 	public:
 		SIpcServer();
 
+		~SIpcServer();
 
 	public:
 		// Í¨¹ý TObjRefImpl ¼Ì³Ð
@@ -90,8 +91,8 @@ namespace SOUI
 		WNDPROC			  m_prevWndProc;
 		IIpcSvrCallback * m_pCallback;
 		HWND			  m_hSvr;
-		std::map<HWND, IIpcConnection *> m_mapClients;
-
+		typedef std::map<HWND, IIpcConnection *> ConnMap;
+		ConnMap m_mapClients;
 	};
 
 	class SIpcFactory : public TObjRefImpl<IIpcFactory>
@@ -105,5 +106,8 @@ namespace SOUI
 	{
 		SIPC_COM_C BOOL SIPC_API SCreateInstance(IObjRef **ppIpcFactory);
 	}
-}
+
+
+SNSEND
+	EXTERN_C BOOL Ipc_SCreateInstance(IObjRef **ppIpcFactory);
 

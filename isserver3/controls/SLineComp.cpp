@@ -23,29 +23,29 @@ namespace SOUI
 
 	const int KWnd_MaxSize = 0x7fffff;
 
-	CSize SLineComp::GetDesiredSize(int nParentWid, int nParentHei)
+	void SLineComp::GetDesiredSize(SIZE *szRet,int nParentWid, int nParentHei)
 	{
-		CSize szRet(KWnd_MaxSize, KWnd_MaxSize);
+		szRet->cx = szRet->cy = KWnd_MaxSize;
 		if (GetLayoutParam()->IsSpecifiedSize(Horz))
 		{//检查设置大小
-			szRet.cx = GetLayoutParam()->GetSpecifiedSize(Horz).toPixelSize(GetScale());
+			szRet->cx = GetLayoutParam()->GetSpecifiedSize(Horz).toPixelSize(GetScale());
 		}
 		else if (GetLayoutParam()->IsMatchParent(Horz))
 		{
-			szRet.cx = nParentWid;
+			szRet->cx = nParentWid;
 		}
 
 		if (GetLayoutParam()->IsSpecifiedSize(Vert))
 		{//检查设置大小
-			szRet.cy = GetLayoutParam()->GetSpecifiedSize(Vert).toPixelSize(GetScale());
+			szRet->cy = GetLayoutParam()->GetSpecifiedSize(Vert).toPixelSize(GetScale());
 		}
 		else if (GetLayoutParam()->IsMatchParent(Vert))
 		{
-			szRet.cy = nParentHei;
+			szRet->cy = nParentHei;
 		}
 
-		if (szRet.cx != KWnd_MaxSize && szRet.cy != KWnd_MaxSize)
-			return szRet;
+		if (szRet->cx != KWnd_MaxSize && szRet->cy != KWnd_MaxSize)
+			return;
 
 		CSize szExp;
 		if (m_lines)
@@ -72,10 +72,9 @@ namespace SOUI
 		rcTest.InflateRect(GetStyle().GetPadding());
 
 		if (GetLayoutParam()->IsWrapContent(Horz))
-			szRet.cx = rcTest.Width();
+			szRet->cx = rcTest.Width();
 		if (GetLayoutParam()->IsWrapContent(Vert))
-			szRet.cy = rcTest.Height();
-		return szRet;
+			szRet->cy = rcTest.Height();
 	}
 
 	void SLineComp::OnPaint(IRenderTarget *pRT)

@@ -45,23 +45,25 @@ namespace SOUI
 		}
 	protected:
 
-		virtual int getCount()
+		virtual int WINAPI getCount()
 		{
 			return m_arrGroupInfo.GetCount();
 		}
 
-		virtual void getView(int position, SWindow * pItem, pugi::xml_node xmlTemplate)
+		virtual void WINAPI getView(int position, IWindow * _pItem, IXmlNode * xmlTemplate)
 		{
+			SItemPanel *pItem = sobj_cast<SItemPanel>(_pItem);
 			if (pItem->GetChildrenCount() == 0)
 			{
 				pItem->InitFromXml(xmlTemplate);
 			}
+
 			SCheckBox *pCheck = pItem->FindChildByID2<SCheckBox>(R.id.chk_group_name);
 			pCheck->SetUserData(position);
 			pCheck->SetWindowText(m_arrGroupInfo[position].strName);
-			subscribeCheckEvent(pCheck);
 			pCheck->GetEventSet()->setMutedState(true);
 			pCheck->SetAttribute(L"checked", m_arrGroupInfo[position].bEnable?L"1":L"0");
+			subscribeCheckEvent(pCheck);
 			pCheck->GetEventSet()->setMutedState(false);
 
 			pItem->FindChildByID(R.id.txt_group_size)->SetWindowText(SStringT().Format(_T("%d"), m_arrGroupInfo[position].dwCount));
@@ -69,16 +71,14 @@ namespace SOUI
 			pItem->FindChildByID(R.id.txt_remark)->SetWindowText(m_arrGroupInfo[position].strRemark);
 		}
 
-		virtual SStringW GetColumnName(int iCol) const {
+		virtual SStringW WINAPI GetColumnName(int iCol) const override{
 			const wchar_t * pszColNames[] = {
 				L"col_group",L"col_size",L"col_editor",L"col_remark"
 			};
 			return pszColNames[iCol];
 		}
 
-		virtual void subscribeCheckEvent(SCheckBox *pCheck)
-		{
-		}
+		virtual void subscribeCheckEvent(SCheckBox *pCheck) = 0;
 	protected:
 		SArray<GroupInfo> m_arrGroupInfo;
 	};
@@ -93,12 +93,12 @@ namespace SOUI
 
 		}
 
-		bool OnGroupEnableChanged(EventArgs *e)
+		BOOL OnGroupEnableChanged(EventArgs *e)
 		{
 			EventSwndStateChanged *e2 = sobj_cast<EventSwndStateChanged>(e);
-			if (e2->CheckState(WndState_Check))
+			if (EventSwndStateChanged_CheckState(e2,WndState_Check))
 			{
-				SWindow *pSender = sobj_cast<SWindow>(e->sender);
+				SWindow *pSender = sobj_cast<SWindow>(e->Sender());
 				int idx = pSender->GetUserData();
 				BOOL bEnable = (e2->dwNewState & WndState_Check)?1:0;
 				if(ISACK_SUCCESS==CIsSvrProxy::GetSvrCore()->ReqEnablePhraseGroup(m_arrGroupInfo[idx].strName,bEnable))
@@ -120,12 +120,12 @@ namespace SOUI
 
 		}
 
-		bool OnGroupEnableChanged(EventArgs *e)
+		BOOL OnGroupEnableChanged(EventArgs *e)
 		{
 			EventSwndStateChanged *e2 = sobj_cast<EventSwndStateChanged>(e);
-			if (e2->CheckState(WndState_Check))
+			if (EventSwndStateChanged_CheckState(e2,WndState_Check))
 			{
-				SWindow *pSender = sobj_cast<SWindow>(e->sender);
+				SWindow *pSender = sobj_cast<SWindow>(e->Sender());
 				int idx = pSender->GetUserData();
 				BOOL bEnable = (e2->dwNewState & WndState_Check)?1:0;
 				if(ISACK_SUCCESS == CIsSvrProxy::GetSvrCore()->ReqFlmEnableGroup(m_arrGroupInfo[idx].strName,bEnable))
@@ -201,11 +201,12 @@ namespace SOUI
 			return m_lstIndex[position];
 		}
 
-		void getGroupView(int position, SWindow * pItem, pugi::xml_node xmlTemplate)
+		void getGroupView(int position, IWindow * _pItem, IXmlNode * xmlTemplate)
 		{
+			SItemPanel *pItem = sobj_cast<SItemPanel>(_pItem);
 			if (pItem->GetChildrenCount() == 0)
 			{
-				pItem->InitFromXml(xmlTemplate.child(L"group"));
+				pItem->InitFromXml(xmlTemplate->Child(L"group",FALSE));
 			}
 			const TCHAR * KGroupName[3] = {
 				_T("声母模糊"),
@@ -216,17 +217,18 @@ namespace SOUI
 			pItem->FindChildByID(R.id.txt_blur_group)->SetWindowText(KGroupName[ii.iGroup]);
 		}
 
-		void getItemView(int position, SWindow * pItem, pugi::xml_node xmlTemplate)
+		void getItemView(int position, IWindow * _pItem, IXmlNode * xmlTemplate)
 		{
+			SItemPanel *pItem =sobj_cast<SItemPanel>(_pItem);
 			if (pItem->GetChildrenCount() == 0)
 			{
-				pItem->InitFromXml(xmlTemplate.child(L"item"));
+				pItem->InitFromXml(xmlTemplate->Child(L"item",FALSE));
 			}
 			INDEXINFO ii = position2IndexInfo(position);
 			pItem->FindChildByID(R.id.txt_blur_info)->SetWindowText(m_lstBlur[ii.iGroup][ii.iIndex].strBlur);
 		}
 
-		virtual void getView(int position, SWindow * pItem, pugi::xml_node xmlTemplate) override
+		virtual void WINAPI getView(int position, IWindow * pItem, IXmlNode * xmlTemplate) override
 		{
 			int viewType = getItemViewType(position, 0);
 			if (viewType == 0)
@@ -239,17 +241,17 @@ namespace SOUI
 			}
 		}
 
-		virtual int getCount() override
+		virtual int WINAPI getCount() override
 		{
 			return (int)m_lstIndex.GetCount();
 		}
 
-		virtual int getViewTypeCount()
+		virtual int WINAPI getViewTypeCount()
 		{
 			return 2;
 		}
 		
-		virtual int getItemViewType(int position, DWORD dwState)
+		virtual int WINAPI getItemViewType(int position, DWORD dwState)
 		{
 			INDEXINFO ii = m_lstIndex[position];
 			return ii.iIndex == -1 ? 0 : 1;
@@ -455,7 +457,7 @@ namespace SOUI
 		const SArray<CSearchCfg::SearchInfo> & urls = CSearchCfg::getSingleton().GetUrls();
 		for(int i=0;i<urls.GetCount();i++)
 		{
-			SStringT value = SStringT().Format(_T("%s|%s"),urls[i].name,urls[i].url);
+			SStringT value = SStringT().Format(_T("%s|%s"),urls[i].name.c_str(),urls[i].url.c_str());
 			cbxSearchEngine->InsertItem(i,value,0,0);
 		}
 		cbxSearchEngine->GetEventSet()->setMutedState(true);
@@ -784,21 +786,21 @@ SWindow *pCtrl = FindChildByID(id);\
 
 	void CConfigDlg::OnChkOpTip(EventArgs *e)
 	{
-		SCheckBox *pCheck = sobj_cast<SCheckBox>(e->sender);
+		SCheckBox *pCheck = sobj_cast<SCheckBox>(e->Sender());
 		SASSERT(pCheck);
 		g_SettingsG->bShowOpTip = pCheck->IsChecked();
 	}
 
 	void CConfigDlg::OnChkAutoHideStausForUILess(EventArgs* e)
 	{
-		SCheckBox* pCheck = sobj_cast<SCheckBox>(e->sender);
+		SCheckBox* pCheck = sobj_cast<SCheckBox>(e->Sender());
 		SASSERT(pCheck);
 		g_SettingsUI->bUILessHideStatus = pCheck->IsChecked();
 	}
 
 	void CConfigDlg::OnChkAutoHideStausForFullScreen(EventArgs* e)
 	{
-		SCheckBox* pCheck = sobj_cast<SCheckBox>(e->sender);
+		SCheckBox* pCheck = sobj_cast<SCheckBox>(e->Sender());
 		SASSERT(pCheck);
 		g_SettingsUI->bFullScreenHideStatus = pCheck->IsChecked();
 	}
@@ -881,10 +883,10 @@ SWindow *pCtrl = FindChildByID(id);\
 	void CConfigDlg::OnHotKeyEvent(EventArgs * pEvt)
 	{
 		EventSetHotKey *pHotKeyEvt = sobj_cast<EventSetHotKey>(pEvt);
-		SHotKeyCtrl * pHotKeyCtrl = sobj_cast<SHotKeyCtrl>(pEvt->sender);
+		SHotKeyCtrl * pHotKeyCtrl = sobj_cast<SHotKeyCtrl>(pEvt->Sender());
 		SASSERT(pHotKeyCtrl);
 		DWORD dwAccel = MAKELONG(pHotKeyEvt->vKey, pHotKeyEvt->wModifiers);
-		SLOG_INFO("id:" << pHotKeyCtrl->GetID() << " accel:" << SAccelerator::FormatAccelKey(dwAccel));
+		SLOGI()<<"id:" << pHotKeyCtrl->GetID() << " accel:" << SAccelerator::FormatAccelKey(dwAccel);
 		switch (pHotKeyCtrl->GetID())
 		{
 			//hotkey page
@@ -965,14 +967,14 @@ SWindow *pCtrl = FindChildByID(id);\
 
 	void CConfigDlg::OnPyBlurClick(EventArgs * e)
 	{
-		SCheckBox *pCheck = sobj_cast<SCheckBox>(e->sender);
+		SCheckBox *pCheck = sobj_cast<SCheckBox>(e->Sender());
 		BOOL bCheck = pCheck->IsChecked();
 		CIsSvrProxy::GetSvrCore()->BlurEnable(bCheck);
 	}
 
 	void CConfigDlg::OnJPBlurClick(EventArgs * e)
 	{
-		SCheckBox *pCheck = sobj_cast<SCheckBox>(e->sender);
+		SCheckBox *pCheck = sobj_cast<SCheckBox>(e->Sender());
 		BOOL bCheck = pCheck->IsChecked();
 		CIsSvrProxy::GetSvrCore()->BlurZCS(bCheck);
 	}
@@ -994,7 +996,7 @@ SWindow *pCtrl = FindChildByID(id);\
 		EventRENotify *e2 = sobj_cast<EventRENotify>(e);
 		if (e2->iNotify == EN_CHANGE)
 		{
-			SRichEdit *pEdit = sobj_cast<SRichEdit>(e->sender);
+			SRichEdit *pEdit = sobj_cast<SRichEdit>(e->Sender());
 			SStringT str = pEdit->GetWindowText();
 			switch (e2->idFrom)
 			{
@@ -1152,19 +1154,19 @@ SWindow *pCtrl = FindChildByID(id);\
 		LOGFONT lf={0};
 		if(!g_SettingsG->strFontDesc.IsEmpty())
 		{
-			FontInfo fi = SFontPool::FontInfoFromString(g_SettingsG->strFontDesc);
+			FontInfo fi = SFontPool::FontInfoFromString(g_SettingsG->strFontDesc,GETUIDEF->GetDefFontInfo());
 			_tcscpy(lf.lfFaceName,S_CW2T(fi.strFaceName));
 			lf.lfWeight = fi.style.attr.byWeight*4;
 			if(lf.lfWeight == 0)
 				lf.lfWeight = fi.style.attr.fBold?FW_BOLD:FW_NORMAL;
 			lf.lfCharSet = fi.style.attr.byCharset;
-			lf.lfHeight = -(short)fi.style.attr.cSize;
+			lf.lfHeight = -(short)fi.style.attr.nSize;
 			lf.lfItalic = fi.style.attr.fItalic;
 			lf.lfUnderline = fi.style.attr.fUnderline;
 			lf.lfStrikeOut = fi.style.attr.fStrike;
 		}else
 		{
-			IFontPtr font = SFontPool::getSingletonPtr()->GetFont(L"",100);
+			IFontPtr font = GETUIDEF->GetFont(L"",100);
 			memcpy(&lf,font->LogFont(),sizeof(lf));
 		}
 		CFontDialog fontDlg(&lf, CF_SCREENFONTS|CF_NOVERTFONTS);
@@ -1173,7 +1175,7 @@ SWindow *pCtrl = FindChildByID(id);\
 			lf = fontDlg.m_lf;
 			FontInfo fi;
 			fi.strFaceName = lf.lfFaceName;
-			fi.style.attr.cSize = abs(lf.lfHeight);
+			fi.style.attr.nSize = abs(lf.lfHeight);
 			fi.style.attr.byWeight = lf.lfWeight/4;
 			fi.style.attr.byCharset = lf.lfCharSet;
 			fi.style.attr.fItalic = lf.lfItalic;
@@ -1185,16 +1187,16 @@ SWindow *pCtrl = FindChildByID(id);\
 				fi.style.attr.byWeight = 0;
 			}
 			g_SettingsG->strFontDesc = SFontPool::FontInfoToString(fi);
-			SFontPool::getSingletonPtr()->SetDefFontInfo(fi);
+			GETUIDEF->SetDefFontInfo(g_SettingsG->strFontDesc);
 			FindAndSetText(R.id.edit_font,g_SettingsG->strFontDesc);
 		}
 	}
 
 	void CConfigDlg::OnSkinFont()
 	{
-		FontInfo fi = SUiDef::getSingletonPtr()->GetUiDef()->GetDefFontInfo();
+		SStringW fi = SUiDef::getSingletonPtr()->GetUiDef()->GetDefFontInfo();
 		FindAndSetText(R.id.edit_font,_T("<皮肤默认>"));
-		SFontPool::getSingletonPtr()->SetDefFontInfo(fi);
+		GETUIDEF->SetDefFontInfo(fi);
 		g_SettingsG->strFontDesc.Empty();
 	}
 
@@ -1233,6 +1235,8 @@ SWindow *pCtrl = FindChildByID(id);\
 			{
 				_tcscpy(g_SettingsG->szBackupDir,szBuf);
 				FindAndSetText(R.id.edit_backup,g_SettingsG->szBackupDir);
+				g_SettingsG->SetModified(true);
+				g_SettingsG->Save(CDataCenter::getSingleton().GetDataPath());
 			}
 		}else
 		{
@@ -1264,7 +1268,7 @@ SWindow *pCtrl = FindChildByID(id);\
 		}
 		if(SMessageBox(m_hWnd,_T("确定要从备份目录恢复数据吗？服务器将自动重启!"),_T("危险操作!"),MB_OKCANCEL|MB_ICONQUESTION)==IDOK)
 		{
-			PostQuitMessage(CODE_RESTORE);
+			CIsSvrProxy::GetInstance()->PostMessage(WM_QUIT,CODE_RESTORE);
 		}
 	}
 

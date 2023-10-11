@@ -19,9 +19,9 @@ namespace SOUI{
 		m_pEvtSet->unsubscribeEvent(EventSetSkin::EventID, Subscriber(&CSkinAwareWnd::OnEvent, this));
 	}
 
-	bool CSkinAwareWnd::OnEvent(EventArgs * e)
+	BOOL CSkinAwareWnd::OnEvent(EventArgs * e)
 	{
-		return !!_HandleEvent(e);
+		return _HandleEvent(e);
 	}
 
 	void CSkinAwareWnd::OnSetSkin(EventArgs *e)
@@ -32,12 +32,12 @@ namespace SOUI{
 		cs.cx = 0;
 		cs.cy = 0;
 		OnRecreateUI(&cs);
-		e->bubbleUp = true;
+		e->SetBubbleUp(TRUE);
 	}
 
 	HWND CSkinAwareWnd::Create(HWND hParent)
 	{
-		return SHostWnd::Create(hParent,WS_POPUP, WS_EX_TOOLWINDOW, 0, 0, 0, 0);
+		return SHostWnd::CreateEx(hParent,WS_POPUP, WS_EX_TOOLWINDOW, 0, 0, 0, 0);
 	}
 
 	void CSkinAwareWnd::SetDestroyListener(IDestroyListener * pListener, IMEWNDTYPE type)
@@ -51,6 +51,8 @@ namespace SOUI{
 		m_bAutoScale = false;
 		SHostWnd::OnCreate(lpCreateStruct);
 		ScaleHost(m_hWnd);
+		GetRoot()->Invalidate();
+		PostMessage(UM_UPDATE);
 		return 0;
 	}
 
@@ -68,12 +70,18 @@ namespace SOUI{
 		return m_bAutoScale;
 	}
 
-	void CSkinAwareWnd::OnUserXmlNode(pugi::xml_node xmlUser)
+	void CSkinAwareWnd::OnUserXmlNode(SXmlNode xmlUser)
 	{
 		if(_wcsicmp(xmlUser.name(),L"user")==0)
 		{
 			m_bAutoScale = xmlUser.attribute(L"autoScale").as_bool();
 		}
+	}
+
+	LRESULT CSkinAwareWnd::OnUpdate(UINT,WPARAM,LPARAM)
+	{
+		Invalidate();
+		return 0;
 	}
 
 }

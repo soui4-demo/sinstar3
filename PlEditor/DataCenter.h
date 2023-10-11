@@ -3,15 +3,18 @@
 #include <helper/SCriticalSection.h>
 #include <string>
 
-SEVENT_BEGIN(EventProgStart,EVT_EXTERNAL_BEGIN+1)
+DEF_EVT_EXT(EventProgStart,EVT_EXTERNAL_BEGIN+1,{
 	DWORD dwMax;
-SEVENT_END()
-SEVENT_BEGIN(EventProgRun,EVT_EXTERNAL_BEGIN+2)
-	DWORD dwValue,dwMax;
-SEVENT_END()
-SEVENT_BEGIN(EventProgEnd,EVT_EXTERNAL_BEGIN+3)
+})
+
+DEF_EVT_EXT(EventProgRun,EVT_EXTERNAL_BEGIN+2,{
+	DWORD dwValue;
+	DWORD dwMax;
+})
+
+DEF_EVT_EXT(EventProgEnd,EVT_EXTERNAL_BEGIN+3,{
 	bool bUpdateUI;
-SEVENT_END()
+})
 
 #ifdef _UNICODE
 #define tstring wstring

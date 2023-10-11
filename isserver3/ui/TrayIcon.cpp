@@ -22,7 +22,7 @@ namespace SOUI
 		m_AniLogo = new HICON[ANI_ICON_NUM];
 		for (int i = 0; i < ANI_ICON_NUM; i++)
 		{
-			m_AniLogo[i] = LoadIcon(SApplication::getSingletonPtr()->GetInstance(),MAKEINTRESOURCE(LogoID[i]));
+			m_AniLogo[i] = LoadIcon(SApplication::getSingletonPtr()->GetModule(),MAKEINTRESOURCE(LogoID[i]));
 		}
 	}
 

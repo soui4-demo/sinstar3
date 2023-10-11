@@ -11,12 +11,12 @@ namespace SOUI
 	{
 	}
 
-	CSize SStatusBackground::GetDesiredSize(int nParentWid, int nParentHei)
+	void SStatusBackground::GetDesiredSize(SIZE *szRet,int nParentWid, int nParentHei)
 	{
 		if (!m_pBgSkin)
 		{
-			return __super::GetDesiredSize(nParentWid, nParentHei);
+			return __baseCls::GetDesiredSize(szRet,nParentWid, nParentHei);
 		}
-		return m_pBgSkin->GetSkinSize();
+		*szRet = m_pBgSkin->GetSkinSize();
 	}
 }

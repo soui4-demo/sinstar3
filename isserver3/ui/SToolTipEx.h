@@ -15,13 +15,13 @@ namespace SOUI
 
         BOOL CreateWnd(HWND hHost);
     public://IToolTip
-        /*virtual*/ void RelayEvent(const MSG *pMsg);
+        /*virtual*/ void WINAPI RelayEvent(const MSG *pMsg);
 
-        /*virtual*/ void UpdateTip(const TIPID &id, CRect rc,LPCTSTR pszTip,int nScale);
+        /*virtual*/ void WINAPI UpdateTip(const TIPID *id, RECT rc, LPCTSTR pszTip,int nScale) override;
 
-        /*virtual*/ void ClearTip();
+        /*virtual*/ void WINAPI ClearTip();
 
-        /*virtual*/ BOOL PreTranslateMessage(MSG* pMsg);
+        /*virtual*/ BOOL WINAPI PreTranslateMessage(MSG* pMsg);
     protected:
         virtual void OnFinalMessage(HWND hWnd);
 		virtual IToolTip * CreateTooltip() const;
@@ -32,7 +32,6 @@ namespace SOUI
 		CPoint AdjustTipPos(CPoint pt) const;
 
         BEGIN_MSG_MAP_EX(STipCtrlEx)
-			MSG_WM_CREATE(OnCreate)
             MSG_WM_TIMER(OnTimer)
 			CHAIN_MSG_MAP(SHostWnd)
         END_MSG_MAP()
@@ -53,9 +52,9 @@ namespace SOUI
 	class SToolTipFactory : public TObjRefImpl<IToolTipFactory>
 	{
 	public:
-		IToolTip * CreateToolTip(HWND hHost);
+		IToolTip * WINAPI CreateToolTip(HWND hHost);
 
-		void DestroyToolTip(IToolTip *pToolTip);
+		void WINAPI DestroyToolTip(IToolTip *pToolTip);
 	};
 }
 

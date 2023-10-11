@@ -44,7 +44,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="&quot;$(SOUI3PATH)\SOUI\include&quot;;&quot;$(SOUI3PATH)\utilities\include&quot;;&quot;$(SOUI3PATH)\config&quot;;..\ipcobject\include"
+				AdditionalIncludeDirectories=".;&quot;$(SOUI4PATH)\SOUI\include&quot;;&quot;$(SOUI4PATH)\utilities\include&quot;;&quot;$(SOUI4PATH)\config&quot;;..\ipcobject\include;..\TaskLoop"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;SINSTAR3_IME_EXPORTS;_CRT_SECURE_NO_WARNINGS"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -65,7 +65,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="sipcobjectd.lib helperd.lib sinstar3_proxyd.lib slog4zd.lib"
+				AdditionalDependencies="sipcobjectd.lib helperd.lib sinstar3_proxyd.lib slogd.lib taskloopd.lib"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="..\lib"
 				ModuleDefinitionFile="sinstar3_ime.def"
@@ -123,7 +123,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="&quot;$(SOUI3PATH)\SOUI\include&quot;;&quot;$(SOUI3PATH)\utilities\include&quot;;&quot;$(SOUI3PATH)\config&quot;;..\ipcobject\include"
+				AdditionalIncludeDirectories="&quot;$(SOUI4PATH)\SOUI\include&quot;;&quot;$(SOUI4PATH)\utilities\include&quot;;&quot;$(SOUI4PATH)\config&quot;;..\ipcobject\include;..\TaskLoop"
 				PreprocessorDefinitions="WIN64;_DEBUG;_WINDOWS;_USRDLL;SINSTAR3_IME_EXPORTS;_CRT_SECURE_NO_WARNINGS"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -144,7 +144,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="sipcobjectd.lib helperd.lib sinstar3_proxyd.lib slog4zd.lib"
+				AdditionalDependencies="sipcobjectd.lib helperd.lib sinstar3_proxyd.lib slogd.lib taskloopd.lib"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="..\lib\x64"
 				ModuleDefinitionFile="sinstar3_ime.def"
@@ -203,7 +203,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				EnableIntrinsicFunctions="true"
-				AdditionalIncludeDirectories="&quot;$(SOUI3PATH)\SOUI\include&quot;;&quot;$(SOUI3PATH)\utilities\include&quot;;&quot;$(SOUI3PATH)\config&quot;;..\ipcobject\include"
+				AdditionalIncludeDirectories=".;&quot;$(SOUI4PATH)\SOUI\include&quot;;&quot;$(SOUI4PATH)\utilities\include&quot;;&quot;$(SOUI4PATH)\config&quot;;..\ipcobject\include;..\TaskLoop"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;SINSTAR3_IME_EXPORTS"
 				RuntimeLibrary="0"
 				EnableFunctionLevelLinking="true"
@@ -222,7 +222,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="sipcobject.lib helper.lib sinstar3_proxy.lib slog4z.lib"
+				AdditionalDependencies="sipcobject.lib helper.lib sinstar3_proxy.lib slog.lib taskloop.lib"
 				LinkIncremental="1"
 				AdditionalLibraryDirectories="..\lib"
 				ModuleDefinitionFile="sinstar3_ime.def"
@@ -282,7 +282,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				EnableIntrinsicFunctions="true"
-				AdditionalIncludeDirectories="&quot;$(SOUI3PATH)\SOUI\include&quot;;&quot;$(SOUI3PATH)\utilities\include&quot;;&quot;$(SOUI3PATH)\config&quot;;..\ipcobject\include"
+				AdditionalIncludeDirectories="&quot;$(SOUI4PATH)\SOUI\include&quot;;&quot;$(SOUI4PATH)\utilities\include&quot;;&quot;$(SOUI4PATH)\config&quot;;..\ipcobject\include;..\TaskLoop"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;SINSTAR3_IME_EXPORTS"
 				RuntimeLibrary="0"
 				EnableFunctionLevelLinking="true"
@@ -301,7 +301,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="sipcobject.lib helper.lib sinstar3_proxy.lib slog4z.lib"
+				AdditionalDependencies="sipcobject.lib helper.lib sinstar3_proxy.lib slog.lib taskloop.lib"
 				LinkIncremental="1"
 				AdditionalLibraryDirectories="..\lib\x64"
 				ModuleDefinitionFile="sinstar3_ime.def"

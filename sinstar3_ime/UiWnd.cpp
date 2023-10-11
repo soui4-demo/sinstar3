@@ -399,7 +399,9 @@ BOOL CUiWnd::_InitSinstar3()
 	if(GetFileAttributes(theModule->GetSvrPath()) == INVALID_FILE_ATTRIBUTES)
 		return FALSE;
 	m_pSinstar3 = new CSinstarProxy(this);
-	if (!m_pSinstar3->Init(m_hWnd, theModule->GetSvrPath()))
+	int nInit = m_pSinstar3->Init(m_hWnd, theModule->GetSvrPath());
+	SLOGW()<<"m_pSinstar3->Init ret="<<nInit<<" hWnd="<<m_hWnd<<" svrPath="<<theModule->GetSvrPath();
+	if (nInit!=0)
 	{
 		delete m_pSinstar3;
 		m_pSinstar3 = NULL;
@@ -463,7 +465,7 @@ LRESULT CUiWnd::OnDestroy()
 
 BOOL CUiWnd::AttachToIMC(BOOL bAttach)
 {
-	SLOG_INFO("bAttach="<<bAttach);
+	SLOGI()<<"bAttach="<<bAttach;
 	BOOL bRet=FALSE;
 	HIMC hIMC=(HIMC)GetWindowLongPtr(m_hWnd,IMMGWLP_IMC);
 	LPINPUTCONTEXT lpIMC=(LPINPUTCONTEXT)ImmLockIMC(hIMC);

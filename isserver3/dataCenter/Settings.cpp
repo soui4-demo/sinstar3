@@ -115,8 +115,8 @@ void CSettingsGlobal::Save(const SStringT & strDataPath)
 		strSkin2 = strSkin.Right(strSkin.GetLength()-strSkinDir.GetLength());
 	
 	WritePrivateProfileString(KUI,_T("skin"),strSkin2,strConfigIni);
-	WritePrivateProfileString(KUI,_T("InputPosition"),SStringT().Format(_T("%d,%d"),ptInput.x,ptInput.y),strConfigIni);
-	WritePrivateProfileString(KUI,_T("StatusPosition"),SStringT().Format(_T("%d,%d"),ptStatus.x,ptStatus.y),strConfigIni);
+	WritePrivateProfileString(KUI,_T("InputPosition"),SStringT().Format(_T("%d,%d"),ptInput.x,ptInput.y),strConfigIni.c_str());
+	WritePrivateProfileString(KUI,_T("StatusPosition"),SStringT().Format(_T("%d,%d"),ptStatus.x,ptStatus.y),strConfigIni.c_str());
 
 
 	WritePrivateProfileString(KUI,_T("font"),strFontDesc.c_str(),strConfigIni);
@@ -124,7 +124,7 @@ void CSettingsGlobal::Save(const SStringT & strDataPath)
 	SStringT strComp = SOUI::CDataCenter::getSingleton().GetData().m_compInfo.strCompName;
 	if(strComp != _T("加载...") )
 	{
-		SStringT strHotKeyFile = SStringT().Format(_T("%s\\server\\hotkey_%s.txt"), strDataPath, strComp);
+		SStringT strHotKeyFile = SStringT().Format(_T("%s\\server\\hotkey_%s.txt"), strDataPath.c_str(), strComp.c_str());
 		//加载特定的自定义状态及语句输入状态开关
 		SStringT strHotKey = SAccelerator::FormatAccelKey(g_SettingsG->dwHotkeys[HKI_UDMode]);
 		WritePrivateProfileString(_T("hotkey"), _T("umode"), strHotKey, strHotKeyFile);

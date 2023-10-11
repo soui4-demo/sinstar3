@@ -39,7 +39,7 @@ CWorker::~CWorker()
 BOOL CWorker::Init()
 {
 	CoInitialize(NULL);
-	HWND hWnd = Create(_T("sinstar3_server_tts_host"), WS_POPUP, 0, 0, 0, 0, 0, HWND_MESSAGE, NULL);
+	HWND hWnd = CreateNative(_T("sinstar3_server_tts_host"), WS_POPUP, 0, 0, 0, 0, 0, HWND_MESSAGE, NULL);
 	ASSERT(hWnd);
 
 	try
@@ -464,12 +464,12 @@ LRESULT CWorker::OnDataReport(UINT uMsg, WPARAM wp, LPARAM lp)
 	Helper_PEVersion(szModuleName, &dwVer, NULL, NULL);
 	SStringT strVer = SStringT().Format(_T("%u.%u.%u.%u"), byVer[3], byVer[2], byVer[1], byVer[0]);
 
-	SStringT strInfo = SStringT().Format(_T("&user_mac=%s&soft_version=%s&user_osversion=%s"), szUerID, strVer,strOsVer);
+	SStringT strInfo = SStringT().Format(_T("&user_mac=%s&soft_version=%s&user_osversion=%s"), szUerID, strVer.c_str(),strOsVer.c_str());
 	SStringT url = g_SettingsG->urlStatistics+strInfo;
 
 	CWinHttp  winHttp;
 	string strResp = winHttp.Request(url.c_str(), Hr_Post);
-	SLOG_INFO("data report result:" << strResp.c_str());
+	SLOGI()<<"data report result:" << strResp.c_str();
 
 	return 0;
 }
@@ -524,7 +524,7 @@ LONG CTtsBuffer::OnSpeakText(const std::wstring &input)
 void CTtsBuffer::OnTtsWordBoundary(ULONG nBegin,ULONG nLen)
 {
 	m_nReadingPos = nBegin+nLen;
-	SLOG_INFO("OnTTSEvent, SPEI_WORD_BOUNDARY, start:"<<nBegin<<" end:"<<nLen);
+	SLOGI()<<"OnTTSEvent, SPEI_WORD_BOUNDARY, start:"<<nBegin<<" end:"<<nLen;
 }
 
 void CTtsBuffer::OnTtsEndInputStream()

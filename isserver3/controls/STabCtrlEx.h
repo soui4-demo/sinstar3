@@ -23,30 +23,23 @@ namespace SOUI
     */
     class STabPageEx : public SWindow
     {
-		SOUI_CLASS_NAME(STabPageEx, L"pageex")		
+		DEF_SOBJECT(SWindow, L"pageex")		
     public:
- 		virtual CSize GetDesiredSize(int wid,int hei)
- 		{			
- 			CSize size = __super::GetDesiredSize(wid,hei);
- 			return CSize(size.cx, max(m_iHeight, size.cy));
- 		}
         /**
         * STabPageEx::STabPageEx
         * @brief    构造函数
         *
         * Describe  构造函数  
         */
-        STabPageEx():m_iIcon(-1), m_iHeight(0), m_strTitle(this)
+        STabPageEx():m_iIcon(-1), m_strTitle(this)
         {			
 			m_bClipClient = TRUE;
         }
-		void SetHeight(int Height)
+
+		int GetHeight() const
 		{
-			m_iHeight = Height;
-		}
-		int GetHeight()
-		{
-			return m_iHeight;
+			CRect rcWnd = GetWindowRect();
+			return rcWnd.Height();
 		}
 		
 		/**/
@@ -106,7 +99,6 @@ namespace SOUI
     protected:
 		STrText	m_strTitle; /**< 标题 */
         int			m_iIcon;
-		int			m_iHeight;
     };
 
     /** 
@@ -117,7 +109,7 @@ namespace SOUI
     */
     class STabCtrlEx : public SWindow
     {  
-        SOUI_CLASS_NAME(STabCtrlEx, L"tabctrlex")
+        DEF_SOBJECT(SWindow, L"tabctrlex")
     protected:
         int m_nHoverTabItem; /**< hover状态item */
         int m_nCurrentPage;  /**< 当前页码      */
@@ -212,7 +204,7 @@ namespace SOUI
         * Describe  获取当前选中 
         */
         BOOL SetItemTitle(int nIndex, LPCTSTR lpszTitle);
-		bool OnScrollviewOrginChanger(EventArgs * ev);
+		BOOL OnScrollviewOrginChanger(EventArgs * ev);
         /**
         * STabCtrl::CreateChildren
         * @brief    创建tab页面
@@ -221,7 +213,7 @@ namespace SOUI
         *
         * Describe  创建tab页面
         */
-        virtual BOOL CreateChildren(pugi::xml_node xmlNode);
+        virtual BOOL CreateChildren(SXmlNode xmlNode) override;
 
         /**
         * STabCtrl::InsertItem
@@ -244,7 +236,7 @@ namespace SOUI
         *
         * Describe  插入tab页面
         */
-        virtual int InsertItem(pugi::xml_node xmlNode,int iInsert=-1,BOOL bLoading=FALSE);
+        virtual int InsertItem(SXmlNode xmlNode,int iInsert=-1,BOOL bLoading=FALSE);
 
         /**
         * STabCtrl::GetItemCount
@@ -369,7 +361,7 @@ namespace SOUI
         */
         virtual void DrawItem(IRenderTarget *pRT,const CRect &rcItem,int iItem,DWORD dwState);
 
-        virtual STabPageEx * CreatePageFromXml(pugi::xml_node xmlPage);
+        virtual STabPageEx * CreatePageFromXml(SXmlNode xmlPage);
         
         /**
         * STabCtrl::OnGetDlgCode
@@ -383,7 +375,7 @@ namespace SOUI
             return SC_WANTARROWS;
         }
 
-        virtual BOOL OnUpdateToolTip(CPoint pt, SwndToolTipInfo & tipInfo);
+        virtual BOOL UpdateToolTip(CPoint pt, SwndToolTipInfo & tipInfo);
         
         /**
         * UpdateChildrenPosition
@@ -392,9 +384,9 @@ namespace SOUI
         *
         * Describe  
         */
-        virtual void UpdateChildrenPosition();
+        virtual void WINAPI UpdateChildrenPosition() override;
 
-        virtual void OnInitFinished(pugi::xml_node xmlNode);
+        virtual void WINAPI OnInitFinished(IXmlNode * xmlNode) override;
         
         virtual void OnColorize(COLORREF cr);
     protected:

@@ -5,11 +5,6 @@
 #include <atl.mini/SComCli.h>
 
 class CSinstar3Tsf;
-class UILess
-{
-public:
-	static BOOL _ShowInlinePreedit(CSinstar3Tsf* pTextService, DWORD _tfClientId, SOUI::SComPtr<ITfContext> pContext);
-};
 
 enum TextAttributeType
 {
@@ -83,31 +78,28 @@ struct Context
 	Context() {}
 	void clear()
 	{
-		preedit.clear();
 		aux.clear();
 		cinfo.clear();
 	}
 	bool empty() const
 	{
-		return preedit.empty() && aux.empty() && cinfo.empty();
+		return aux.empty() && cinfo.empty();
 	}
-	Text preedit;
 	Text aux;
 	CandidateInfo cinfo;
 };
 
 
 class CCandidateList :
-#if WINVER>= 0x0602
+#if __REQUIRED_RPCNDR_H_VERSION__ > 500
 	public ITfIntegratableCandidateListUIElement,
 	public ITfFnSearchCandidateProvider,//集成搜索栏还要实现它
-#endif // 0x0602
+#endif
 	public ITfCandidateListUIElementBehavior	
-	//public ITfReadingInformationUIElement
 {
 	friend class CSinstar3Tsf;
 private:
-	CSinstar3Tsf* _tsf;
+	SOUI::SComPtr<CSinstar3Tsf> _tsf;
 
 public:
 	CCandidateList(CSinstar3Tsf* pTextService);
@@ -141,15 +133,19 @@ public:
 	STDMETHODIMP Finalize(void);
 	STDMETHODIMP Abort(void);
 
-#if WINVER>= 0x0602
+#if __REQUIRED_RPCNDR_H_VERSION__ > 500
 	// ITfIntegratableCandidateListUIElement methods
 	STDMETHODIMP SetIntegrationStyle(GUID guidIntegrationStyle);
-	STDMETHODIMP GetSelectionStyle(_Out_ TfIntegratableCandidateListSelectionStyle* ptfSelectionStyle);
-	STDMETHODIMP OnKeyDown(_In_ WPARAM wParam, _In_ LPARAM lParam, _Out_ BOOL* pIsEaten);
-	STDMETHODIMP ShowCandidateNumbers(_Out_ BOOL* pIsShow);
+	STDMETHODIMP GetSelectionStyle(TfIntegratableCandidateListSelectionStyle* ptfSelectionStyle);
+	STDMETHODIMP OnKeyDown(WPARAM wParam, LPARAM lParam, BOOL* pIsEaten);
+	STDMETHODIMP ShowCandidateNumbers(BOOL* pIsShow);
 	STDMETHODIMP FinalizeExactCompositionString();
-#endif
 
+	// 通过 ITfFnSearchCandidateProvider 继承
+	STDMETHODIMP GetDisplayName(BSTR* pbstrName) override;
+	STDMETHODIMP GetSearchCandidates(BSTR bstrQuery, BSTR bstrApplicationId, ITfCandidateList** pplist) override;
+	STDMETHODIMP SetResult(BSTR bstrQuery, BSTR bstrApplicationID, BSTR bstrResult) override;
+#endif
 	void SetUpdatedFlags(DWORD newflags)
 	{
 		_changed_flags = newflags;
@@ -167,21 +163,8 @@ private:
 	DWORD _ui_id;
 	int _idx;
 	BOOL _pbShow;
-	/*SOUI::SComPtr<ITfUIElementMgr> ui_element_mgr_;
-	SOUI::SComPtr<ITfDocumentMgr> document_mgr_;*/
 	DWORD _changed_flags;
-#if WINVER>= 0x0602
-	TfIntegratableCandidateListSelectionStyle _selectionStyle = STYLE_IMPLIED_SELECTION;
-	// 通过 ITfFnSearchCandidateProvider 继承
-	virtual HRESULT __stdcall GetDisplayName(BSTR* pbstrName) override;
-	virtual HRESULT __stdcall GetSearchCandidates(BSTR bstrQuery, BSTR bstrApplicationId, ITfCandidateList** pplist) override;
-	virtual HRESULT __stdcall SetResult(BSTR bstrQuery, BSTR bstrApplicationID, BSTR bstrResult) override;
+#if __REQUIRED_RPCNDR_H_VERSION__ > 500
+	TfIntegratableCandidateListSelectionStyle _selectionStyle;
 #endif
-
-	// 通过 ITfReadingInformationUIElement 继承
-	/*virtual HRESULT __stdcall GetContext(ITfContext** ppic) override;
-	virtual HRESULT __stdcall GetString(BSTR* pstr) override;
-	virtual HRESULT __stdcall GetMaxReadingStringLength(UINT* pcchMax) override;
-	virtual HRESULT __stdcall GetErrorIndex(UINT* pErrorIndex) override;
-	virtual HRESULT __stdcall IsVerticalOrderPreferred(BOOL* pfVertical) override;*/
 };

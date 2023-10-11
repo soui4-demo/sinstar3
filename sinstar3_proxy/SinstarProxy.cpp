@@ -101,7 +101,7 @@ CSinstarProxy::~CSinstarProxy()
 	m_conn.GetIpcHandle()->Disconnect((ULONG_PTR)m_hSvr);
 }
 
-BOOL CSinstarProxy::Init(HWND hClient, LPCTSTR pszSvrPath)
+int CSinstarProxy::Init(HWND hClient, LPCTSTR pszSvrPath)
 {
 	HWND hSvr = FindWindow(NULL, SINSTAR3_SERVER_HWND);
 	if (!hSvr)
@@ -129,11 +129,11 @@ BOOL CSinstarProxy::Init(HWND hClient, LPCTSTR pszSvrPath)
 	}
 	if (!hSvr)
 	{
-		return FALSE;
+		return -1;
 	}
 	if(m_conn.GetIpcHandle()->ConnectTo((ULONG_PTR)hClient,(ULONG_PTR)hSvr) != 0)
 	{
-		return FALSE;
+		return -2;
 	}
 	m_hSvr = hSvr;
 	Param_Create param;
@@ -150,7 +150,7 @@ BOOL CSinstarProxy::Init(HWND hClient, LPCTSTR pszSvrPath)
 
 	m_conn.CallFun(&param);
 	
-	return TRUE;
+	return 0;
 }
 
 void CSinstarProxy::NotifyScaleInfo(HWND hRefWnd)
@@ -370,11 +370,6 @@ void CClientConnection::OnGetActiveWnd(Param_GetActiveWnd &param)
 void CClientConnection::OnUpdateUI(Param_UpdateUI& param)
 {
 	m_pTxtService->UpdateUI(param.imeContext,param.bPageChanged,param.curPage);
-}
-
-void CClientConnection::OnUpdatePreedit(Param_UpdatePreedit& param)
-{
-	m_pTxtService->UpdatePreedit(param.imeContext,param.strPreedit);
 }
 
 SOUI::IIpcHandle * CClientConnection::GetIpcHandle()

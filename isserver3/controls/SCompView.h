@@ -35,7 +35,7 @@ namespace SOUI
 
 	class SCompView : public SWindow, public ITimelineHandler
 	{
-		SOUI_CLASS_NAME(SCompView,L"compView")
+		DEF_SOBJECT(SWindow,L"compView")
 	protected:
 		SCompCaret	m_caret;
 		SLayoutSize	m_caretWidth;
@@ -49,8 +49,8 @@ namespace SOUI
 			ATTR_CHAIN(m_caret, 0)
 		SOUI_ATTRS_END()
 	protected:
-		virtual CSize GetDesiredSize(int wid, int hei) override;
-		virtual void OnNextFrame() override;
+		virtual void WINAPI GetDesiredSize(SIZE *ret,int wid, int hei) override;
+		virtual void WINAPI OnNextFrame() override;
 
 	protected:
 		void OnPaint(IRenderTarget *pRT);

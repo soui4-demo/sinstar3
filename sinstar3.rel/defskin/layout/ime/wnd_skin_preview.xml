@@ -1,0 +1,12 @@
+﻿<SOUI 
+  name="wnd_skin_preview" 
+  resizable="0" 
+  wndType="normal"
+  translucent="1"
+  toolwindow="1"
+>
+  <user autoScale="true"/>
+  <root size="-1,-1" layout="vbox">
+    <img name="img_preview" size="-1,-1"/>
+  </root>
+</SOUI>

@@ -106,24 +106,22 @@ namespace SOUI
 		return sz;
 	}
 
-	CSize SSpellView::GetDesiredSize(int nParentWid, int nParentHei)
+	void SSpellView::GetDesiredSize(SIZE *szRet,int nParentWid, int nParentHei)
 	{
-		if(!m_ctx || m_ctx->compMode!=IM_SPELL) return CSize();
+		if(!m_ctx || m_ctx->compMode!=IM_SPELL) return;
 
 		CAutoRefPtr<IRenderTarget> pRT;
 		GETRENDERFACTORY->CreateRenderTarget(&pRT,0,0);
 		BeforePaintEx(pRT);
-		CSize sz,szRet;
+		CSize sz;
 		SStringT strResult = SStringW(m_ctx->szWord,m_ctx->bySyllables);
 		pRT->MeasureText(strResult,strResult.GetLength(),&sz);
-		szRet = sz;
+		*szRet = sz;
 		SStringT strSpell = SStringW(m_ctx->spellData[m_ctx->byCaret].szSpell,m_ctx->spellData[m_ctx->byCaret].bySpellLen);
 		pRT->MeasureText(strSpell,strSpell.GetLength(),&sz);
-		szRet.cx += sz.cx;
+		szRet->cx += sz.cx;
 		
-		szRet.cy +=1; //for underline
-
-		return szRet;
+		szRet->cy +=1; //for underline
 	}
 
 	void SSpellView::UpdateByContext(const InputContext *pCtx)

@@ -36,14 +36,14 @@
 			<text size="-2,-1" multiLines="1" text="计算机软件受著作权和国际公约保护,未经授权擅自用于商业用途!将会受到所在地区的最大可能的民事或刑事诉讼,包括但不限于以上"/>
 		</window>
 	</window>
-    <text text="2002-2020（C）启程软件 All right is reserved."/>
+    <text text="2002-2030（C）启程软件 All right is reserved."/>
     <text text="合作开发：ID008"/>
     <text text="后台技术支持：李平"/>
     <text text="美术兼测试：晴天"/>
     <text text="皮肤开发：木已成舟, King2020"/>
     <window layout="hbox">
       <text text="本产品基于开源UI框架"/>
-      <link href="https://github.com/soui3/soui" text="SOUI 3.0"/>
+      <link href="https://github.com/soui4/soui" text="SOUI 4.0"/>
     </window>
     <window size="-2,-1" layout="vbox" gravity="center">
       <text text="反馈问题QQ群(扫码加群)" colorText="@color/red"/>

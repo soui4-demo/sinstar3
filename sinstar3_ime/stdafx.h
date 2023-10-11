@@ -34,13 +34,9 @@
 #include "../include/version.h"
 #include "../include/sinstar-i.h"
 #include "../include/reg.h"
-#include "../SLog4Z/log4z.h"
 
-#define GETLOGMGR() (SOUI::SLogMgr::getSingletonPtr()?SOUI::SLogMgr::getSingletonPtr()->GetLogMgr():NULL)
-#include "../include/slog_wrapper.h"
-
-#define LOG_FILTER "sinstar3_ime"
-#include <helper/slogdef.h>
+#include "../slog/slog.h"
+#define kLogTag "sinstar3_ime"
 
 #include "ImeModule.h"
 

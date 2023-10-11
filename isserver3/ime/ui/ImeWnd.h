@@ -18,8 +18,8 @@ public:
 	void Show(BOOL bShow);
 	void SetOwner(HWND hOwner);
 protected:
-	virtual SWND OnSetSwndCapture(SWND swnd);
-	virtual BOOL OnReleaseSwndCapture();
+	virtual SWND WINAPI OnSetSwndCapture(SWND swnd);
+	virtual BOOL WINAPI OnReleaseSwndCapture();
 
 	BOOL m_canReleaseCapture;
 	HWND	m_hOwner;
