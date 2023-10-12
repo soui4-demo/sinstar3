@@ -161,6 +161,14 @@ Section "权氏两笔" COMP_QS2B
    SetOutPath "$INSTDIR\server"
    File /a "server\权氏两笔.cit"
 SectionEnd
+
+Section "五笔092E" COMP_WB092E
+   SetOverwrite ifnewer
+   SetOutPath "$INSTDIR\server"
+   File /a "server\092五笔E.cit"
+   File /a "server\092五笔E.scm"
+SectionEnd
+
 SectionGroupEnd
 
 
@@ -291,6 +299,7 @@ Function .onInit
    SectionGetFlags ${COMP_BXM31} $R0
    IntOp $0 $R0 & $1
    SectionSetFlags ${COMP_BXM31} $0
+
    SectionGetFlags ${COMP_ZM} $R0
    IntOp $0 $R0 & $1
    SectionSetFlags ${COMP_ZM} $0
@@ -298,6 +307,10 @@ Function .onInit
    SectionGetFlags ${COMP_QS2B} $R0
    IntOp $0 $R0 & $1
    SectionSetFlags ${COMP_QS2B} $0
+
+   SectionGetFlags ${COMP_WB092E} $R0
+   IntOp $0 $R0 & $1
+   SectionSetFlags ${COMP_WB092E} $0
 
    Goto Run
    Degrade:
