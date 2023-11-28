@@ -2285,8 +2285,7 @@ void CInputState::SetOpenStatus(BOOL bOpen)
 
 BOOL CInputState::KeyIn_Test_FuncKey(UINT uKey,LPARAM lKeyData,const BYTE * lpbKeyState)
 {
-	if(uKey != VK_SHIFT && uKey !=VK_CONTROL)
-		return FALSE;
+	SASSERT(uKey == VK_SHIFT || uKey ==VK_CONTROL);
 	if(!m_pListener->GetOpenStatus())
 		return FALSE;
 
@@ -2383,31 +2382,6 @@ BOOL CInputState::TestKeyDown(UINT uKey,LPARAM lKeyData,const BYTE * lpbKeyState
 		}
 		return FALSE;
 	}
-	if(uKey==VK_SPACE)
-	{
-		if(m_ctx.inState==INST_CODING && IsCompEmpty(m_ctx))
-		{
-			if(!g_SettingsG->bFullSpace && ((m_ctx.sbState!=SBST_SENTENCE && m_ctx.sCandCount==0)
-				||(m_ctx.sbState==SBST_ASSOCIATE && g_SettingsG->byAstMode==AST_ENGLISH && !(lpbKeyState[VK_CONTROL]&0x80))))
-			{
-				if(bKeyDown) 
-				{
-					m_bPressOther=TRUE;
-				}
-				return FALSE;
-			}
-			DWORD dwNow = GetTickCount();
-			if(m_tmInputEnd== 0 || GetTimeSpan(m_tmInputEnd,dwNow)>=60*1000)
-			{
-				if(bKeyDown) 
-				{
-					m_bPressOther=TRUE;
-				}
-				return FALSE;
-			}
-		}
-	}
-
 	BOOL bOpen = m_pListener->IsInputEnable();
 	if (!bOpen)
 	{
@@ -2459,11 +2433,32 @@ BOOL CInputState::TestKeyDown(UINT uKey,LPARAM lKeyData,const BYTE * lpbKeyState
 		}
 		else
 		{
-			m_bPressOther = TRUE;
+			if(bKeyDown) 
+			{
+				m_bPressOther=TRUE;
+			}
 			return FALSE;
 		}
 	}
 
+	if(uKey==VK_SPACE && !m_bPressCtrl && !m_bPressShift)
+	{
+		SASSERT(bKeyDown);
+		m_bPressOther=TRUE;
+		if(m_ctx.inState==INST_CODING && IsCompEmpty(m_ctx))
+		{
+			if(!g_SettingsG->bFullSpace && ((m_ctx.sbState!=SBST_SENTENCE && m_ctx.sCandCount==0)
+				||(m_ctx.sbState==SBST_ASSOCIATE && g_SettingsG->byAstMode==AST_ENGLISH && !(lpbKeyState[VK_CONTROL]&0x80))))
+			{
+				return FALSE;
+			}
+			DWORD dwNow = GetTickCount();
+			if(m_tmInputEnd== 0 || GetTimeSpan(m_tmInputEnd,dwNow)>=60*1000)
+			{
+				return FALSE;
+			}
+		}
+	}
 	//¼ì²é¿ì½Ý¼ü
 	int iHotKey = TestHotKey(uKey, lpbKeyState);
 	if (iHotKey != -1)
@@ -2527,24 +2522,27 @@ BOOL CInputState::TestKeyDown(UINT uKey,LPARAM lKeyData,const BYTE * lpbKeyState
 		return bRet;
 	}
 
-	if(uKey==VK_CAPITAL)
+	if(uKey==VK_SHIFT || uKey == VK_CONTROL)
 	{
+		bRet = KeyIn_Test_FuncKey(uKey,lKeyData,lpbKeyState);
+	}else if(uKey==VK_CAPITAL)
+	{
+		SASSERT(bKeyDown);
 		if(lpbKeyState[VK_CAPITAL]&0x01)
 		{
 			ClearContext(CPC_ALL);
 			InputEnd();
 			InputHide(FALSE);
 		}
+		m_bPressOther=TRUE;
 		m_pListener->OnCapital(lpbKeyState[VK_CAPITAL]&0x01);
 		return FALSE;
 	}
-	else if(uKey==VK_SHIFT || uKey == VK_CONTROL)
+	else 
 	{
-		bRet = KeyIn_Test_FuncKey(uKey,lKeyData,lpbKeyState);
-	}else if(!(lpbKeyState[VK_CAPITAL]&0x01)) 
-	{
+		SASSERT(bKeyDown);
 		m_bPressOther=TRUE;
-		if(m_pListener->GetOpenStatus())
+		if(!(lpbKeyState[VK_CAPITAL]&0x01) && m_pListener->GetOpenStatus())
 		{
 			if(lpbKeyState[VK_CONTROL]&0x80 && lpbKeyState[VK_SHIFT]&0x80)
 			{//Ctrl + Shift

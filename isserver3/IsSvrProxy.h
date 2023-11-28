@@ -8,6 +8,7 @@
 
 typedef IServerCore * (*funIscore_Create)();
 typedef void(*funIscore_Destroy)(IServerCore* pCore);
+typedef void (*funIscore_SetLogCallback)(FunLog funLog);
 
 #define UM_BUILD_INDEX_PROG0	(WM_USER+2000)
 #define UM_BUILD_INDEX_PROG1	(WM_USER+2001)

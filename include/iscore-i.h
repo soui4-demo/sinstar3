@@ -8,6 +8,8 @@
 
 #include "global.h"
 
+typedef void (*FunLog)(int level,const char *pszLog);
+
 struct IBuildIndexProgressListener
 {
 	virtual void OnBuildShapePhraseIndex(PROGTYPE uType, unsigned int dwData) = 0;
@@ -124,6 +126,15 @@ extern "C" {
 #endif
 ISCORE_API IServerCore * Iscore_Create();
 ISCORE_API void Iscore_Destroy(IServerCore* pCore);
+ISCORE_API void Iscore_SetLogCallback(FunLog funLog);
+typedef enum _LogLevel{
+	log_debug=0,
+	log_info,
+	log_warn,
+	log_error,
+}LogLevel;
+
+ISCORE_API void Iscore_Log(int level,const char *pszLog);
 #ifdef __cplusplus
 }
 #endif

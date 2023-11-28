@@ -52,6 +52,10 @@ namespace SOUI {
 	}
 }
 
+void IsCoreLog(int level,const char*log){
+	SLOG("iscore",level)<<log;
+}
+
 CIsSvrProxy * CIsSvrProxy::_this = NULL;
 CIsSvrProxy::CIsSvrProxy(const SStringT &strDataPath,const SStringT & strSvrPath)
 	:m_strDataPath(strDataPath)
@@ -113,6 +117,11 @@ int CIsSvrProxy::OnCreate(LPCREATESTRUCT pCS)
 			nRet = -1;
 			break;
 		}
+		funIscore_SetLogCallback funSetLogCallback = (funIscore_SetLogCallback)GetProcAddress(m_hCoreModule,"Iscore_SetLogCallback");
+		if(funSetLogCallback){
+			funSetLogCallback(IsCoreLog);
+		}
+
 		if (!m_pCore->Init(m_hWnd, this, m_strSvrPath))
 		{
 			m_funIsCore_Destroy(m_pCore);
