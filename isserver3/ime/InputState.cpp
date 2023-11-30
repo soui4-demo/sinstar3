@@ -2458,7 +2458,7 @@ BOOL CInputState::TestKeyDown(UINT uKey,LPARAM lKeyData,const BYTE * lpbKeyState
 				return FALSE;
 			}
 			DWORD dwNow = GetTickCount();
-			if(m_tmInputEnd== 0 || GetTimeSpan(m_tmInputEnd,dwNow)>=60*1000)
+			if(g_SettingsG->bAutoSpace && (m_tmInputEnd== 0 || GetTimeSpan(m_tmInputEnd,dwNow)>=60*1000))
 			{
 				return FALSE;
 			}

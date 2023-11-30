@@ -366,7 +366,9 @@ namespace SOUI
 		FindAndSetCheck(R.id.chk_disable_first_wild,g_SettingsG->bDisableFirstWild);
 
 		FindAndSetCheck(R.id.chk_full_space,g_SettingsG->bFullSpace);
-		
+	
+		FindAndSetCheck(R.id.chk_auto_space,g_SettingsG->bAutoSpace);
+
 		FindAndSetHotKey(R.id.hk_to_sentmode, Char2VKey(g_SettingsG->bySentMode));
 
 		FindAndSetSpin(R.id.spin_delay_time, g_SettingsG->nDelayTime);
@@ -782,6 +784,11 @@ SWindow *pCtrl = FindChildByID(id);\
 	void CConfigDlg::OnFullSpace()
 	{
 		g_SettingsG->bFullSpace = FindChildByID(R.id.chk_full_space)->IsChecked();
+	}
+
+	void CConfigDlg::OnAutoSpace()
+	{
+		g_SettingsG->bAutoSpace = FindChildByID(R.id.chk_auto_space)->IsChecked();
 	}
 
 	void CConfigDlg::OnChkOpTip(EventArgs *e)

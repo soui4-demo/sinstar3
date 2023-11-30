@@ -103,6 +103,7 @@ public:
 	BOOL	bOnlySimpleCode;	// 出简不出全
 	BOOL	bDisableFirstWild;	// 禁止首码万能键
 	BOOL	bFullSpace;			// full space.
+	BOOL	bAutoSpace;			// 智能识别空格功能
 	BOOL	bInitEnglish;		// init for English input.
 	BYTE    bySentMode;
 	int		nMaxCands;			// max candidate number.
