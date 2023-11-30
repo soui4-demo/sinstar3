@@ -2283,9 +2283,9 @@ void CInputState::SetOpenStatus(BOOL bOpen)
 }
 
 //test keyboard press state except for ukey
-static bool IsPressOther(const BYTE * lpbKeyState,UINT uKey,UINT uKeyLeft,UINT uKeyRight){
-	for(UINT i=0;i<256;i++){
-		if(i==uKey || i==uKeyLeft || i==uKeyRight)
+static bool IsPressOther(const BYTE * lpbKeyState,UINT uKey){
+	for(UINT i=VK_BACK;i<=VK_F12;i++){
+		if(i==uKey)
 			continue;
 		if(lpbKeyState[i]&0x80)
 			return true;
@@ -2305,14 +2305,14 @@ BOOL CInputState::KeyIn_Test_FuncKey(UINT uKey,LPARAM lKeyData,const BYTE * lpbK
 	{
 		if (bKeyDown)
 		{//shift down
-			if(!IsPressOther(lpbKeyState,VK_SHIFT,VK_LSHIFT,VK_RSHIFT)){
+			if(!IsPressOther(lpbKeyState,VK_SHIFT)){
 				m_bPressShift = TRUE;
 				m_bReleaseOther = FALSE;
 			}
 		}else if(m_bPressShift)
 		{//shift up
 			m_bPressShift = FALSE;
-			if(IsPressOther(lpbKeyState,VK_SHIFT,VK_LSHIFT,VK_RSHIFT) || m_bReleaseOther)
+			if(IsPressOther(lpbKeyState,VK_SHIFT) || m_bReleaseOther)
 			{
 				return FALSE;
 			}
@@ -2327,14 +2327,14 @@ BOOL CInputState::KeyIn_Test_FuncKey(UINT uKey,LPARAM lKeyData,const BYTE * lpbK
 		UINT byScanCode = (UINT)(lKeyData >> 24) & 0x000000ff;//scan code
 		if (bKeyDown)
 		{//ctrl down
-			if(!IsPressOther(lpbKeyState,VK_CONTROL,VK_LCONTROL,VK_RCONTROL)){
+			if(!IsPressOther(lpbKeyState,VK_CONTROL)){
 				m_bPressCtrl = TRUE;
 				m_bReleaseOther = FALSE;
 			}
 		}else if(m_bPressCtrl)
 		{//ctrl up
 			m_bPressCtrl=FALSE; 
-			if(IsPressOther(lpbKeyState,VK_CONTROL,VK_LCONTROL,VK_RCONTROL) || m_bReleaseOther)
+			if(IsPressOther(lpbKeyState,VK_CONTROL) || m_bReleaseOther)
 			{
 				return FALSE;
 			}
@@ -2394,7 +2394,7 @@ BOOL CInputState::TestKeyDown(UINT uKey,LPARAM lKeyData,const BYTE * lpbKeyState
 	{
 		if (uKey == VK_SHIFT)
 		{//handle shift while input is disabled.
-			if (bKeyDown && !IsPressOther(lpbKeyState,VK_SHIFT,VK_LSHIFT,VK_RSHIFT))
+			if (bKeyDown && !IsPressOther(lpbKeyState,VK_SHIFT))
 			{
 				m_bPressShift = TRUE;
 				m_bReleaseOther = FALSE;
@@ -2403,7 +2403,7 @@ BOOL CInputState::TestKeyDown(UINT uKey,LPARAM lKeyData,const BYTE * lpbKeyState
 			{
 				m_bPressShift = FALSE;
 				UINT uScanCode = (lKeyData >> 16)&0x000000ff;
-				bool isPressOther = IsPressOther(lpbKeyState,VK_SHIFT,VK_LSHIFT,VK_RSHIFT);
+				bool isPressOther = IsPressOther(lpbKeyState,VK_SHIFT);
 				SLOGI()<<"pressOther="<<isPressOther<<" releaseOther="<<m_bReleaseOther<<" bPressCtrl="<<m_bPressCtrl;
 				if (!isPressOther && !m_bReleaseOther
 					&& ((uScanCode==Left_Shift && g_SettingsG->m_funLeftShift==Fun_Ime_Switch)||(uScanCode == Right_Shift && g_SettingsG->m_funRightShift==Fun_Ime_Switch)))
@@ -2418,7 +2418,7 @@ BOOL CInputState::TestKeyDown(UINT uKey,LPARAM lKeyData,const BYTE * lpbKeyState
 			return FALSE;
 		}else if(uKey == VK_CONTROL)
 		{
-			if (bKeyDown && !IsPressOther(lpbKeyState,VK_CONTROL,VK_LCONTROL,VK_RCONTROL))
+			if (bKeyDown && !IsPressOther(lpbKeyState,VK_CONTROL))
 			{
 				m_bPressCtrl = TRUE;
 				m_bReleaseOther = FALSE;
@@ -2426,7 +2426,7 @@ BOOL CInputState::TestKeyDown(UINT uKey,LPARAM lKeyData,const BYTE * lpbKeyState
 			if (!bKeyDown && m_bPressCtrl)
 			{
 				m_bPressCtrl = FALSE;
-				bool isPressOther = IsPressOther(lpbKeyState,VK_CONTROL,VK_LCONTROL,VK_RCONTROL);
+				bool isPressOther = IsPressOther(lpbKeyState,VK_CONTROL);
 				SLOGI()<<"pressOther="<<isPressOther<<" releaseOther="<<m_bReleaseOther<<" pressShift="<<m_bPressShift;
 				UINT uScanCode = (lKeyData >> 24)&0x000000ff;
 				if (!isPressOther && !m_bReleaseOther
