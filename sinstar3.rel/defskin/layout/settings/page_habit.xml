@@ -79,6 +79,7 @@
     <check  text="拼音重码词组优先" name="cand_py_phrase_first"/>
     <check  text="禁用首码万能键" name="chk_disable_first_wild"/>
     <check  text="中文标点时使用全角空格" name="chk_full_space"/>
+    <check  text="智能空格识别" name="chk_auto_space"/>
     <check  text="显示使用技巧" name="chk_show_op_tip"/>
     <check  text="运行全屏程序时自动隐藏状态栏" name="chk_autoHideStatusForFullScreen"/>
     <check  text="UILess模式自动隐藏状态栏" name="chk_autoHideStatusForUILess"/>
