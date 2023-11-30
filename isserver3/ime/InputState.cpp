@@ -147,7 +147,6 @@ CInputState::CInputState(void)
 :m_pListener(NULL)
 ,m_fOpen(FALSE)
 ,m_bUpdateTips(TRUE)
-,m_bPressOther(FALSE)
 ,m_bReleaseOther(FALSE)
 ,m_bPressShift(FALSE)
 ,m_bPressCtrl(FALSE)
@@ -2283,6 +2282,17 @@ void CInputState::SetOpenStatus(BOOL bOpen)
 	}
 }
 
+//test keyboard press state except for ukey
+static bool IsPressOther(const BYTE * lpbKeyState,UINT uKey,UINT uKeyLeft,UINT uKeyRight){
+	for(UINT i=0;i<256;i++){
+		if(i==uKey || i==uKeyLeft || i==uKeyRight)
+			continue;
+		if(lpbKeyState[i]&0x80)
+			return true;
+	}
+	return false;
+}
+
 BOOL CInputState::KeyIn_Test_FuncKey(UINT uKey,LPARAM lKeyData,const BYTE * lpbKeyState)
 {
 	SASSERT(uKey == VK_SHIFT || uKey ==VK_CONTROL);
@@ -2293,21 +2303,20 @@ BOOL CInputState::KeyIn_Test_FuncKey(UINT uKey,LPARAM lKeyData,const BYTE * lpbK
 	KeyFunction fun = Fun_None;
 	if(uKey == VK_SHIFT)
 	{
-		UINT byScanCode = (UINT)(lKeyData >> 16) & 0x000000ff;//scan code
 		if (bKeyDown)
-		{//按下SHIFT
-			m_bPressShift = TRUE;
+		{//shift down
+			if(!IsPressOther(lpbKeyState,VK_SHIFT,VK_LSHIFT,VK_RSHIFT)){
+				m_bPressShift = TRUE;
+				m_bReleaseOther = FALSE;
+			}
 		}else if(m_bPressShift)
-		{
+		{//shift up
 			m_bPressShift = FALSE;
-			if(m_bPressOther || m_bReleaseOther ||m_bPressCtrl || lpbKeyState[VK_SPACE]&0x80)
+			if(IsPressOther(lpbKeyState,VK_SHIFT,VK_LSHIFT,VK_RSHIFT) || m_bReleaseOther)
 			{
-				if(m_bReleaseOther && !m_bPressCtrl)
-				{
-					m_bReleaseOther=FALSE;
-				}
 				return FALSE;
 			}
+			UINT byScanCode = (UINT)(lKeyData >> 16) & 0x000000ff;//scan code
 			if(byScanCode == Right_Shift)
 				fun = g_SettingsG->m_funRightShift;
 			else
@@ -2317,17 +2326,16 @@ BOOL CInputState::KeyIn_Test_FuncKey(UINT uKey,LPARAM lKeyData,const BYTE * lpbK
 	{
 		UINT byScanCode = (UINT)(lKeyData >> 24) & 0x000000ff;//scan code
 		if (bKeyDown)
-		{//按下SHIFT
-			m_bPressCtrl = TRUE;
+		{//ctrl down
+			if(!IsPressOther(lpbKeyState,VK_CONTROL,VK_LCONTROL,VK_RCONTROL)){
+				m_bPressCtrl = TRUE;
+				m_bReleaseOther = FALSE;
+			}
 		}else if(m_bPressCtrl)
-		{
+		{//ctrl up
 			m_bPressCtrl=FALSE; 
-			SLOGI()<<"pressOther="<<m_bPressOther<<" releaseOther="<<m_bReleaseOther<<" pressShift="<<m_bPressShift;
-			if(m_bPressOther || m_bReleaseOther||m_bPressShift)
+			if(IsPressOther(lpbKeyState,VK_CONTROL,VK_LCONTROL,VK_RCONTROL) || m_bReleaseOther)
 			{
-				if(m_bReleaseOther && !m_bPressShift){
-					m_bReleaseOther=FALSE;
-				}
 				return FALSE;
 			}
 			if(byScanCode == Right_Ctrl)
@@ -2373,7 +2381,6 @@ BOOL CInputState::TestKeyDown(UINT uKey,LPARAM lKeyData,const BYTE * lpbKeyState
 	SLOGFMTI(_T("TestKeyDown, uKey=%x,lKeyData=%x,bDown:%d"),uKey,lKeyData,bKeyDown);
 	if (!bKeyDown && (uKey != VK_SHIFT && uKey !=VK_CONTROL))
 	{
-		m_bPressOther=FALSE;
 		if(!m_bPressCtrl && !m_bPressShift)
 		{
 			m_bReleaseOther=FALSE;
@@ -2387,56 +2394,55 @@ BOOL CInputState::TestKeyDown(UINT uKey,LPARAM lKeyData,const BYTE * lpbKeyState
 	{
 		if (uKey == VK_SHIFT)
 		{//handle shift while input is disabled.
-			if (bKeyDown)
+			if (bKeyDown && !IsPressOther(lpbKeyState,VK_SHIFT,VK_LSHIFT,VK_RSHIFT))
 			{
 				m_bPressShift = TRUE;
+				m_bReleaseOther = FALSE;
 			}
 			if (!bKeyDown && m_bPressShift)
 			{
 				m_bPressShift = FALSE;
 				UINT uScanCode = (lKeyData >> 16)&0x000000ff;
-				if (!m_bPressOther && !m_bReleaseOther && !m_bPressCtrl
+				bool isPressOther = IsPressOther(lpbKeyState,VK_SHIFT,VK_LSHIFT,VK_RSHIFT);
+				SLOGI()<<"pressOther="<<isPressOther<<" releaseOther="<<m_bReleaseOther<<" bPressCtrl="<<m_bPressCtrl;
+				if (!isPressOther && !m_bReleaseOther
 					&& ((uScanCode==Left_Shift && g_SettingsG->m_funLeftShift==Fun_Ime_Switch)||(uScanCode == Right_Shift && g_SettingsG->m_funRightShift==Fun_Ime_Switch)))
 				{//激活输入
 					SetOpenStatus(TRUE);
 					return TRUE;
 				}
-				if(m_bReleaseOther && !m_bPressCtrl)
-				{
-					m_bReleaseOther=FALSE;
+				if(m_bPressCtrl){
+					m_bReleaseOther = TRUE;
 				}
 			}
 			return FALSE;
 		}else if(uKey == VK_CONTROL)
 		{
-			if (bKeyDown)
+			if (bKeyDown && !IsPressOther(lpbKeyState,VK_CONTROL,VK_LCONTROL,VK_RCONTROL))
 			{
 				m_bPressCtrl = TRUE;
+				m_bReleaseOther = FALSE;
 			}
 			if (!bKeyDown && m_bPressCtrl)
 			{
 				m_bPressCtrl = FALSE;
-				SLOGI()<<"pressOther="<<m_bPressOther<<" releaseOther="<<m_bReleaseOther<<" pressShift="<<m_bPressShift;
+				bool isPressOther = IsPressOther(lpbKeyState,VK_CONTROL,VK_LCONTROL,VK_RCONTROL);
+				SLOGI()<<"pressOther="<<isPressOther<<" releaseOther="<<m_bReleaseOther<<" pressShift="<<m_bPressShift;
 				UINT uScanCode = (lKeyData >> 24)&0x000000ff;
-				if (!m_bPressOther && !m_bReleaseOther && !m_bPressShift
+				if (!isPressOther && !m_bReleaseOther
 					&& ((uScanCode==Left_Ctrl && g_SettingsG->m_funLeftCtrl==Fun_Ime_Switch)||(uScanCode == Right_Ctrl && g_SettingsG->m_funRightCtrl==Fun_Ime_Switch)))
 				{//激活输入
 					SetOpenStatus(TRUE);
 					return TRUE;
 				}
-				if(m_bReleaseOther && !m_bPressShift)
-				{
-					m_bReleaseOther=FALSE;
+				if(m_bPressShift){
+					m_bReleaseOther = TRUE;
 				}
 			}
 			return FALSE;
 		}
 		else
 		{
-			if(bKeyDown) 
-			{
-				m_bPressOther=TRUE;
-			}
 			return FALSE;
 		}
 	}
@@ -2444,7 +2450,6 @@ BOOL CInputState::TestKeyDown(UINT uKey,LPARAM lKeyData,const BYTE * lpbKeyState
 	if(uKey==VK_SPACE && !m_bPressCtrl && !m_bPressShift)
 	{
 		SASSERT(bKeyDown);
-		m_bPressOther=TRUE;
 		if(m_ctx.inState==INST_CODING && IsCompEmpty(m_ctx))
 		{
 			if(!g_SettingsG->bFullSpace && ((m_ctx.sbState!=SBST_SENTENCE && m_ctx.sCandCount==0)
@@ -2518,7 +2523,6 @@ BOOL CInputState::TestKeyDown(UINT uKey,LPARAM lKeyData,const BYTE * lpbKeyState
 				break;
 			}
 		}
-		m_bPressOther = TRUE;
 		return bRet;
 	}
 
@@ -2534,14 +2538,12 @@ BOOL CInputState::TestKeyDown(UINT uKey,LPARAM lKeyData,const BYTE * lpbKeyState
 			InputEnd();
 			InputHide(FALSE);
 		}
-		m_bPressOther=TRUE;
 		m_pListener->OnCapital(lpbKeyState[VK_CAPITAL]&0x01);
 		return FALSE;
 	}
 	else 
 	{
 		SASSERT(bKeyDown);
-		m_bPressOther=TRUE;
 		if(!(lpbKeyState[VK_CAPITAL]&0x01) && m_pListener->GetOpenStatus())
 		{
 			if(lpbKeyState[VK_CONTROL]&0x80 && lpbKeyState[VK_SHIFT]&0x80)
@@ -2719,7 +2721,6 @@ BOOL CInputState::OnSvrNotify(UINT wp, PMSGDATA pMsg)
 
 void CInputState::OnSetFocus(BOOL bFocus)
 {
-	m_bPressOther = FALSE;
 	m_bReleaseOther=FALSE;
 	m_bPressShift = FALSE;
 	m_bPressCtrl = FALSE;
