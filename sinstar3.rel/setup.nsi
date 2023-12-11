@@ -162,11 +162,11 @@ Section "权氏两笔" COMP_QS2B
    File /a "server\权氏两笔.cit"
 SectionEnd
 
-Section "五笔092E" COMP_WB092E
+Section "五笔092F" COMP_WB092F
    SetOverwrite ifnewer
    SetOutPath "$INSTDIR\server"
-   File /a "server\092五笔E.cit"
-   File /a "server\092五笔E.scm"
+   File /a "server\092五笔F.cit"
+   File /a "server\092五笔F.scm"
 SectionEnd
 
 SectionGroupEnd
@@ -308,9 +308,9 @@ Function .onInit
    IntOp $0 $R0 & $1
    SectionSetFlags ${COMP_QS2B} $0
 
-   SectionGetFlags ${COMP_WB092E} $R0
+   SectionGetFlags ${COMP_WB092F} $R0
    IntOp $0 $R0 & $1
-   SectionSetFlags ${COMP_WB092E} $0
+   SectionSetFlags ${COMP_WB092F} $0
 
    Goto Run
    Degrade:
