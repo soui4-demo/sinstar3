@@ -110,7 +110,7 @@ public:
 	int		nDelayTime;			//delay timer for closing composition window in seconds.
 	BOOL	bBackQuitUMode;		// 当U模式输入为空时回退退出U模式
 	BOOL	bQuitEnCancelCAP;	// 退出英文模式时自动退出大写状态
-
+	BOOL    bEnableLog;         // EnableLogFile
 	KeyFunction m_funLeftShift;
 	KeyFunction m_funRightShift;
 
