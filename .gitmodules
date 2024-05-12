@@ -1,0 +1,3 @@
+[submodule "iscore"]
+	path = iscore
+	url = https://gitee.com/setoutsoft/iscore.git
