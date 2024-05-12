@@ -25,7 +25,6 @@
 x64
 Release
 Debug
-iscore
 *.log
 Debug15
 Release15
