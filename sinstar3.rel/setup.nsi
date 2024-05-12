@@ -101,6 +101,7 @@ Section "ºËÐÄ³ÌÐò" SEC_CORE
   File /r "server\spell.dat"
   File /r "server\spell.pit"
   File /r "server\symbol.txt"
+  File /r "server\comment.txt"
   File /r "server\usercmd.ud"
   File /r "server\userdef.ud"
   File /r "server\wordrate.dat"
