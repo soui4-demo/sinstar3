@@ -268,7 +268,7 @@ void CSettingsGlobal::Load(const SStringT & strDataPath)
 	{
 		szBackupDir[0]=0;
 	}
-	
+	bEnableLog = GetPrivateProfileInt(_T("log"),_T("enable_svr"),1,strConfigIni);
 
 	SetModified(false);
 }
