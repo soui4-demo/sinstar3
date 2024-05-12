@@ -627,21 +627,6 @@ BOOL RC_API  Sinstar_ForceUninstall()
 	return TRUE;
 }
 
-BOOL MyCopyFile(LPCTSTR pszSour, LPCTSTR pszDest)
-{
-	TCHAR szSour[512] = { 0 }, szDest[512] = { 0 };
-	_tcscpy(szSour, pszSour);
-	_tcscpy(szDest, pszDest);
-
-	SHFILEOPSTRUCT fileOp = { 0 };
-	fileOp.wFunc = FO_COPY;
-	fileOp.pFrom = szSour;
-	fileOp.pTo = szDest;
-	fileOp.fFlags = FOF_NOCONFIRMATION | FOF_SILENT | FOF_FILESONLY;
-	int nRet = SHFileOperation(&fileOp);
-	return nRet == 0;
-}
-
 void RC_API Sinstar_QuitServer()
 {
 	HWND hWndSvr = FindWindow(NULL, SINSTAR3_SERVER_HWND);
