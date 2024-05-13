@@ -782,7 +782,9 @@ CIsSvrProxy * CIsSvrProxy::GetInstance()
 }
 
 std::string g_fontU8;
+std::wstring g_font;
 int g_font_charset = DEFAULT_CHARSET;
+
 void CIsSvrProxy::OnDataLoaded()
 {
 	SetTimer(TIMERID_RECONN,SPAN_RECONN,NULL);
@@ -791,6 +793,7 @@ void CIsSvrProxy::OnDataLoaded()
 		char u8[100]={0};
 		WideCharToMultiByte(CP_UTF8,0,fontFace,31,u8,100,NULL,NULL);
 		g_fontU8=u8;
+		g_font = fontFace;
 	}
 }
 

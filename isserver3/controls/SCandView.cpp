@@ -1,6 +1,9 @@
 #include "StdAfx.h"
 #include "SCandView.h"
 
+extern std::wstring g_font;
+extern int g_font_charset;
+
 namespace SOUI
 {
 	SCandView::SCandView(void):m_byRate(0),m_cWild(0), m_crShadow(CR_INVALID), m_ptShadowOffset(1,1),m_maxCandWidth(250.0f,SLayoutSize::dp)
@@ -96,8 +99,25 @@ namespace SOUI
 		if(m_byRate==RATE_MIXSP || m_byRate == RATE_COMMENT)
 		{
 			pRT->SetTextColor(m_crComp);
-			SStringT strComp=SStringT().Format(_T("[%s]"),m_strComp.c_str());
-			pRT->TextOut(pt.x,pt.y,(LPCTSTR)strComp,strComp.GetLength());
+			pRT->TextOut(pt.x,pt.y,L"[",1);
+			pRT->MeasureText(L"[",1,&szBlock);
+			pt.x+=szBlock.cx;
+
+			SAutoRefPtr<IFontS> oldFont = (IFontPtr)pRT->GetCurrentObject(OT_FONT);
+			if(m_byRate == RATE_COMMENT && !g_font.empty()){
+				SStringW strFont = SStringW().Format(L"face:%s,charset:%d,size:%d",g_font.c_str(),g_font_charset,oldFont->LogFont()->lfHeight);
+				IFontPtr commentFont = GETUIDEF->GetFont(strFont,GetScale());
+				pRT->SelectObject(commentFont);
+			}
+			pRT->TextOut(pt.x,pt.y,m_strComp.c_str(),m_strComp.GetLength());
+			pRT->MeasureText(m_strComp.c_str(),m_strComp.GetLength(),&szBlock);
+			pt.x+=szBlock.cx;
+
+			pRT->SelectObject(oldFont);
+
+			pRT->TextOut(pt.x,pt.y,L"]",1);
+			pRT->MeasureText(L"[",1,&szBlock);
+			pt.x+=szBlock.cx;
 		}
 		else if(m_cWild!=0 && m_strInput.FindChar(m_cWild)!=-1)
 		{
@@ -168,6 +188,24 @@ namespace SOUI
 		szRet->cx += sz.cx;
 		szRet->cy = smax(szRet->cy,sz.cy);
 
+		if(m_byRate == RATE_COMMENT && !g_font.empty()){
+			pRT->MeasureText(L"[]",2,&sz);
+			szRet->cx += sz.cx;
+			szRet->cy = smax(szRet->cy,sz.cy);
+
+			SAutoRefPtr<IFontS> oldFont = (IFontPtr)pRT->GetCurrentObject(OT_FONT);
+			SStringW strFont = SStringW().Format(L"face:%s,charset:%d,size:%d",g_font.c_str(),g_font_charset,oldFont->LogFont()->lfHeight);
+			IFontPtr commentFont = GETUIDEF->GetFont(strFont,GetScale());
+			pRT->SelectObject(commentFont);
+			pRT->MeasureText(m_strComp.c_str(),m_strComp.GetLength(),&sz);
+			pRT->SelectObject(oldFont);
+
+			szRet->cx+=sz.cx;
+			szRet->cy = smax(szRet->cy,sz.cy);
+
+			pRT->Release();
+			return;
+		}
 		SStringT strComp;
 		if(m_byRate==RATE_MIXSP || m_byRate == RATE_COMMENT)
 		{
