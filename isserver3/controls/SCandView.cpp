@@ -57,6 +57,7 @@ namespace SOUI
 				crCand = m_crCand[CAND_FORECAST];
 				break;
 			case RATE_MIXSP:
+			case RATE_COMMENT:
 				crCand = m_crCand[CAND_BLENDPY];
 				break;
 			case RATE_USERDEF:
@@ -92,7 +93,7 @@ namespace SOUI
 		}
 		pt.x += szBlock.cx;
 
-		if(m_byRate==RATE_MIXSP)
+		if(m_byRate==RATE_MIXSP || m_byRate == RATE_COMMENT)
 		{
 			pRT->SetTextColor(m_crComp);
 			SStringT strComp=SStringT().Format(_T("[%s]"),m_strComp.c_str());
@@ -168,7 +169,7 @@ namespace SOUI
 		szRet->cy = smax(szRet->cy,sz.cy);
 
 		SStringT strComp;
-		if(m_byRate==RATE_MIXSP)
+		if(m_byRate==RATE_MIXSP || m_byRate == RATE_COMMENT)
 		{
 			strComp=SStringT().Format(_T("[%s]"),m_strComp.c_str());
 		}

@@ -118,6 +118,7 @@ struct IServerCore {
 	virtual LRESULT ReqQueryCompSpell(LPCWSTR pszInput,int nSize)=0;
 	virtual LRESULT ReqCh2En(LPCWSTR pszInput,int nLen)=0;
 	virtual LRESULT ReqEn2Ch(LPCWSTR pszText,int nLen)=0;
+	virtual BOOL GetCommentFont(wchar_t fontFace[32],int *charset)=0;
 };
 
 

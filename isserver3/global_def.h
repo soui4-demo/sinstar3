@@ -17,6 +17,7 @@
 #define RATE_ASSOCIATE	0xF9	//ÁªÏëÖØÂë
 #define RATE_USERJM		0xF8	//user defined jm.
 #define RATE_USERDICT	0xF7	//user dict
+#define RATE_COMMENT	0xF6    //comment
 
 enum{
 	SENDER_SINSTAR3	= 100,

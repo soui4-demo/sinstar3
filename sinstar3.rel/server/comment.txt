@@ -1,2 +1,5 @@
-rem: 启程输入法的注释数据，格式：key+制表符+注释，注释长度不超255字符。
+#启程输入法的注释数据，格式：key+制表符+注释，注释长度不超255字符。
+#"#"开始为注释行，如何注释需要特殊字体，可以使用font_face,font_charset一起来指定字体信息，font_face是字体名，font_charset是字体的字符集，1代表默认字符集，一般不需要设置
+#font_face=MS Gothic
+#font_charset=1
 测试	hello
