@@ -1746,7 +1746,7 @@ BOOL CInputState::KeyIn_Code_ChangeComp(InputContext * lpCntxtPriv,UINT byInput,
 				if(!CIsSvrProxy::GetSvrCore()->GetCompHead()->bSymbolFirst)
 					return FALSE;//符号顶字上屏
 			}
-			if(bWild && g_SettingsG->bDisableFirstWild)//禁止首码万能键
+			if(bWild && g_SettingsG->bDisableFirstWild && !g_SettingsG->bBlendSpell && !g_SettingsG->bBlendUD)//禁止首码万能键
 				return FALSE;
 			if(g_SettingsG->bShowOpTip)
 			{//有编码后面显示操作提示
@@ -1800,13 +1800,6 @@ BOOL CInputState::KeyIn_Code_ChangeComp(InputContext * lpCntxtPriv,UINT byInput,
 	if(bRet)
 	{
 		LPBYTE lpbyCand=NULL;
-		BYTE byMask=MQC_NORMAL|g_SettingsG->byForecast;
-		if(g_SettingsG->bAutoMatch) byMask|=MQC_MATCH;
-		if(g_SettingsG->bBlendUD) byMask|=MQC_USERDEF;
-		if(g_SettingsG->bBlendSpell) byMask|=MQC_SPCAND;
-		if(g_SettingsG->bAutoPrompt) byMask|=MQC_AUTOPROMPT;
-		if(g_SettingsG->bOnlySimpleCode) byMask|=MQC_ONLYSC;
-
 		ClearContext(CPC_CAND);
 
 		if(lpCntxtPriv->cComp==0)
@@ -1815,6 +1808,14 @@ BOOL CInputState::KeyIn_Code_ChangeComp(InputContext * lpCntxtPriv,UINT byInput,
 			InputHide(TRUE);
 		}else
 		{
+			BYTE byMask=MQC_NORMAL|g_SettingsG->byForecast;
+			if(g_SettingsG->bAutoMatch) byMask|=MQC_MATCH;
+			if(g_SettingsG->bBlendUD) byMask|=MQC_USERDEF;
+			if(g_SettingsG->bBlendSpell) byMask|=MQC_SPCAND;
+			if(g_SettingsG->bAutoPrompt) byMask|=MQC_AUTOPROMPT;
+			if(g_SettingsG->bOnlySimpleCode) byMask|=MQC_ONLYSC;
+			if(g_SettingsG->bDisableFirstWild && lpCntxtPriv->szComp[0]==CDataCenter::getSingletonPtr()->GetData().m_compInfo.cWild) byMask|=MQC_DISABELWILD;
+
 			lpCntxtPriv->sbState=SBST_NORMALSTATE;	//退出联想状态
 			if(CIsSvrProxy::GetSvrCore()->ReqQueryCand(m_pListener->GetHwnd(),lpCntxtPriv->szComp,lpCntxtPriv->cComp,byMask)==ISACK_SUCCESS)
 			{

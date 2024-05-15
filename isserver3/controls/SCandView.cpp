@@ -119,7 +119,7 @@ namespace SOUI
 			pRT->MeasureText(L"[",1,&szBlock);
 			pt.x+=szBlock.cx;
 		}
-		else if(m_cWild!=0 && m_strInput.FindChar(m_cWild)!=-1)
+		else if(m_byRate==RATE_WILD)
 		{
 			for(int i=0;i<m_strComp.GetLength();i++)
 			{

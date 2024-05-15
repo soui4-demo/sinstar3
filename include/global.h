@@ -104,6 +104,7 @@ typedef struct tagCOMPHEAD
 #define MCR_WILD		(1<<4)	//万能键的查询
 #define MCR_AUTOSELECT	(1<<5)	//唯一码上屏
 #define MCR_FORECAST	(1<<6)  //预测结果
+#define MQC_DISABELWILD (1<<7)  //禁用万能键查询
 
 //联想mask
 #define MKI_ASTCAND		1		//词组联想
