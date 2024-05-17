@@ -126,6 +126,7 @@ namespace SOUI
 		void OnCbUpdateIntervalSelChange(EventArgs *e);
 
 		void OnChangeFont();
+		void OnChangeFont2();
 		void OnSkinFont();
 		void OnPickBackupDir();
 		void OnBackup();
@@ -144,6 +145,7 @@ namespace SOUI
 			EVENT_ID_COMMAND(R.id.btn_close,OnClose)
 			EVENT_ID_COMMAND(R.id.btn_help,OnHelp)
 			EVENT_ID_COMMAND(R.id.btn_change_font,OnChangeFont)
+			EVENT_ID_COMMAND(R.id.btn_change_font2,OnChangeFont2)
 			EVENT_ID_COMMAND(R.id.btn_skin_font,OnSkinFont)
 			EVENT_ID_HANDLER(R.id.cbx_update_interval, EventCBSelChange::EventID, OnCbUpdateIntervalSelChange)
 			EVENT_ID_COMMAND(R.id.chk_auto_update, OnAutoUpdateClick)

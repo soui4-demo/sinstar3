@@ -121,6 +121,7 @@ void CSettingsGlobal::Save(const SStringT & strDataPath)
 
 
 	WritePrivateProfileString(KUI,_T("font"),strFontDesc.c_str(),strConfigIni);
+	WritePrivateProfileString(KUI,_T("fontFallback"),S_CA2T(u8FontFallback,CP_UTF8).c_str(),strConfigIni);
 
 	SStringT strComp = SOUI::CDataCenter::getSingleton().GetData().m_compInfo.strCompName;
 	if(strComp != _T("╪сть...") )
@@ -231,6 +232,11 @@ void CSettingsGlobal::Load(const SStringT & strDataPath)
 	GetPrivateProfileString(KUI, _T("font"), _T(""), szBuf, MAX_PATH, strConfigIni);
 	strFontDesc = szBuf;
 
+	GetPrivateProfileString(KUI, _T("fontFallback"), _T(""), szBuf, MAX_PATH, strConfigIni);
+	u8FontFallback = S_CT2A(szBuf,CP_UTF8);
+	if(u8FontFallback.GetLength()>100){
+		u8FontFallback="";
+	}
 	bEnableDebugSkin = GetPrivateProfileInt(_T("DebugSkin"),_T("enable"),FALSE,strConfigIni);
 	if(bEnableDebugSkin)
 	{

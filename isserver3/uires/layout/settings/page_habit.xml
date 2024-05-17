@@ -55,7 +55,7 @@
     <window size="-1,-1" layout="hbox" interval="10">
       <radio name="radio_init_ch" text="中文输入" tip="默认英文输入法适用"/>
       <radio name="radio_init_en" text="英文输入" tip="启程是默认输入法适用"/>
-    </window> 
+    </window>
     <window size="-2,-1" layout="gridlayout" xInterval="10" yInterval="10" columnCount="2" gravity="left">
       <text columnSpan="2" layout_gravity="left" text="形码状态回车:"/>
       <radio text="清除编码" id="120" name="enter_for_clear"/>
@@ -119,6 +119,11 @@
         <button name="btn_change_font" text="更改" padding="10,5,10,5"/>
         <button name="btn_skin_font" text="默认字体" padding="10,5,10,5"/>
       </window>
+    </window>
+    <window  layout="hbox" size="-2,-1" gravity="fill" yInterval="10" xInterval="10" gravity="center">
+      <text text="第二字体："/>
+      <edit name="edit_font2" size="0,25dp" weight="1" readonly="1" />
+      <button name="btn_change_font2" text="选择" padding="10,5,10,5"/>
     </window>
   </window>
 </window>

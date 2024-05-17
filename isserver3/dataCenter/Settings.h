@@ -118,6 +118,7 @@ public:
 	KeyFunction m_funRightCtrl;
 
 	SStringT strFontDesc;		//font description.
+	SStringA u8FontFallback;
 
 	BOOL	bEnableDebugSkin;	//enable debug skin. default is false
 	SStringT   strDebugSkinPath;//debug skin path.

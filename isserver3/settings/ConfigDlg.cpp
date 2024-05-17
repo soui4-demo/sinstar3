@@ -379,7 +379,7 @@ namespace SOUI
 		if(strFontDesc.IsEmpty())
 			strFontDesc=_T("<Æ¤·ôÄ¬ÈÏ>");
 		FindAndSetText(R.id.edit_font,strFontDesc);
-
+		FindAndSetText(R.id.edit_font2,S_CA2T(g_SettingsG->u8FontFallback,CP_UTF8));
 		FindAndSetCheck(R.id.radio_init_ch+g_SettingsG->bInitEnglish,TRUE);
 
 		FindAndSetCheck(220 + g_SettingsUI->enumInlineMode, TRUE);
@@ -1156,6 +1156,20 @@ SWindow *pCtrl = FindChildByID(id);\
 		delete this;
 	}
 
+	void CConfigDlg::OnChangeFont2()
+	{
+		LOGFONT lf={0};
+		SStringT strFont2 = S_CA2T(g_SettingsG->u8FontFallback,CP_UTF8);
+		_tcscpy_s(lf.lfFaceName,31,strFont2.c_str());
+		CFontDialog fontDlg(&lf, CF_SCREENFONTS|CF_NOVERTFONTS|CF_NOSTYLESEL|CF_NOSIZESEL);
+		if(fontDlg.DoModal()== IDOK)
+		{
+			g_SettingsG->u8FontFallback = S_CT2A(fontDlg.m_lf.lfFaceName,CP_UTF8);
+			FindAndSetText(R.id.edit_font2,fontDlg.m_lf.lfFaceName);
+			g_SettingsG->SetModified(true);
+		}
+	}
+
 	void CConfigDlg::OnChangeFont()
 	{
 		LOGFONT lf={0};
@@ -1194,6 +1208,7 @@ SWindow *pCtrl = FindChildByID(id);\
 				fi.style.attr.byWeight = 0;
 			}
 			g_SettingsG->strFontDesc = SFontPool::FontInfoToString(fi);
+			g_SettingsG->SetModified(true);
 			GETUIDEF->SetDefFontInfo(g_SettingsG->strFontDesc);
 			FindAndSetText(R.id.edit_font,g_SettingsG->strFontDesc);
 		}
