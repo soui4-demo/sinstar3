@@ -1575,7 +1575,11 @@ BOOL CInputState::KeyIn_All_SelectCand(InputContext * lpCntxtPriv,UINT byInput,c
 						strResult = SStringW((WCHAR*)(pCand+1),pCand[0]);
 						if(pCandInfo[0]!=RATE_FORECAST)
 						{//不是预测词，词频调整
-							SStringW strComp(lpCntxtPriv->szComp,lpCntxtPriv->cComp);
+							SStringW strComp;
+							if(pCandInfo[0]==RATE_COMMENT)
+								strComp = SStringW(lpCntxtPriv->szComp,lpCntxtPriv->cComp);//comment mode, use comp data from lpCntxtPriv
+							else
+								strComp = SStringW((WCHAR*)(pComp+1),pComp[0]);//other user candidate comp data
 							if(lpbKeyState[VK_CONTROL] & 0x80)
 							{
 								CIsSvrProxy::GetSvrCore()->ReqRateAdjust(m_pListener->GetHwnd(),strComp,strComp.GetLength(),strResult,strResult.GetLength(),RAM_FAST);
