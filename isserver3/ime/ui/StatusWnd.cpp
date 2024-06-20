@@ -538,7 +538,6 @@ namespace SOUI
 		}
 	}
 
-	
 	void CStatusWnd::OnUpdateBtnTooltip(EventArgs *e)
 	{
 		EventSwndUpdateTooltip *e2 = sobj_cast<EventSwndUpdateTooltip>(e);
@@ -548,6 +547,16 @@ namespace SOUI
 		strToolTip.Copy(e2->strToolTip);
 		switch (e2->idFrom)
 		{
+		case R.id.txt_comp:
+			e2->bUpdated = TRUE;
+			if(m_pInputListener->GetInputContext()->compMode == IM_SHAPECODE){
+				strToolTip = CDataCenter::getSingletonPtr()->GetData().m_compInfo.strCompName;
+			}else if(g_SettingsG->compMode == IM_SHAPECODE){				
+				strToolTip = _T("ÁÙÊ±Æ´Òô");
+			}else{
+				strToolTip = _T("Æô³ÌÆ´Òô");
+			}
+			break;
 		case R.id.img_logo:
 			{
 				SStringT strComp = CDataCenter::getSingletonPtr()->GetData().m_compInfo.strCompName;
