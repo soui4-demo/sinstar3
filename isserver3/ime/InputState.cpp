@@ -584,7 +584,7 @@ BOOL CInputState::HandleKeyDown(UINT uVKey,UINT uScanCode,const BYTE * lpbKeySta
 					byCandIndex=uVKey;
 				}
 			}
-		}else if(g_SettingsG->b23CandKey && !(lpbKeyState[VK_SHIFT]&0x80))
+		}else if(g_SettingsG->b23CandKey && !(lpbKeyState[VK_SHIFT]&0x80) &&  lpCntxtPriv->compMode!=IM_SPELL )
 		{//SHIFT 模式下不进入
 			UINT uVk=MapVirtualKey(uScanCode,1);
 			if(uVk==g_SettingsG->by2CandVK && lpCntxtPriv->sCandCount>=2) byCandIndex='2';
