@@ -24,6 +24,7 @@ VIAddVersionKey /LANG=${LANG_ENGLISH} "Package Build Date" "${__DATE__}"
 
 ; MUI 1.67 compatible ------
 !include "MUI.nsh"
+!include "FileFunc.nsh"
 
 ; MUI Settings
 !define MUI_ABORTWARNING
@@ -32,7 +33,6 @@ VIAddVersionKey /LANG=${LANG_ENGLISH} "Package Build Date" "${__DATE__}"
 
 SetPluginUnload alwaysoff
 Var /GLOBAL bUpdate
-
 
 ; Welcome page
 !insertmacro MUI_PAGE_WELCOME
@@ -58,6 +58,9 @@ Var /GLOBAL bUpdate
 
 ; Language files
 !insertmacro MUI_LANGUAGE "SimpChinese"
+
+!insertmacro GetParameters
+!insertmacro GetOptions
 
 function fun_skip4update
    StrCmp $bUpdate "1" 0 Exit
@@ -221,8 +224,12 @@ SectionEnd
 !insertmacro MUI_FUNCTION_DESCRIPTION_END
 
 Function .onInit
-;StrCpy $bUpdate "1"
-;Goto Run
+  ${GetParameters} $R0
+  StrCpy $R1 "/silent"
+  StrCmp $R0 $R1 0 Begin
+  SetSilent silent
+  Begin:
+
    InitPluginsDir
    SetOutPath $PLUGINSDIR
    File "Program\RegisterCore.dll"
@@ -258,6 +265,7 @@ Function .onInit
    IntCmp $R2 $2 0 Degrade Upgrade
    IntCmp $R3 $3 0 Degrade Upgrade
    ;same version
+   IfSilent Exit 0
    MessageBox MB_OK|MB_ICONEXCLAMATION  "您已经安装了${PRODUCT_NAME} $0.$1.$2.$3 。$\r$\n$\r$\n点击 “确定” 退出安装程序。" IDOK Exit
    Upgrade:
    MessageBox MB_OKCANCEL|MB_ICONQUESTION  "确定升级${PRODUCT_NAME} $0.$1.$2.$3 到$R0.$R1.$R2.$R3吗?。$\r$\n$\r$\n点击 “确定” 升级，“取消”退出安装程序。" IDOK 0 IDCANCEL Exit
@@ -315,6 +323,7 @@ Function .onInit
 
    Goto Run
    Degrade:
+   IfSilent Exit 0
    MessageBox MB_OK|MB_ICONSTOP  "您已经安装了${PRODUCT_NAME} $0.$1.$2.$3 不能降级到$R0.$R1.$R2.$R3。$\r$\n$\r$\n点击 “确定” 退出安装程序。"
    Exit:
    Quit
