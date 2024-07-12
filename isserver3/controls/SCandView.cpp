@@ -96,7 +96,7 @@ namespace SOUI
 		}
 		pt.x += szBlock.cx;
 
-		if(m_byRate==RATE_MIXSP || m_byRate == RATE_COMMENT)
+		if(m_byRate==RATE_MIXSP || m_byRate == RATE_COMMENT || (m_byRate == RATE_USERDEF && m_strInfo.GetLength()>0))
 		{
 			pRT->SetTextColor(m_crComp);
 			pRT->TextOut(pt.x,pt.y,L"[",1);
@@ -109,8 +109,8 @@ namespace SOUI
 				IFontPtr commentFont = GETUIDEF->GetFont(strFont,GetScale());
 				pRT->SelectObject(commentFont);
 			}
-			pRT->TextOut(pt.x,pt.y,m_strComp.c_str(),m_strComp.GetLength());
-			pRT->MeasureText(m_strComp.c_str(),m_strComp.GetLength(),&szBlock);
+			pRT->TextOut(pt.x,pt.y,m_strInfo.c_str(),m_strInfo.GetLength());
+			pRT->MeasureText(m_strInfo.c_str(),m_strInfo.GetLength(),&szBlock);
 			pt.x+=szBlock.cx;
 
 			pRT->SelectObject(oldFont);
@@ -121,19 +121,19 @@ namespace SOUI
 		}
 		else if(m_byRate==RATE_WILD)
 		{
-			for(int i=0;i<m_strComp.GetLength();i++)
+			for(int i=0;i<m_strInfo.GetLength();i++)
 			{
 				if(i<m_strInput.GetLength() && m_strInput[i] == m_cWild)
 					pRT->SetTextColor(m_crWild);
 				else
 					pRT->SetTextColor(m_crComp);
-				pRT->TextOut(pt.x,pt.y,(LPCTSTR)m_strComp+i,1);
-				pRT->MeasureText((LPCTSTR)m_strComp+i,1,&szBlock);
+				pRT->TextOut(pt.x,pt.y,(LPCTSTR)m_strInfo+i,1);
+				pRT->MeasureText((LPCTSTR)m_strInfo+i,1,&szBlock);
 				pt.x += szBlock.cx;
 			}
-		}else if(m_strComp.GetLength()>m_strInput.GetLength())
+		}else if(m_strInfo.GetLength()>m_strInput.GetLength())
 		{
-			SStringT strComp = m_strComp.Right(m_strComp.GetLength()-m_strInput.GetLength());
+			SStringT strComp = m_strInfo.Right(m_strInfo.GetLength()-m_strInput.GetLength());
 			pRT->SetTextColor(m_crComp);
 			pRT->TextOut(pt.x,pt.y,(LPCTSTR)strComp,strComp.GetLength());
 		}
@@ -156,10 +156,10 @@ namespace SOUI
 		if(cWild!=0 && m_byRate != RATE_USERCMD)
 		{
 			p+=p[0]*2+1;
-			m_strComp = SStringW((const wchar_t*)(p+1),p[0]);
+			m_strInfo = SStringW((const wchar_t*)(p+1),p[0]);
 		}else
 		{
-			m_strComp.Empty();
+			m_strInfo.Empty();
 		}
 		RequestRelayout();
 	}
@@ -197,7 +197,7 @@ namespace SOUI
 			SStringW strFont = SStringW().Format(L"face:%s,charset:%d,size:%d",g_font.c_str(),g_font_charset,oldFont->LogFont()->lfHeight);
 			IFontPtr commentFont = GETUIDEF->GetFont(strFont,GetScale());
 			pRT->SelectObject(commentFont);
-			pRT->MeasureText(m_strComp.c_str(),m_strComp.GetLength(),&sz);
+			pRT->MeasureText(m_strInfo.c_str(),m_strInfo.GetLength(),&sz);
 			pRT->SelectObject(oldFont);
 
 			szRet->cx+=sz.cx;
@@ -206,21 +206,21 @@ namespace SOUI
 			pRT->Release();
 			return;
 		}
-		SStringT strComp;
-		if(m_byRate==RATE_MIXSP || m_byRate == RATE_COMMENT)
+		SStringT strInfo;
+		if(m_byRate==RATE_MIXSP || m_byRate == RATE_COMMENT || (m_byRate == RATE_USERDEF && m_strInfo.GetLength()>0))
 		{
-			strComp=SStringT().Format(_T("[%s]"),m_strComp.c_str());
+			strInfo=SStringT().Format(_T("[%s]"),m_strInfo.c_str());
 		}
 		else if(m_cWild!=0 && m_strInput.FindChar(m_cWild)!=-1)
 		{
-			strComp = m_strComp;
-		}else if(m_strComp.GetLength()>m_strInput.GetLength())
+			strInfo = m_strInfo;
+		}else if(m_strInfo.GetLength()>m_strInput.GetLength())
 		{
-			strComp = m_strComp.Right(m_strComp.GetLength()-m_strInput.GetLength());
+			strInfo = m_strInfo.Right(m_strInfo.GetLength()-m_strInput.GetLength());
 		}
-		if(!strComp.IsEmpty()) 
+		if(!strInfo.IsEmpty()) 
 		{
-			pRT->MeasureText(strComp,strComp.GetLength(),&sz);
+			pRT->MeasureText(strInfo,strInfo.GetLength(),&sz);
 			szRet->cx += sz.cx;
 			szRet->cy = smax(szRet->cy,sz.cy);
 		}

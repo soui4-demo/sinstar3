@@ -32,7 +32,7 @@
   <txt_edit_userjm  value="编辑自定义重码"/>
   <txt_edit_userdict value="编辑用户词库"/>
   
-  <tip_edit_userdef value="格式:编码+“=”+候选，候选词有多个时用“|”分割"/>
+  <tip_edit_userdef value="格式:编码+“=”+候选{注释}，候选词有多个时用“|”分割，注释数据不上屏,长度&lt;=250字"/>
   <tip_edit_symbol  value="格式:符号+类型+输出，类型有1,2,3。1代表奇数次数，2代表偶数次数，3代表不区分奇偶。半角状态下的符号转换在符号后加H，例如&quot;.H	3	。&quot;代表在半角状态下输入.时输出中文句号"/>
   <tip_edit_usercmd value="格式:编码+“=”+[显示文字]命令行"/>
   <tip_edit_userjm  value="格式:编码+“=”+候选，候选词有多个时用“|”分割"/>

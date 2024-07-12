@@ -24,7 +24,7 @@ namespace SOUI
 		SOUI_ATTRS_BEGIN()
 			ATTR_STRINGT(L"index", m_strIndex, TRUE)
 			ATTR_STRINGT(L"cand", m_strCand, TRUE)
-			ATTR_STRINGT(L"comp", m_strComp, TRUE)
+			ATTR_STRINGT(L"info", m_strInfo, TRUE)
 			ATTR_COLOR(L"colorIndex", m_crIndex, TRUE)
 			ATTR_COLOR(L"colorCand", m_crCand[CAND_NORMAL], TRUE)
 			ATTR_COLOR(L"colorCandGbk", m_crCand[CAND_GBK], TRUE)
@@ -43,7 +43,7 @@ namespace SOUI
 		SStringT m_strIndex;
 		SStringT m_strInput;
 		SStringT m_strCand;
-		SStringT m_strComp;
+		SStringT m_strInfo;
 		SLayoutSize m_maxCandWidth;
 
 		enum {
