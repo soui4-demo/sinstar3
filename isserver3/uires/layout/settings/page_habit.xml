@@ -120,7 +120,7 @@
         <button name="btn_skin_font" text="默认字体" padding="10,5,10,5"/>
       </window>
     </window>
-    <window  layout="hbox" size="-2,-1" gravity="fill" yInterval="10" xInterval="10" gravity="center">
+    <window  layout="hbox" size="-2,-1" yInterval="10" xInterval="10" gravity="center">
       <text text="第二字体："/>
       <edit name="edit_font2" size="0,25dp" weight="1" readonly="1" />
       <button name="btn_change_font2" text="选择" padding="10,5,10,5"/>
