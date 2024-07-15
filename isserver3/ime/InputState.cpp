@@ -1619,11 +1619,7 @@ BOOL CInputState::KeyIn_All_SelectCand(InputContext * lpCntxtPriv,UINT byInput,c
 			}else
 			{//一般的自定义
 				LPBYTE pCand = pCandInfo + 2;
-				LPBYTE pComp= pCand +1+pCand[0]*2;
-				if(pComp[0]!=0) 
-					strResult = SStringW((WCHAR*)(pComp + 1), pComp[0]);
-				else
-					strResult = SStringW((WCHAR*)(pCand + 1), pCand[0]);
+				strResult = SStringW((WCHAR*)(pCand + 1), pCand[0]);
 				byMask=GetKeyinMask(FALSE,MKI_RECORD|MKI_TTSINPUT);//不联想
 			}
 		}else if(lpCntxtPriv->inState==INST_LINEIME)
