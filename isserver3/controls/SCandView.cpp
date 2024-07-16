@@ -153,7 +153,7 @@ namespace SOUI
 		const BYTE * p = pbyCandData+2;
 		m_strCand = SStringW((const wchar_t*)(p+1),p[0]);
 		m_strCand.ReplaceChar(_T('\n'),_T('¡ý'));
-		if(cWild!=0 && m_byRate != RATE_USERCMD)
+		if(m_byRate != RATE_USERCMD)
 		{
 			p+=p[0]*2+1;
 			m_strInfo = SStringW((const wchar_t*)(p+1),p[0]);
