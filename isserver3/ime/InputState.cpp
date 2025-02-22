@@ -2288,6 +2288,9 @@ static bool IsPressOther(const BYTE * lpbKeyState,UINT uKey){
 	for(UINT i=VK_BACK;i<=VK_F12;i++){
 		if(i==uKey)
 			continue;
+		if(uKey == VK_SHIFT && i!=VK_CONTROL && i!=VK_MENU && !isprint(i)){
+			continue;//for vk_shift, we only test alt, ctrl and printable key. we try to avoid error detect of shift mode by doing so.
+		}
 		if(lpbKeyState[i]&0x80)
 			return true;
 	}

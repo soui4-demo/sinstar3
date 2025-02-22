@@ -179,6 +179,11 @@ namespace SOUI
 		return pt;
 	}
 
+	void  STipCtrlEx::SetToolTip(LPCRECT rc, UINT tipAlign, LPCTSTR pszTip,int nScale)
+	{
+
+	}
+
 
 	IToolTip * SToolTipFactory::CreateToolTip(HWND hHost)
 	{

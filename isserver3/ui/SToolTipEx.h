@@ -19,6 +19,8 @@ namespace SOUI
 
         /*virtual*/ void WINAPI UpdateTip(const TIPID *id, RECT rc, LPCTSTR pszTip,int nScale) override;
 
+		/*virtual*/ void WINAPI SetToolTip(LPCRECT rc, UINT tipAlign, LPCTSTR pszTip,int nScale) override;
+
         /*virtual*/ void WINAPI ClearTip();
 
         /*virtual*/ BOOL WINAPI PreTranslateMessage(MSG* pMsg);
