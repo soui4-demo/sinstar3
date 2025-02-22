@@ -1746,8 +1746,11 @@ BOOL CInputState::KeyIn_Code_ChangeComp(InputContext * lpCntxtPriv,UINT byInput,
 				if(!CIsSvrProxy::GetSvrCore()->GetCompHead()->bSymbolFirst)
 					return FALSE;//符号顶字上屏
 			}
-			if(bWild && g_SettingsG->bDisableFirstWild && !g_SettingsG->bBlendSpell && !g_SettingsG->bBlendUD)//禁止首码万能键
-				return FALSE;
+			if(bWild && g_SettingsG->bDisableFirstWild)//禁止首码万能键
+			{
+				if(byInput<'a' || byInput>'z' || (!g_SettingsG->bBlendSpell && !g_SettingsG->bBlendUD))//not a-z or disable blend spell and blend userdef.
+					return FALSE;
+			}
 			if(g_SettingsG->bShowOpTip)
 			{//有编码后面显示操作提示
 				lpCntxtPriv->bShowTip=TRUE;
